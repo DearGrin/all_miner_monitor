@@ -1,21 +1,481 @@
-import 'package:avalon_tool/ui/info_block.dart';
+import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
+import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
+import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
+import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class MinerInfo extends StatelessWidget {
-  const MinerInfo({Key? key}) : super(key: key);
-
+class MinerInfo extends StatelessWidget{
+  MinerInfo({Key? key}) : super(key: key);
+  final AnalyseResolver analyseResolver = Get.put(AnalyseResolver());
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
+    final ScanListController controller = Get.put(ScanListController());
     return SingleChildScrollView(
+      controller: scrollController,
       child: Column(
-        children: const[
-          InfoBlock('General', infos: [{'Version':'1u314p'},],),
-          InfoBlock('Hashboard status', infos: [{'Hashboard count':'3'}],),
-          InfoBlock('Speed', infos: [{'Average speed':'47 Th/s'}],),
-          InfoBlock('Power Supply', infos: [{'Output':'13,1 V'}],),
-          InfoBlock('Extras', infos: [{'Aging':'complete'}],),
-        ],
+        children: [
+          ///General Info
+          Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+        color: Colors.grey,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('general'.tr, style: Theme.of(context).textTheme.bodyText2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                children: [
+                  Text('version'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                  SelectableText(controller.currentDevice.value.version ?? '', style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('elapsed'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText(controller.currentDevice.value.elapsedString.toString(), style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('dna'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText(controller.currentDevice.value.dna ?? '', style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('work_mode'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText(controller.currentDevice.value.workMode ?? '', style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('temp_input'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText(controller.currentDevice.value.tempInput.toString(),
+                          style: Theme.of(context).textTheme.bodyText1?.
+                          copyWith(color: analyseResolver.getColor(
+                              'temp_input', controller.currentDevice.value.tempInput))
+                      ), //TODO get color scheme
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('fans'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText.rich(
+                          TextSpan(
+                            children: fans(controller.currentDevice.value, context),
+                          ),
+                      ),
+                    ],
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    children: [
+                      Text('errors_ecmm'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                      SelectableText.rich(
+                        TextSpan(
+                          children: errors(controller.currentDevice.value.ECMM, context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
+    ),
+
+          ///Hashboard info
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('hashboards'.tr, style: Theme.of(context).textTheme.bodyText2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
+
+                            SelectableText(controller.currentDevice.value.hashBoardCount.toString(),
+                                style: Theme.of(context).textTheme.bodyText2?.
+                                  copyWith(color: controller.currentDevice.value.hashBoardCount!
+                                    < controller.currentDevice.value.maxHashBoards!
+                                    ? Colors.red:null)),
+
+
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('temps'.tr, style: Theme.of(context).textTheme.bodyText1,),
+
+                            SelectableText.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                      text: controller.currentDevice.value.tAvg.toString(),
+                                    style: Theme.of(context).textTheme.bodyText2!.
+                                      copyWith(color: analyseResolver.getColor(
+                                        'temp_max', controller.currentDevice.value.tAvg))
+                                  ),
+                                  TextSpan(text: '/', style: Theme.of(context).textTheme.bodyText2),
+                                  TextSpan(
+                                      text: controller.currentDevice.value.tMax.toString(),
+                                      style: Theme.of(context).textTheme.bodyText2!.
+                                      copyWith(color:analyseResolver.getColor(
+                                          'max_temp', controller.currentDevice.value.tMax))
+                                  ),
+                                ]
+                              ),
+                            ),
+
+
+
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('temps_by_boards'.tr, style: Theme.of(context).textTheme.bodyText1,),
+
+                            SelectableText.rich(
+                              TextSpan(
+                                  children: tempsByBoard(controller.currentDevice.value.tMaxByHashBoard,controller.currentDevice.value.hashBoards,  context),
+                              ),
+                            ),
+
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('hard_errors'.tr, style: Theme.of(context).textTheme.bodyText1,),
+
+                            SelectableText.rich(
+                              TextSpan(
+                                children: hardwareErrors(controller.currentDevice.value.dh, controller.currentDevice.value.hw, context),
+                              ),
+                            ),
+
+
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
+          /// Speed info
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('speed'.tr, style: Theme.of(context).textTheme.bodyText2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('frequency'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.freq.toString(), style: Theme.of(context).textTheme.bodyText2),
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('current_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.currentSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
+                                style: Theme.of(context).textTheme.bodyText2?.
+                                copyWith(color: analyseResolver.getColor('min_speed', controller.currentDevice.value.currentSpeed))
+                            ),
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('average_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.averageSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
+                                style: Theme.of(context).textTheme.bodyText2?.
+                                copyWith(color: analyseResolver.getColor('min_speed', controller.currentDevice.value.averageSpeed))
+                            ),
+                          ],
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
+          /// Power Supply info
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('power_supply'.tr, style: Theme.of(context).textTheme.bodyText2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('voltage_mm'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.voltageMM.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('voltage_out'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.voltageOutput.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('voltage_req'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.voltageOutput.toString()+'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                          ],
+                        ),
+
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('hash_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.powerHashBoards.toString() +
+                                'A/' + controller.currentDevice.value.consumption.toString() +
+                                'W', style: Theme.of(context).textTheme.bodyText2),
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('total_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.consumption.toString()+ 'W', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                          ],
+                        ),
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('ps_communication'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.psCommunication.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
+          /// Extras info
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('extras'.tr, style: Theme.of(context).textTheme.bodyText2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('aging'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                            SelectableText(controller.currentDevice.value.aging.toString(), style: Theme.of(context).textTheme.bodyText2),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
+
+    ]
+      )
     );
+  }
+  List<InlineSpan> errors(List<AvalonError>? errors, BuildContext context){
+    List<InlineSpan> _tmp = [];
+    if(errors!=null){
+      for(int i = 0; i<errors.length; i++){
+        _tmp.add(TextSpan(
+          text: errors[i].id.toString() + ' - ' + errors[i].descr +'\n',
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+              null // TODO get from analyze
+          ),
+        ));
+      }
+    }
+    return _tmp;
+  }
+  List<InlineSpan> tempsByBoard(List<int?>? temps, List<Hashboard>? hashboards, BuildContext context){
+    List<InlineSpan> _tmp = [];
+    if(temps!=null) {
+      for (int i = 0; i < temps.length; i++) {
+        _tmp.add(TextSpan(
+          text: temps[i].toString(),
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+            analyseResolver.getColor('temp_max', temps[i])),
+        ));
+        if(i+1 < temps.length)
+          {
+            _tmp.add(TextSpan(
+              text: '/',
+              style: Theme.of(context).textTheme.bodyText2,
+            ));
+          }
+      }
+    }
+    else{
+      for(int i =0; i < hashboards!.length; i++){
+        int _t = 0;
+        for(int n=0; n< hashboards[i].chips!.length; n++){
+          if(hashboards[i].chips![n].temp!=null &&  hashboards[i].chips![n].temp!>0)
+            {
+              _t +=hashboards[i].chips![n].temp!;
+            }
+        }
+        int _tA = (_t/hashboards[i].chips!.length).floor();
+        _tmp.add(TextSpan(
+          text: _tA.toString(),
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+          analyseResolver.getColor('temp_max', _tA)),
+        ));
+        if(i+1 < hashboards!.length)
+        {
+          _tmp.add(TextSpan(
+            text: '/',
+            style: Theme.of(context).textTheme.bodyText2,
+          ));
+        }
+      }
+    }
+    return _tmp;
+  }
+  List<InlineSpan> hardwareErrors(double? dh, int? hw, BuildContext context){
+    List<InlineSpan> _tmp = [];
+        _tmp.add(TextSpan(
+          text: dh.toString() +'%',
+          style: Theme.of(context).textTheme.bodyText2?.
+          copyWith(color: analyseResolver.getColor('dh', dh)),
+        ));
+          _tmp.add(TextSpan(
+          text: '/',
+          style: Theme.of(context).textTheme.bodyText2,
+        ));
+        _tmp.add(TextSpan(
+          text: hw.toString(),
+          style: Theme.of(context).textTheme.bodyText2?.
+          copyWith(color: hw!=null? hw<10000? null:Colors.red:null), //TODO get some formula
+        ));
+
+
+    return _tmp;
+  }
+  List<InlineSpan> fans(AvalonData data, BuildContext context){
+    List<InlineSpan> _tmp = [];
+    if(data.fans !=null) {
+      for (int i = 0; i < data.fans!.length; i++) {
+        _tmp.add(
+            TextSpan(
+                text: data.fans?[i].toString(),
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+                analyseResolver.getColor('null', data.fans?[i])),
+            )
+        );
+        if(i+1 < data.fans!.length)
+          {
+            _tmp.add(TextSpan(text: '/', style: Theme.of(context).textTheme.bodyText2));
+          }
+      }
+    }
+    _tmp.add(
+        TextSpan(text: ' - ' + data.fanR.toString()  + '%',
+            style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+            analyseResolver.getColor('null', data.fanR)))
+    );
+    return _tmp;
   }
 }

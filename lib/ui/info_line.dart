@@ -1,5 +1,6 @@
-import 'package:avalon_tool/styles/text_theme.dart';
+
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class InfoLine extends StatelessWidget {
   final String label;
@@ -8,11 +9,11 @@ class InfoLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
       children: [
-        Text(label, style: ThemeText.textTheme.bodyText1,),
-        Text(content ?? '',style: ThemeText.textTheme.bodyText2),
+        Text(label.tr, style: Theme.of(context).textTheme.bodyText1,),
+        Text(content ?? '', style: Theme.of(context).textTheme.bodyText2),
       ],
     );
   }

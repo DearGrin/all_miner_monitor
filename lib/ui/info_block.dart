@@ -13,15 +13,20 @@ class InfoBlock extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
      // constraints: const BoxConstraints(maxWidth: 500), //TODO remove later
       child: Card(
+        color: Colors.grey,
         child: Stack(
           children: [
             Align(
               alignment: Alignment.topLeft,
-              child: Text(label, style: ThemeText.textTheme.bodyText2,),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(label, style: Theme.of(context).textTheme.bodyText1),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0, bottom: 8.0),
+              padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: infoList(),
               ),
             ),
