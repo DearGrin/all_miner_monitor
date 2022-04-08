@@ -34,6 +34,9 @@ class ScanListController extends GetxController{
  // Rx<General> generalInfo = General().obs;
  // Rx<Speed> speedInfo = Speed().obs;
   List<int> expandedRasp = [];
+
+  List<String> errors = <String>[].obs;
+
   @override
   Future<void> onInit() async {
     ipManagementController = Get.put(IpManagementController());
@@ -78,6 +81,7 @@ class ScanListController extends GetxController{
       for (var element in _d) {element.pools.add(event.data);}
     }
     else  if(event.runtimeType==EventModel && event.type=='error'){
+      errors.add(event.data);
       var _d =devices.where((element) => element.ip == event.ip);
       for (var element in _d) {element.status = event.data;}
     }

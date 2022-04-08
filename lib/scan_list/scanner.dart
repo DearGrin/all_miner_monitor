@@ -62,14 +62,17 @@ class Scanner extends GetxController{
     return regExp.hasMatch(ip);
   }
 handledevice(EventModel event){
-    if(event.type=='device'){
+      jobsDone++;
+      double _progress = jobsDone/finalProgress;
+      progressStream.add(_progress);
       scanResult.add(event);
-    }
+
 }
   universalCreate(List<String> ips, List<String> commands) async {
    // commands.clear();
       // await compute(_toDo[i],'');
       //final p = ReceivePort();
+      finalProgress = ips.length;
       Box box = await Hive.openBox('settings');
       int _threads =  box.get('max_threads')??20;
       int maxTasks = (ips.length/_threads).ceil();
@@ -230,7 +233,7 @@ handleCallback(String callback, String ip){
     }
     universalCreate(_ips, [command.getStats()]);
   }
-
+/*
 startToChangePools(List<String> ips, List<Pool> _pools){
     clearQuery();
     pools = _pools;
@@ -260,6 +263,8 @@ startToChangePools(List<String> ips, List<Pool> _pools){
     */
 }
 
+
+ */
 
 /*
 createComputeScan(String ip) async {

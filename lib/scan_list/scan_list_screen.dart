@@ -1,6 +1,7 @@
 import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
+import 'package:avalon_tool/scan_list/errors_degugger.dart';
 import 'package:avalon_tool/scan_list/rasberry_row.dart';
 import 'package:avalon_tool/scan_list/resize_cotroller.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
@@ -16,6 +17,17 @@ class ScanListScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          OutlinedButton(
+              onPressed: (){Get.defaultDialog(
+                title: 'Errors',
+                content: const ErrorsDebugger(),
+              );},
+              child: Text('show errors', style: Theme.of(context).textTheme.bodyText1,)
+          )
+        ],
+      ),
       body: Scrollbar(
         controller: scrollController,
         isAlwaysShown: true,

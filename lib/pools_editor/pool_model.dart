@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
 part 'pool_model.g.dart';
 
 @HiveType(typeId: 1)
@@ -15,7 +16,9 @@ class Pool extends HiveObject{
 
   factory Pool.fromString(String data){
     return Pool(
-
+      addr: regexp.pool.firstMatch(data)?.group(3)??'',
+      port: regexp.pool.firstMatch(data)?.group(3)?.split(':')[1]??'',
+      worker: regexp.pool.firstMatch(data)?.group(5)??'',
     );
   }
 }
