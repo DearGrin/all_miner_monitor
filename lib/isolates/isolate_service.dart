@@ -13,7 +13,7 @@ import 'package:hive/hive.dart';
 
 //var filenames = [];
 
-void startCompute(List<String> f, List<String> commands, StreamController eventStream) async{
+void startCompute(List<String> f, List<String> commands, StreamController eventStream, StreamController stopStream) async{
   //filenames = f;
   /*
   Box box = await Hive.openBox('settings');
@@ -35,12 +35,13 @@ void startCompute(List<String> f, List<String> commands, StreamController eventS
   }
 
    */
-  await for (final result in _sendAndReceive(f, commands)) {
+  await for (final result in _sendAndReceive(f, commands, stopStream)) {
    // print('Received JSON with ${jsonData.toString()} keys');
     eventStream.add(result);
   }
 }
-Stream<EventModel> _sendAndReceive(List<String> filenames, List<String> commands) async* {
+Stream<EventModel> _sendAndReceive(List<String> filenames, List<String> commands,
+    StreamController stopStream) async* {
 
 
 
@@ -51,13 +52,20 @@ Stream<EventModel> _sendAndReceive(List<String> filenames, List<String> commands
   // spawned isolate using a pull-based interface. Events are stored in this
   // queue until they are accessed by `events.next`.
   final events = StreamQueue<dynamic>(p);
-
+  bool toFinish = false;
   // The first message from the spawned isolate is a SendPort. This port is
   // used to communicate with the spawned isolate.
   SendPort sendPort = await events.next;
 
+  stopStream.stream.listen((event){
+    toFinish = true;
+  });
+
   for(int i = 0; i < filenames.length; i++){
     // Send the next filename to be read and parsed
+    if(toFinish){
+      break;
+    }
     if(commands.length>1) {
       sendPort.send({'${filenames[i]}': '${commands[i]}'});
     }
