@@ -20,7 +20,8 @@ class MinerInfo extends StatelessWidget{
           Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
-        color: Colors.grey,
+          color: Colors.grey,
+          //color: Theme.of(context).cardTheme.color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Stack(
           children: [

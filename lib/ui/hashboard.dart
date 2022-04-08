@@ -12,7 +12,7 @@ class HashBoard extends StatelessWidget{
   Widget build(BuildContext context) {
     final ScanListController controller = Get.put(ScanListController());
     return Card(
-      color: Colors.grey,
+        color: Theme.of(context).cardTheme.color,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Column(

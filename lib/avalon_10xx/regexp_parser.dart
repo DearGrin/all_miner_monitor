@@ -55,3 +55,4 @@ final RegExp aging = RegExp(r'(AG\[)(.*?)(\])');
 final RegExp aucs = RegExp(r'(STATS\] \=> [0-4])([.|\n|\W|\w]*?)(\[MM Count)', multiLine: true);
 final RegExp singleData = RegExp(r'(ID[0-9]\] \=> )([.|\n|\W|\w]*?)(CRC\[)');
 final RegExp led = RegExp(r'(Led\[)(.*?)(\])');
+final RegExp pool = RegExp(r'(POOL=[0-9],)(URL=)(.*?)(User=)(.*?)');

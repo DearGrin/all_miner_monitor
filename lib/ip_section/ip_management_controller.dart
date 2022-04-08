@@ -130,7 +130,7 @@ class IpManagementController extends GetxController{
     List<IpRangeModel> _tmp = [];
     for(int i = 0; i<selectedIps.length; i++)
       {
-        _tmp.add(ips[i]);
+        _tmp.add(ips[selectedIps[i]]);
       }
     return _tmp;
   }

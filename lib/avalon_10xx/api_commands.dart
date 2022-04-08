@@ -1,4 +1,5 @@
 class CommandConstructor{
+
   String setPools(String username, String password, String pooladdr, String worker, String workerpasswd){
     String _ = 'ascset|0,setpool,$username,$password,$pooladdr,$worker,$workerpasswd';
     return _;
@@ -18,11 +19,11 @@ class CommandConstructor{
     return _;
   }
   String setFreq(int freq1, int freq2, int freq3, int freq4, int hash_no){ // hash_no starts from 1
-    String _ = 'privilege|0,setfreq,$freq1, $freq2, $freq3, $freq4, $hash_no';
+    String _ = 'ascset|0,frequency,$freq1:$freq2:$freq3:$freq4-0-0-0';
     return _;
   }
   String setVoltage(int? volt){
-    String _ = 'privilege|0,setvolt,$volt'; // step is 40, min is 1200
+    String _ = 'ascset|0,hashpower,$volt'; // step is 40, min is 1200
     return _;
   }
   String disableFan(){
@@ -42,4 +43,7 @@ class CommandConstructor{
     String _ = 'privilege|0,set_chip_max_temp,$temp';
     return _;
   }
+}
+String getStats(){
+  return 'estats';
 }

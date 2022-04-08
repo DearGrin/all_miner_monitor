@@ -2,10 +2,8 @@ import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
 import 'package:avalon_tool/avalon_10xx/chip_model.dart';
 import 'package:avalon_tool/avalon_10xx/error_handler.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
-import 'package:avalon_tool/avalon_10xx/regexp_parser.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart'; // TODO remove
-import 'package:flutter/services.dart' show rootBundle;
 
 String nullCheck(String? data){return data ?? '-';}
 int? getInt(String? data){
@@ -105,6 +103,14 @@ class AvalonData{
   factory AvalonData.fromString(String data, String ip, [int? _aucN]){
     String _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
     String? _model = regexp.version.firstMatch(data)?.group(2)?.split('-')[0];
+    List<String> _octet = ip.split('.');
+    if(_octet[3].length==1){
+      _octet[3] = '00${_octet[3]}';
+    }
+    else if(_octet[3].length==2){
+      _octet[3] = '0${_octet[3]}';
+    }
+    int? _ipInt = int.tryParse(_octet.join());
    // String _elapsed = regexp.elapsed.firstMatch(data)?.group(2) ?? '-';
    // String _tempInput = regexp.tempInput.firstMatch(data)?.group(2) ?? '-';
     List<int?>? _netFail = regexp.netFail.firstMatch(data)?.group(2)?.split(' ').map((e) =>
@@ -180,7 +186,7 @@ class AvalonData{
       maxHashBoards: _maxHashBoards,
       hashBoards: _hashBoards,
       ip: ip,
-      ipInt: int.tryParse(ip),
+      ipInt: _ipInt,
       model: regexp.version.firstMatch(data)?.group(2)?.split('-')[0],
       mm: regexp.version.firstMatch(data)?.group(2)?.split('-')[1],
       company: _company.contains('AVA')? 'Avalon': 'unknown',
@@ -455,6 +461,7 @@ class RaspberryAva extends AvalonData{
       );
   }
 }
+/*
 class Raspberry{
 
   Future<String> loadAsset() async {
@@ -465,3 +472,5 @@ class Raspberry{
     RaspberryAva rasp = RaspberryAva.fromString(_, ip);
   }
 }
+
+ */

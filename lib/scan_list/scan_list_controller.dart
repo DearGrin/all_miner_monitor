@@ -7,12 +7,14 @@ import 'package:avalon_tool/avalon_10xx/overview_screen.dart';
 import 'package:avalon_tool/ip_section/ip_management_controller.dart';
 import 'package:avalon_tool/ip_section/ip_range_model.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:avalon_tool/scan_list/scanner.dart';
 import 'package:avalon_tool/scan_list/summary_model.dart';
 import 'package:avalon_tool/pools_editor/set_pool.dart';
 import 'package:avalon_tool/control_panel/reboot_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class ScanListController extends GetxController{
   late Scanner scanner;
@@ -40,51 +42,46 @@ class ScanListController extends GetxController{
         handleEvent(event);
       });
    progress = scanner.progressStream;
-    await Raspberry().printData('1');
+   // await Raspberry().printData('1');
     super.onInit();
   }
-  /*
-generateInfo(int index){
-   generalInfo.value = General(infos: [
-     {'Version':devices[index].version??''},
-     {'Elapsed':devices[index].elapsed.toString()},
-     {'Dna':devices[index].dna??''},
-     {'Work mode':devices[index].workMode??''},
-     {'temp input':devices[index].tempInput.toString()},
-     {'fans':devices[index].fans?.join('/')??''},
-   ]
-   );
-   speedInfo.value = Speed(
-     infos: [
-       {'Frequency':devices[index].freq.toString()??''},
-       {'Current speed': devices[index].currentSpeed != null?
-            devices[index].currentSpeed!.toStringAsFixed(2) +'TH/s' :''},
-       {'Average speed':devices[index].averageSpeed != null?
-            devices[index].averageSpeed!.toStringAsFixed(2) +'TH/s' :''},
-     ]
-   );
-}
-*/
+
   handleEvent(dynamic event){
-    devices.add(event);
-    summary.count ++;
-    if(event.currentSpeed!=null)
+    if(event.runtimeType==EventModel && event.type=='device')
       {
-        summary.totalHash +=event.currentSpeed!;
+        devices.add(event.data);
+        summary.count ++;
+        if(event.data.currentSpeed!=null)
+        {
+          summary.totalHash +=event.data.currentSpeed!;
+        }
+        if(event.data.averageSpeed!=null)
+        {
+          summary.averageHash += event.data.averageSpeed!;
+        }
+        if(event.data.ECMM!.isNotEmpty) // TODO add into count ECHU errors and PS
+            {
+          summary.withErrors ++;
+        }
+        if(event.data.tMax!=null && summary.maxTemp < event.data.tMax!)
+        {
+          summary.maxTemp = event.data.tMax!;
+        }
+        update(['list', 'summary']);
       }
-    if(event.averageSpeed!=null)
-      {
-        summary.averageHash += event.averageSpeed!;
-      }
-    if(event.ECMM!.isNotEmpty) // TODO add into count ECHU errors and PS
-      {
-        summary.withErrors ++;
-      }
-    if(event.tMax!=null && summary.maxTemp < event.tMax!)
-      {
-        summary.maxTemp = event.tMax!;
-      }
-    update(['list', 'summary']);
+    else if(event.runtimeType==EventModel && event.type=='update'){
+      var _d =devices.where((element) => element.ip == event.ip);
+      for (var element in _d) {element.status = event.data;}
+    }
+    else if(event.runtimeType==EventModel && event.type=='pool'){
+      var _d =devices.where((element) => element.ip == event.ip);
+      for (var element in _d) {element.pools.add(event.data);}
+    }
+    else  if(event.runtimeType==EventModel && event.type=='error'){
+      var _d =devices.where((element) => element.ip == event.ip);
+      for (var element in _d) {element.status = event.data;}
+    }
+
   }
   startScan(String startIp, String endIp) async {
     await scanner.newScan(ipManagementController.ips);
@@ -193,30 +190,85 @@ generateInfo(int index){
         content: SetPool()
     );
   }
-  submitPoolsAll(List<Pool?> pools, List<int> suffixMode){
-    apiToDo.clear();
+  submitPoolsAll(List<Pool?> pools, List<int> suffixMode) async {
+   // apiToDo.clear();
+    Box box = await Hive.openBox('settings');
+    int? _octetCount = box.get('octet_count');
+    List<String> commands = [];
     for(int i =0; i < devices.length; i++)
     {
-      apiToDo.add(api.sendCommand(devices[i].ip, 4028,
-          commandConstructor.setPools('root', 'root', pools[0]?.addr??'', pools[0]?.worker??'', pools[0]?.passwd??''), //TOD get from settings
-          1));
+      String _suffix = '';
+      if(suffixMode[0]==1) {
+        _suffix = pools[0]!.addr!.contains('.')? '':'.'; //TODO nul check?
+        List<String> _octet = devices[i].ip.split('.');
+        if(_octetCount==3) {
+            _suffix += _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
+        }
+          else if (_octetCount==2){
+            _suffix += _octet[2] + 'x' + _octet[3];
+          }
+          else{
+            _suffix += _octet[3];
+          }
+        }
+
+
+        commands.add(commandConstructor.setPools('root', 'root',
+            pools[0]!.addr!+_suffix, pools[0]?.worker??'', pools[0]?.passwd??''));
     }
-    create();
+    List<String> _ips = [];
+    for(var _ip in devices){
+      _ips.add(_ip.ip);
+    }
+    scanner.universalCreate(_ips, commands);
+   // scanner.startToChangePools(ips, _pools);
+   // create();
   }
-  submitPoolsSelected(List<Pool?> pools, List<int> suffixMode){
+  submitPoolsSelected(List<Pool> pools, List<int> suffixMode) async {
+    Box box = await Hive.openBox('settings');
+    int? _octetCount = box.get('octet_count');
+    List<String> commands = [];
+    for(int i =0; i < selectedIps.length; i++)
+    {
+      String _suffix = '';
+      if(suffixMode[0]==1) {
+        _suffix = pools[0]!.addr!.contains('.')? '':'.'; //TODO nul check?
+       // List<String> _octet = devices[i].ip.split('.');
+       var _ = devices.firstWhere((element) => element.ip==selectedIps[i]);
+        List<String> _octet = _.ip.split('.');
+        if(_octetCount==3) {
+          _suffix += _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
+        }
+        else if (_octetCount==2){
+          _suffix += _octet[2] + 'x' + _octet[3];
+        }
+        else{
+          _suffix += _octet[3];
+        }
+      }
+
+
+      commands.add(commandConstructor.setPools('root', 'root',
+          pools[0]!.addr!+_suffix, pools[0]?.worker??'', pools[0]?.passwd??''));
+    }
+    scanner.universalCreate(selectedIps, commands);
+    /*
     apiToDo.clear();
     for(int i =0; i < selectedIps.length; i++)
     {
-      apiToDo.add(api.sendCommand(selectedIps[i], 4028,
+      apiToDo.add(Api.sendCommand(selectedIps[i], 4028,
           commandConstructor.setPools('root', 'root', pools[0]?.addr??'', pools[0]?.worker??'', pools[0]?.passwd??''), //TOD get from settings
           1));
     }
     create();
+
+     */
+   // scanner.startToChangePools(selectedIps, pools);
   }
   onDoubleTap(AvalonData data){
    // generateInfo(index);
     currentDevice.value = data;
-    Get.dialog(OverviewScreen()); //TODO change to go to named with params and keep alive
+    Get.dialog(const OverviewScreen()); //TODO change to go to named with params and keep alive
   }
   selectByClick(int index){
     String _ip = devices[index].ip!;
@@ -230,22 +282,34 @@ generateInfo(int index){
     );
   }
   rebootAll(){
+    List<String> _ips = [];
+    for(var _ip in devices){
+      _ips.add(_ip.ip);
+    }
+    scanner.universalCreate(_ips, [commandConstructor.reboot()]);
+    /*
     apiToDo.clear();
     for(int i =0; i < devices.length; i++)
       {
-        apiToDo.add(api.sendCommand(devices[i].ip, 4028, commandConstructor.reboot(), 1));
+        apiToDo.add(Api.sendCommand(devices[i].ip, 4028, commandConstructor.reboot(), 1));
       }
     create();
+
+     */
     //TODO execute function
     //Get.back();
   }
   rebootSelected(){
+    scanner.universalCreate(selectedIps, [commandConstructor.reboot()]);
+    /*
     apiToDo.clear();
     for(int i =0; i < selectedIps.length; i++)
     {
-      apiToDo.add(api.sendCommand(selectedIps[i], 4028, commandConstructor.reboot(), 1));
+      apiToDo.add(Api.sendCommand(selectedIps[i], 4028, commandConstructor.reboot(), 1));
     }
-    create();
+    create()
+    ;
+     */
     //Get.back();
   }
   cancel(){
@@ -259,7 +323,6 @@ generateInfo(int index){
     displayMode.value = value;
   }
   expand(int index){
-    print('expand');
     if(expandedRasp.contains(index)){
       expandedRasp.remove(index);
     }
@@ -269,31 +332,45 @@ generateInfo(int index){
     update(['expand_$index']);
   }
   sendCommandToAll(String command){
+    /*
     apiToDo.clear();
     for(int i =0; i < devices.length; i++)
     {
-      apiToDo.add(api.sendCommand(devices[i].ip, 4028, command, 1));
+      apiToDo.add(Api.sendCommand(devices[i].ip, 4028, command, 1));
     }
-    create();
+
+
+     */
+    //create();
+    List<String> _ips = [];
+    for(var _ip in devices){
+      _ips.add(_ip.ip);
+    }
+    scanner.universalCreate(_ips, [command]);
   }
   sendCommandToSelected(String command){
-    apiToDo.clear();
+   // apiToDo.clear();
+    /*
     for(int i =0; i < selectedIps.length; i++)
     {
-      apiToDo.add(api.sendCommand(selectedIps[i], 4028, command, 1));
+      apiToDo.add(Api.sendCommand(selectedIps[i], 4028, command, 1));
     }
-    create();
+
+     */
+
+   scanner.universalCreate(selectedIps, [command]);
   }
+  /*
   create(){
     toDo.clear();
     for(int i=0; i < apiToDo.length; i++){
-      toDo.add(() async {await compute(apiToDo[i],'');});
+      toDo.add(
+              () async {await compute(apiToDo[i],'').whenComplete(() => null)
+              ;}
+      );
     }
   }
-  executeCommands()async{
-    for(int i =0; i < toDo.length; i++){
-      String _ = await toDo[i]();
-      devices[i].status = _;
-    }
-  }
+
+
+   */
 }

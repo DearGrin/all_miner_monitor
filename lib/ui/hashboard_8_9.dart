@@ -25,7 +25,7 @@ class Hashboard89 extends StatelessWidget {
     }
 
     return Card(
-      color: Colors.grey,
+      color: Theme.of(context).cardTheme.color,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

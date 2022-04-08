@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
     scaffoldBackgroundColor: Colors.black54,
     textTheme: textThemeDark,
     primaryColor: Colors.white,
-    //cardColor: Colors.black45,
+   // cardColor: Colors.red,
     outlinedButtonTheme: outlinedButtonThemeDataDark,
     checkboxTheme: checkboxThemeDataDark,
     inputDecorationTheme: inputDecorationThemeDark,

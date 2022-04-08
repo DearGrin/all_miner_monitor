@@ -67,7 +67,7 @@ class SetPool extends StatelessWidget{
       child: Row(
         children: [
           Expanded(
-            flex: 6,
+            flex: 5,
               child: TextField(
                 controller: TextEditingController(text: controller.pools[index]?.addr??''),
                 onChanged: (value){changePoolAddr(value, index);},
@@ -117,8 +117,8 @@ class SetPool extends StatelessWidget{
                 style: Theme.of(context).textTheme.bodyText1,
               ),
           ),
-          SizedBox(
-            width: 150,
+          Expanded(
+            flex: 3,
             child: Obx(() => Row(
                 children: [
                   const SizedBox(width: 5,),

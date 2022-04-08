@@ -10,6 +10,7 @@ class IpUI extends StatelessWidget{
     final IpManagementController controller = Get.put(IpManagementController());
     final ScrollController scrollController = ScrollController();
     return Card(
+      color: Theme.of(context).cardTheme.color,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(

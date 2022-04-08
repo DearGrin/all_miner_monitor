@@ -13,7 +13,7 @@ class InfoBlock extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
      // constraints: const BoxConstraints(maxWidth: 500), //TODO remove later
       child: Card(
-        color: Colors.grey,
+        color: Theme.of(context).cardTheme.color,
         child: Stack(
           children: [
             Align(

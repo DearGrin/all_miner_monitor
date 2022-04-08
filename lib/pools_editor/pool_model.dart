@@ -12,4 +12,10 @@ class Pool extends HiveObject{
   @HiveField(3)
   String? worker;
   Pool({this.addr, this.port,this.passwd='x', this.worker});
+
+  factory Pool.fromString(String data){
+    return Pool(
+
+    );
+  }
 }

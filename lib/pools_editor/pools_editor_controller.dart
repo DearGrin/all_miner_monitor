@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 class PoolsEditorController extends GetxController{
   late ScanListController scanListController;
   late Box<Pool> box;
-  List<Pool?> pools = [Pool(), Pool(), Pool()];
+  List<Pool> pools = [Pool(), Pool(), Pool()];
   List<int> suffixMode = [0,0,0].obs; // 0 - no change; 1 - by ip;
   @override
   Future<void> onInit() async {
@@ -18,7 +18,7 @@ class PoolsEditorController extends GetxController{
   getDataFromSettings(){
     for(int i = 0; i < box.values.length; i++)
       {
-        pools[i] = box.getAt(i);
+        pools[i] = box.getAt(i)!;
       }
   }
   submitAll(){

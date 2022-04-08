@@ -20,7 +20,7 @@ class ContentContainer extends StatelessWidget {
                 Container(
                   height: 40,
                   width: _.widths[index],
-                  decoration: BoxDecoration(border: Border.all()),
+                  decoration: BoxDecoration(border: Border.all(), color: Theme.of(context).cardTheme.color,),
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     value.toString(),

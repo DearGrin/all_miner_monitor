@@ -28,7 +28,7 @@ class ScanListScreen extends StatelessWidget{
                   width: resizeController.maxWidth.value,
                   child: Column(
                     children: [
-                      tableHeader(),
+                      tableHeader(context),
                       GetBuilder<ScanListController>(
                         id: 'list',
                         builder: (_) {
@@ -306,7 +306,7 @@ class ScanListScreen extends StatelessWidget{
       }
     );
   }
-  Widget tableContainer(int index, String? value, ){
+  Widget tableContainer(int index, String? value, BuildContext context ){
     String _value = '$value'.tr;
       return GetBuilder<ResizeController>(
         id: 'header_$index',
@@ -320,7 +320,7 @@ class ScanListScreen extends StatelessWidget{
                   child: Container(
                       height: 50,
                       width: resizeController.widths[index],
-                      decoration: BoxDecoration(border: Border.all()),
+                      decoration: BoxDecoration(border: Border.all(), color: Theme.of(context).cardTheme.color,),
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Stack(
                         children: [
@@ -373,12 +373,12 @@ class ScanListScreen extends StatelessWidget{
 
 
   }
-  Widget tableHeader(){
+  Widget tableHeader(BuildContext context){
     List<Widget> _tmp = [
       Container(
         height: 50,
         decoration: BoxDecoration(
-          border: Border.all()
+          border: Border.all(), color: Theme.of(context).cardTheme.color,
         ),
         child: GetBuilder<ScanListController>(
             id: 'header',
@@ -390,7 +390,7 @@ class ScanListScreen extends StatelessWidget{
       ),
     ];
     for(int i =0; i < resizeController.headers.length; i++ ){
-      _tmp.add(tableContainer(i, resizeController.headers[i].label,
+      _tmp.add(tableContainer(i, resizeController.headers[i].label, context
           ));
     }
    return Row(

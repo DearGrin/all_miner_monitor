@@ -25,7 +25,8 @@ class AvalonDataRow extends StatelessWidget {
             height: 40,
             width: 34,
             decoration: BoxDecoration(
-                border: Border.all()
+                border: Border.all(),
+              color: Theme.of(context).cardTheme.color,
             ),
 
             child:isRasp==null? Obx(() =>
