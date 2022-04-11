@@ -93,27 +93,94 @@ Stream<EventModel> _sendAndReceive(List<String> filenames, List<String> commands
 Future<void> sendCommand(SendPort p) async{
   final commandPort = ReceivePort();
   p.send(commandPort.sendPort);
+  handleCallback(SendPort p, EventModel eventModel){
+    p.send(eventModel);
+  }
+  handler(SendPort p, String data, String command, String ip){
+    EventModel eventModel;
+    if(command=='estats'){
+      if(data.contains('ID=AVA1')) {
+        try{
+          AvalonData device = AvalonData.fromString(data, ip);
+          eventModel = EventModel('device', device, ip);
+        }
+        catch(e){
+          eventModel = EventModel('error', e.toString(),ip);
+        }
+      //   AvalonData device = AvalonData.fromString(data, ip);
+        //data.pools = [Pool.fromString(_call2)];
+        //eventModel = EventModel('device', device, ip);
+      }
+      else if (data.contains('ID=AV')){
+        try {
+          RaspberryAva device = RaspberryAva.fromString(data, ip);
+          eventModel = EventModel('device', device, ip);
+        }
+        catch(e){
+          eventModel = EventModel('error', e.toString(),ip);
+        }
+        //data.pools = [Pool.fromString(_call2)];
+      //  eventModel = EventModel('device', data, ip);
+      }
+      else{
+        data = data;
+        eventModel = EventModel('error', data,ip);
+      }
+    }
+    else{
+      if(data.contains('STATUS=')) {
+        eventModel = EventModel('update', data, ip);
+      }
+      else{
+        eventModel = EventModel('error', data, ip);
+      }
+    }
+    p.send(eventModel);
+  }
   await for (final message in commandPort) {
     if (message is Map<String,String>) {
       // TODO do the logic here
       dynamic data;
-      EventModel eventModel;
+      EventModel? eventModel;
+      try {
+        Socket socket = await Socket.connect(
+            message.keys.first, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          //handleCallback(event.toString());
+         // handleCallback(p, EventModel('error', utf8.decode(event), message.keys.first));
+          handler(p, utf8.decode(event), message.values.first,  message.keys.first);
+          data = utf8.decode(event);
+         // eventModel = EventModel('error', data, message.keys.first);
+          //   eventStream.add(event.toString());
+         // data = event.toString();
+          socket.close();
+        });
+        socket.add(utf8.encode(message.values.first));
+      }
+      catch(err){
+        data = '$err';
+        eventModel = EventModel('error', data, message.keys.first);
+        p.send(eventModel);
+        // callback = mockData;
+      }
+    //  eventModel = EventModel('error', data, message.keys.first);
+      /*
       if(message.values.first=='estats'){
-        String _call = await Api.sendCommand(message.keys.first, 4028, message.values.first, 1);
+        String _call = await Api.sendCommand(message.keys.first, 4028, message.values.first, 10);
         //String _call2 = await Api.sendCommand(message.keys.first, 4028, 'pools', 1);
         if(_call.contains('ID=AVA')) {
-          data = AvalonData.fromString(_call, message.keys.first);
+         // data = AvalonData.fromString(_call, message.keys.first);
           //data.pools = [Pool.fromString(_call2)];
-          eventModel = EventModel('device', data, message.keys.first);
+          eventModel = EventModel('error', _call, message.keys.first);
         }
         else if (_call.contains('ID=AV')){
-          data = RaspberryAva.fromString(_call, message.keys.first);
+          //data = RaspberryAva.fromString(_call, message.keys.first);
          //data.pools = [Pool.fromString(_call2)];
-          eventModel = EventModel('device', data, message.keys.first);
+          eventModel = EventModel('error', _call, message.keys.first);
         }
         else{
           data = _call;
-          eventModel = EventModel('error', data, message.keys.first);
+          eventModel = EventModel('error', _call, message.keys.first);
         }
       //  Pool pool = Pool.fromString(_call2); //TODO do regexp
         //parse data
@@ -121,9 +188,9 @@ Future<void> sendCommand(SendPort p) async{
       }
       else {
         String _call = await Api.sendCommand(
-            message.keys.first, 4028, message.values.first, 1);
+            message.keys.first, 4028, message.values.first, 10);
         if(_call.contains('STATUS=')) {
-          eventModel = EventModel('update', _call, message.keys.first);
+          eventModel = EventModel('error', _call, message.keys.first);
         }
         else{
           eventModel = EventModel('error', _call, message.keys.first);
@@ -131,16 +198,20 @@ Future<void> sendCommand(SendPort p) async{
         //parse data
         //return event
       }
+
+       */
       //TODO than parse
       //print(message);
       //Future.delayed(Duration(seconds: 1));
       // Send the result to the main isolate.
-      p.send(eventModel);
+     // await Future.delayed(Duration(seconds: 5));
+     // p.send(eventModel);
     } else if (message == null) {
       // Exit if the main isolate sends a null message, indicating there are no
       // more files to read and parse.
       break;
     }
+
   }
   Isolate.exit();
 }

@@ -81,9 +81,10 @@ class ScanListController extends GetxController{
       for (var element in _d) {element.pools.add(event.data);}
     }
     else  if(event.runtimeType==EventModel && event.type=='error'){
-      errors.add(event.data);
-      var _d =devices.where((element) => element.ip == event.ip);
-      for (var element in _d) {element.status = event.data;}
+      errors.add('received something');
+      errors.add(event.data.toString());
+    //  var _d =devices.where((element) => element.ip == event.ip);
+    //  for (var element in _d) {element.status = event.data;}
     }
 
   }

@@ -17,7 +17,7 @@ class HashboardDisplay extends StatelessWidget{
 
     return SingleChildScrollView(
       controller: scrollController,
-      child: controller.currentDevice.value.model!.contains('106')||controller.currentDevice.value.model!.contains('104')? Row(
+      child: controller.currentDevice.value.model!.startsWith('1')? Row(
         children: hashboards(controller.currentDevice.value.hashBoardCount, controller.currentDevice.value.hashBoards, controller.currentDevice.value.model), //TODO wtf with null check!
       )
       : Column(
@@ -28,7 +28,7 @@ class HashboardDisplay extends StatelessWidget{
   }
 List<Widget> hashboards(int? hashBoardsCount, List<Hashboard>? _hashboards, String? model){
   List<Widget> _tmp = [];
-  if(model!.contains('106')||model!.contains('104')) {
+  if(model!.contains('1')||model!.startsWith('1')) {
     for (int i = 0; i < hashBoardsCount!; i++) {
       _tmp.add(
           Expanded(

@@ -10,23 +10,31 @@ class Api{
 
  static Future<String> sendCommand(String address, int port, String command, int timeout) async {
    String? callback;
+   dynamic ev;
+   handleCallback(String _callback){
+     callback = _callback;
+     return _callback;
+  //   eventStream.add(_callback.toString());
+   }
    try {
      Socket socket = await Socket.connect(
          address, port, timeout: Duration(seconds: timeout));
-     socket.listen((List<int> event) {
-     //  handleCallback(utf8.decode(event));
-       callback = utf8.decode(event);
+     socket.listen((dynamic event) {
+       handleCallback(event.toString());
+       //callback = utf8.decode(event);
+    //   eventStream.add(event.toString());
+       callback = event.toString();
        socket.close();
      });
      socket.add(utf8.encode(command));
    }
    catch(err){
      callback = '$err';
-     //callback = mockData;
+     return '$err';
+    // callback = mockData;
    }
+
     return callback??'error';
   }
-  handleCallback(String callback){
-    debugPrint(callback);
-  }
+
 }
