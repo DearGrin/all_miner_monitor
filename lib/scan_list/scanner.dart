@@ -27,6 +27,7 @@ class Scanner extends GetxController{
   StreamController computeStatus = StreamController<String>();
   StreamController progressStream = StreamController<double>();
   StreamController isolateStream = StreamController<EventModel>();
+  StreamController stopStream = StreamController<bool>.broadcast();
   int currentIndex = 0;
   List<int> start = [];
   List<int> end = [];
@@ -73,6 +74,7 @@ handledevice(EventModel event){
       // await compute(_toDo[i],'');
       //final p = ReceivePort();
       finalProgress = ips.length;
+      jobsDone = 0;
       Box box = await Hive.openBox('settings');
       int _threads =  box.get('max_threads')??20;
       int maxTasks = (ips.length/_threads).ceil();
@@ -92,10 +94,10 @@ handledevice(EventModel event){
           tasksByThread.add(_);
         }
       }
-
+      stopStream.add(true);
       for(int i =0; i < tasksByThread.length; i++){
         //print(commandsByThread[i]);
-       startCompute(tasksByThread[i], commandsByThread[i], isolateStream);
+       startCompute(tasksByThread[i], commandsByThread[i], isolateStream, stopStream);
       }
 
       //await Isolate.spawn(go, [p.sendPort,_toDo[i]]);
