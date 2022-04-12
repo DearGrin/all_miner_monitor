@@ -233,7 +233,7 @@ handleCallback(String callback, String ip){
 
  */
     }
-    universalCreate(_ips, [command.getStats()]);
+    universalCreate(_ips, ['stats|debug']);
   }
 /*
 startToChangePools(List<String> ips, List<Pool> _pools){

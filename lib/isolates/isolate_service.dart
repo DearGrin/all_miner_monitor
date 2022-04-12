@@ -111,16 +111,16 @@ Future<void> sendCommand(SendPort p) async{
   }
 
    */
-  handler2(SendPort p, String data, String ip, dynamic device){
+  handler2(SendPort p, String data, String ip, dynamic device, String prevRawData){
     //Pool pool = Pool.fromString(data);
-
-    eventModel = EventModel('device', device, ip, data); //TODO
+    String actualRawData = 'prevRawData \n data';
+    eventModel = EventModel('device', device, ip, actualRawData); //TODO
   }
   handler(SendPort p, String data, String command, String ip) async {
 
 
 
-    if(command=='estats'){
+    if(command=='estats'||command=='stats|debug'){
 
       if(data.contains('ID=AVA1')) {
         try{
@@ -159,7 +159,7 @@ Future<void> sendCommand(SendPort p) async{
         socket.listen((dynamic event) {
           //handleCallback(event.toString());
           // handleCallback(p, EventModel('error', utf8.decode(event), message.keys.first));
-          handler2(p, utf8.decode(event), ip, device);
+          handler2(p, utf8.decode(event), ip, device, data);
           data = utf8.decode(event);
           // eventModel = EventModel('error', data, message.keys.first);
           //   eventStream.add(event.toString());
