@@ -15,7 +15,7 @@ class ErrorsDebugger extends StatelessWidget {
       child: SingleChildScrollView(
         child: Obx(()=>Column(
             children: controller.errors.map((e) => Wrap(children:
-            [Text(e, style: Theme.of(context).textTheme.bodyText1,)],)).toList(),
+            [SelectableText(e, style: Theme.of(context).textTheme.bodyText1,)],)).toList(),
           ),
         ),
       ),

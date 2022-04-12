@@ -49,10 +49,14 @@ class ScanListController extends GetxController{
     super.onInit();
   }
 
-  handleEvent(dynamic event){
+  handleEvent(EventModel event){
+  //  RaspberryAva ava = event.data;
+   // print(ava.devices?.length);
+    errors.add(event.rawData.toString());
     if(event.runtimeType==EventModel && event.type=='device')
       {
         devices.add(event.data);
+
         summary.count ++;
         if(event.data.currentSpeed!=null)
         {
@@ -70,6 +74,9 @@ class ScanListController extends GetxController{
         {
           summary.maxTemp = event.data.tMax!;
         }
+
+
+
         update(['list', 'summary']);
       }
     else if(event.runtimeType==EventModel && event.type=='update'){
@@ -81,8 +88,8 @@ class ScanListController extends GetxController{
       for (var element in _d) {element.pools.add(event.data);}
     }
     else  if(event.runtimeType==EventModel && event.type=='error'){
-      errors.add('received something');
-      errors.add(event.data.toString());
+   //   errors.add('received something');
+   //   errors.add(event.rawData.toString());
     //  var _d =devices.where((element) => element.ip == event.ip);
     //  for (var element in _d) {element.status = event.data;}
     }
