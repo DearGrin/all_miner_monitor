@@ -3,6 +3,7 @@ import 'package:avalon_tool/avalon_10xx/chip_model.dart';
 import 'package:avalon_tool/avalon_10xx/error_handler.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
 import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart'; // TODO remove
 
 String nullCheck(String? data){return data ?? '-';}
@@ -134,7 +135,7 @@ class AvalonData{
         split(' ').map((e) => getInt(e)).toList();
    // String _fanR = regexp.fanR.firstMatch(data)?.group(2) ?? '-';
     List<int?>? _ps = regexp.ps.firstMatch(data)?.group(2)?.split(' ').map((e) => getInt(e)).toList();
-    int _maxHashBoards = regexp.pvtV.allMatches(data).length;
+    int _maxHashBoards = regexp.mw.allMatches(data).length;
     List<Hashboard>? _hashBoards = [];
     List<int?> _rawEchu = regexp.echu.firstMatch(data)?.group(2)?.split(' ').map((e) => getInt(e)).toList()??[];
     List<List<AvalonError>?> _echu = _rawEchu.map((e) =>
@@ -370,19 +371,26 @@ class Hashboard{
   List<AvalonError>? errors = [];
   Hashboard({this.chips, this.errors});
   factory Hashboard.fromString(int index, String data){
-   var _pvtT =regexp.pvtT.allMatches(data).elementAt(index).group(2)?.split(' ');
-   _pvtT!.removeWhere((element) => element=='');
-   final _pvtV = regexp.pvtV.allMatches(data).elementAt(index).group(2)?.split(' ');
+    var _pvtT;
+    var _pvtV;
+    if(regexp.pvtT.allMatches(data).isNotEmpty) {
+      _pvtT = regexp.pvtT.allMatches(data).elementAt(index).group(2)?.split(
+          ' ');
+       _pvtT!.removeWhere((element) => element=='');
+    }
+    if(regexp.pvtV.allMatches(data).isNotEmpty) {
+      _pvtV = regexp.pvtV.allMatches(data).elementAt(index).group(2)?.split(' ');
+    }
    final _mw = regexp.mw.allMatches(data).elementAt(index).group(2)?.split(' ');
    final _errors = regexp.echu.firstMatch(data)?.group(2)?.split(' ')  ?? [];
    List<AvalonError>? _er = ErrorHandler().getErrors(int.parse(_errors[index]));
    List<ChipModel> _tmp = [];
-   for(int i = 0; i < _pvtV!.length; i++)
+   for(int i = 0; i < _mw!.length; i++)
      {
        ChipModel _ = ChipModel(
            number: i+1,
-           temp: int.tryParse(_pvtT[i]),
-           voltage: int.tryParse(_pvtV[i]),
+           temp: _pvtT==null? null : int.tryParse(_pvtT[i]),
+           voltage: _pvtV==null? null : int.tryParse(_pvtV[i]),
            mw: int.tryParse(_mw![i])
        );
        _tmp.add(_);
@@ -403,6 +411,7 @@ class RaspberryAva extends AvalonData{
   int? tMax;
   double? currentSpeed;
   String? ip;
+  int? ipInt;
   String? model;
   String? mm;
   @override
@@ -413,21 +422,30 @@ class RaspberryAva extends AvalonData{
 // List<int?>? netFail;
   RaspberryAva({this.devices, this.version, this.elapsed, this.elapsedString,
     this.tempInput, this.tMax, this.currentSpeed, this.ip, this.mm,
-    this.model, this.company});
+    this.model, this.company, this.ipInt});
 
-  factory RaspberryAva.fromString(String data, String? _ip) {
+  factory RaspberryAva.fromString(String data, String _ip) {
     List<RegExpMatch> _aucs = regexp.aucs.allMatches(data).toList();
     List<AvalonData> _tmp = [];
     int? _tempInput;
     int? _tMax;
     double _currentSpeed = 0;
     List<String?> _models = [];
+    List<String> _octet = _ip.split('.');
+    if(_octet[3].length==1){
+      _octet[3] = '00${_octet[3]}';
+    }
+    else if(_octet[3].length==2){
+      _octet[3] = '0${_octet[3]}';
+    }
+    int? _ipInt = int.tryParse(_octet.join());
     for(int n = 0; n < _aucs.length; n++)
     {
       List<RegExpMatch> _auc = regexp.singleData.allMatches(_aucs[n].group(2)??'').toList();
+      //print(_aucs[1].group(2));
       for(int i =0; i < _auc.length; i++)
       {
-
+     //   print(_auc[i].group(2));
         AvalonData _data = AvalonData.fromString(_auc[i].group(2)??'', '$_ip', n);
         _tmp.add(_data);
         if(_tempInput==null&&_data.tempInput!=null || _tempInput!<_data.tempInput!)
@@ -458,6 +476,7 @@ class RaspberryAva extends AvalonData{
       ip: _ip,
       company: 'Avalon',
       model: _models.join(','),
+      ipInt: _ipInt,
       );
   }
 }

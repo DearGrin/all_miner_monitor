@@ -38,11 +38,11 @@ class AvalonDataRow extends StatelessWidget {
                 )
             )
            : GetBuilder<RaspController>(
-              init: Get.find<RaspController>(tag: data.ip),
+              init: Get.put<RaspController>(RaspController(), tag: data.ip),
               id: 'rasp_$index',
               builder: (_){
                 return IndexedStack(
-                  index: _.device!.devices![index].led,
+                  index: _.device.devices![index].led,
                   children: [
                     IconButton(
                         onPressed: (){},

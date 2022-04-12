@@ -3,22 +3,126 @@ import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/content_container.dart';
 import 'package:avalon_tool/scan_list/content_container_with_sort.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
+import 'package:avalon_tool/scan_list/rasp_content.dart';
 import 'package:avalon_tool/scan_list/rasp_controller.dart';
 import 'package:avalon_tool/scan_list/resize_cotroller.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RasberryDataRow extends StatelessWidget {
+class RasberryDataRow extends StatefulWidget {
   final int index;
   final RaspberryAva data;
-  const RasberryDataRow(this.index, this.data, {Key? key}) : super(key: key);
+ const RasberryDataRow(this.index, this.data, {Key? key}) : super(key: key);
+ // final RaspController controller = Get.put(RaspController(), tag: '10.10.10.1');
 
   @override
+  State<RasberryDataRow> createState() => _RasberryDataRowState();
+}
+
+class _RasberryDataRowState extends State<RasberryDataRow> {
+  late RaspController controller;
+ // RxBool isReady = false.obs;
+  ///final ValueNotifier<bool> _counter = ValueNotifier<bool>(false);
+  @override
+  void initState() {
+    // TODO: implement initState
+ // controller = await Get.putAsync<RaspController>(() async => RaspController(), tag: widget.data.ip);
+   controller = Get.put(RaspController(), tag: widget.data.ip);
+  // isReady.value = true;
+  // await Future.delayed(Duration(seconds: 1));
+   //_counter.value = true;
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    final RaspController controller = Get.put(RaspController(), tag: data.ip);
+   // final RaspController controller = Get.putAsync<RaspController>(() async => await RaspController(), tag: widget.data.ip);
+  //  final RaspController controller = Get.put(RaspController(), tag: widget.data.ip);
     final ScanListController scanListController = Get.put(ScanListController());
-    controller.setData(data);
+    controller.setData(widget.data);
+
+      // return RaspContent(widget.data.ip??'', widget.data, controller);
+    /*
+    return ValueListenableBuilder<bool>(
+        valueListenable: _counter,
+        builder: (BuildContext context, bool value, Widget? child){
+          return value? r(scanListController, controller) : Container();
+        }
+    );
+
+
+     */
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              height: 40,
+              width: 34,
+              decoration: BoxDecoration(
+                  border: Border.all()
+              ),
+
+              child: Obx(() =>
+                  Checkbox(
+                      value: scanListController.selectedIps.contains(widget.data.ip),
+                      onChanged: (value) {
+                        scanListController.selectIp(widget.data.ip ?? '', value!);
+                      }
+                  )
+              ),
+            ),
+            ContentContainerWithSort(0, widget.data.status, widget.data.ip??'', 'status' ),
+            ContentContainerWithSort(1, widget.data.ip, widget.data.ip??'', 'ip'),
+            ContentContainerWithSort(2, widget.data.company, widget.data.ip??'', 'manufacture'),
+            ContentContainerWithSort(3, widget.data.model, widget.data.ip??'', 'model'),
+            ContentContainerWithSort(4, widget.data.elapsedString, widget.data.ip??'', 'elapsed'),
+            //TODO do like normal format
+            ContentContainerWithSort(
+                5, widget.data.currentSpeed!.toStringAsFixed(2), widget.data.ip??'', 'Th/s',
+                'min_speed_s'),
+            ContentContainerWithSort(6, widget.data.averageSpeed != null
+                ? widget.data.averageSpeed!.toStringAsFixed(2)
+                : null, widget.data.ip??'','Th/s avg','min_speed_s'),
+            ContentContainerWithSort(7, widget.data.tempInput, widget.data.ip??'','tempInput','temp_input'),
+            ContentContainerWithSort(8, widget.data.tMax, widget.data.ip??'','tepMax','temp_max'),
+            ContentContainerWithSort(9, widget.data.fans,widget.data.ip??'','fans', 'null_list'),
+            ContentContainerWithSort(10, widget.data.mm,widget.data.ip??'', 'mm'),
+            ContentContainerWithSort(11, 'errors',widget.data.ip??'', 'errors'),
+            ContentContainerWithSort(12, widget.data.ps,widget.data.ip??'', 'ps'),
+            ContentContainerWithSort(13, widget.data.netFail,widget.data.ip??'', 'net_fail'),
+            ContentContainerWithSort(14, widget.data.mm,widget.data.ip??'', 'pool1'),
+            //pool1
+            ContentContainerWithSort(15, widget.data.mm,widget.data.ip??'','worker1'),
+            //worker1
+            ContentContainerWithSort(16, widget.data.mm, widget.data.ip??'','pool2'),
+            //pool2
+            ContentContainerWithSort(17, widget.data.mm, widget.data.ip??'','worker2'),
+            //worker2
+            ContentContainerWithSort(18, widget.data.mm, widget.data.ip??'','pool3'),
+            //pool3
+            ContentContainerWithSort(19, widget.data.mm, widget.data.ip??'','worker3'),
+            //worker3
+          ],
+        ),
+        RaspContent(widget.data.ip??''),
+          ],
+
+
+    );
+   // return r(scanListController, controller);
+   // return RaspContent(widget.data.ip??'', widget.data, controller);
+    /*
+        return Obx(()=> Column(
+            children: devices(controller.device.value.devices??[], controller, scanListController),
+          ),
+        );
+
+
+     */
+
+/*
     List<Widget> _tmp = [
       Row(
         children: [
@@ -31,56 +135,66 @@ class RasberryDataRow extends StatelessWidget {
 
             child: Obx(() =>
                 Checkbox(
-                    value: scanListController.selectedIps.contains(data.ip),
+                    value: scanListController.selectedIps.contains(widget.data.ip),
                     onChanged: (value) {
-                      scanListController.selectIp(data.ip ?? '', value!);
+                      scanListController.selectIp(widget.data.ip ?? '', value!);
                     }
                 )
             ),
           ),
-          ContentContainerWithSort(0, data.status, data.ip??'', 'status' ),
-          ContentContainerWithSort(1, data.ip, data.ip??'', 'ip'),
-          ContentContainerWithSort(2, data.company, data.ip??'', 'manufacture'),
-          ContentContainerWithSort(3, data.model, data.ip??'', 'model'),
-          ContentContainerWithSort(4, data.elapsedString, data.ip??'', 'elapsed'),
+          ContentContainerWithSort(0, widget.data.status, widget.data.ip??'', 'status' ),
+          ContentContainerWithSort(1, widget.data.ip, widget.data.ip??'', 'ip'),
+          ContentContainerWithSort(2, widget.data.company, widget.data.ip??'', 'manufacture'),
+          ContentContainerWithSort(3, widget.data.model, widget.data.ip??'', 'model'),
+          ContentContainerWithSort(4, widget.data.elapsedString, widget.data.ip??'', 'elapsed'),
           //TODO do like normal format
           ContentContainerWithSort(
-              5, data.currentSpeed!.toStringAsFixed(2), data.ip??'', 'Th/s',
+              5, widget.data.currentSpeed!.toStringAsFixed(2), widget.data.ip??'', 'Th/s',
               'min_speed_s'),
-          ContentContainerWithSort(6, data.averageSpeed != null
-              ? data.averageSpeed!.toStringAsFixed(2)
-              : null, data.ip??'','Th/s avg','min_speed_s'),
-          ContentContainerWithSort(7, data.tempInput, data.ip??'','tempInput','temp_input'),
-          ContentContainerWithSort(8, data.tMax, data.ip??'','tepMax','temp_max'),
-          ContentContainerWithSort(9, data.fans,data.ip??'','fans', 'null_list'),
-          ContentContainerWithSort(10, data.mm,data.ip??'', 'mm'),
-          ContentContainerWithSort(11, 'errors',data.ip??'', 'errors'),
-          ContentContainerWithSort(12, data.ps,data.ip??'', 'ps'),
-          ContentContainerWithSort(13, data.netFail,data.ip??'', 'net_fail'),
-          ContentContainerWithSort(14, data.mm,data.ip??'', 'pool1'),
+          ContentContainerWithSort(6, widget.data.averageSpeed != null
+              ? widget.data.averageSpeed!.toStringAsFixed(2)
+              : null, widget.data.ip??'','Th/s avg','min_speed_s'),
+          ContentContainerWithSort(7, widget.data.tempInput, widget.data.ip??'','tempInput','temp_input'),
+          ContentContainerWithSort(8, widget.data.tMax, widget.data.ip??'','tepMax','temp_max'),
+          ContentContainerWithSort(9, widget.data.fans,widget.data.ip??'','fans', 'null_list'),
+          ContentContainerWithSort(10, widget.data.mm,widget.data.ip??'', 'mm'),
+          ContentContainerWithSort(11, 'errors',widget.data.ip??'', 'errors'),
+          ContentContainerWithSort(12, widget.data.ps,widget.data.ip??'', 'ps'),
+          ContentContainerWithSort(13, widget.data.netFail,widget.data.ip??'', 'net_fail'),
+          ContentContainerWithSort(14, widget.data.mm,widget.data.ip??'', 'pool1'),
           //pool1
-          ContentContainerWithSort(15, data.mm,data.ip??'','worker1'),
+          ContentContainerWithSort(15, widget.data.mm,widget.data.ip??'','worker1'),
           //worker1
-          ContentContainerWithSort(16, data.mm, data.ip??'','pool2'),
+          ContentContainerWithSort(16, widget.data.mm, widget.data.ip??'','pool2'),
           //pool2
-          ContentContainerWithSort(17, data.mm, data.ip??'','worker2'),
+          ContentContainerWithSort(17, widget.data.mm, widget.data.ip??'','worker2'),
           //worker2
-          ContentContainerWithSort(18, data.mm, data.ip??'','pool3'),
+          ContentContainerWithSort(18, widget.data.mm, widget.data.ip??'','pool3'),
           //pool3
-          ContentContainerWithSort(19, data.mm, data.ip??'','worker3'),
+          ContentContainerWithSort(19, widget.data.mm, widget.data.ip??'','worker3'),
           //worker3
         ],
       ),
     ];
-    for(int i=0; i < data.devices!.length; i++)
+
+
+ */
+
+/*
+    for(int i=0; i < widget.data.devices!.length; i++)
       {
         _tmp.add(Obx(()=>controller.isexpanded.value? AvalonDataRow(i,controller.device!.devices![i]) : Container()));
       }
-    return GetBuilder<RaspController>(
-      init: Get.find<RaspController>(tag: data.ip),
-      id: 'list',
-      builder: (_){
-        List<Widget> _tmp = [
+
+
+ */
+
+
+
+
+
+/*
+        List<Widget> _tmp2 = [
           Row(
             children: [
               Container(
@@ -92,57 +206,81 @@ class RasberryDataRow extends StatelessWidget {
 
                 child: Obx(() =>
                     Checkbox(
-                        value: scanListController.selectedIps.contains(data.ip),
+                        value: scanListController.selectedIps.contains(widget.data.ip),
                         onChanged: (value) {
-                          scanListController.selectIp(data.ip ?? '', value!);
+                          scanListController.selectIp(widget.data.ip ?? '', value!);
                         }
                     )
                 ),
               ),
-              ContentContainerWithSort(0, data.status, data.ip??'', 'status' ),
-              ContentContainerWithSort(1, data.ip, data.ip??'', 'ip'),
-              ContentContainerWithSort(2, data.company, data.ip??'', 'manufacture'),
-              ContentContainerWithSort(3, data.model, data.ip??'', 'model'),
-              ContentContainerWithSort(4, data.elapsedString, data.ip??'', 'elapsed'),
+              ContentContainerWithSort(0, widget.data.status, widget.data.ip??'', 'status' ),
+              ContentContainerWithSort(1, widget.data.ip, widget.data.ip??'', 'ip'),
+              ContentContainerWithSort(2, widget.data.company, widget.data.ip??'', 'manufacture'),
+              ContentContainerWithSort(3, widget.data.model, widget.data.ip??'', 'model'),
+              ContentContainerWithSort(4, widget.data.elapsedString, widget.data.ip??'', 'elapsed'),
               //TODO do like normal format
               ContentContainerWithSort(
-                  5, data.currentSpeed!.toStringAsFixed(2), data.ip??'', 'Th/s',
+                  5, widget.data.currentSpeed!.toStringAsFixed(2), widget.data.ip??'', 'Th/s',
                   'min_speed_s'),
-              ContentContainerWithSort(6, data.averageSpeed != null
-                  ? data.averageSpeed!.toStringAsFixed(2)
-                  : null, data.ip??'','Th/s avg','min_speed_s'),
-              ContentContainerWithSort(7, data.tempInput, data.ip??'','tempInput','temp_input'),
-              ContentContainerWithSort(8, data.tMax, data.ip??'','tepMax','temp_max'),
-              ContentContainerWithSort(9, data.fans,data.ip??'','fans', 'null_list'),
-              ContentContainerWithSort(10, data.mm,data.ip??'', 'mm'),
-              ContentContainerWithSort(11, 'errors',data.ip??'', 'errors'),
-              ContentContainerWithSort(12, data.ps,data.ip??'', 'ps'),
-              ContentContainerWithSort(13, data.netFail,data.ip??'', 'net_fail'),
-              ContentContainerWithSort(14, data.pools!.isNotEmpty? data.pools![0].addr:'',data.ip??'', 'pool1'),
+              ContentContainerWithSort(6, widget.data.averageSpeed != null
+                  ? widget.data.averageSpeed!.toStringAsFixed(2)
+                  : null, widget.data.ip??'','Th/s avg','min_speed_s'),
+              ContentContainerWithSort(7, widget.data.tempInput, widget.data.ip??'','tempInput','temp_input'),
+              ContentContainerWithSort(8, widget.data.tMax, widget.data.ip??'','tepMax','temp_max'),
+              ContentContainerWithSort(9, widget.data.fans,widget.data.ip??'','fans', 'null_list'),
+              ContentContainerWithSort(10, widget.data.mm,widget.data.ip??'', 'mm'),
+              ContentContainerWithSort(11, 'errors',widget.data.ip??'', 'errors'),
+              ContentContainerWithSort(12, widget.data.ps,widget.data.ip??'', 'ps'),
+              ContentContainerWithSort(13, widget.data.netFail,widget.data.ip??'', 'net_fail'),
+              ContentContainerWithSort(14, widget.data.pools!.isNotEmpty? widget.data.pools![0].addr:'',widget.data.ip??'', 'pool1'),
               //pool1
-              ContentContainerWithSort(15, data.pools!.isNotEmpty? data.pools![0].worker:'',data.ip??'','worker1'),
+              ContentContainerWithSort(15, widget.data.pools!.isNotEmpty? widget.data.pools![0].worker:'',widget.data.ip??'','worker1'),
               //worker1
-              ContentContainerWithSort(16, data.pools!.length>1? data.pools![1].addr:'', data.ip??'','pool2'),
+              ContentContainerWithSort(16, widget.data.pools!.length>1? widget.data.pools![1].addr:'', widget.data.ip??'','pool2'),
               //pool2
-              ContentContainerWithSort(17, data.pools!.length>1? data.pools![1].addr:'', data.ip??'','worker2'),
+              ContentContainerWithSort(17, widget.data.pools!.length>1? widget.data.pools![1].addr:'', widget.data.ip??'','worker2'),
               //worker2
-              ContentContainerWithSort(18, data.pools!.length>1? data.pools![2].addr:'', data.ip??'','pool3'),
+              ContentContainerWithSort(18, widget.data.pools!.length>1? widget.data.pools![2].addr:'', widget.data.ip??'','pool3'),
               //pool3
-              ContentContainerWithSort(19, data.pools!.length>1? data.pools![2].addr:'', data.ip??'','worker3'),
+              ContentContainerWithSort(19, widget.data.pools!.length>1? widget.data.pools![2].addr:'', widget.data.ip??'','worker3'),
               //worker3
             ],
           ),
         ];
-        List<Widget> _tmp2 = _.device!.devices!.map((e) =>
+
+ */
+        /*
+        List<Widget> _tmp3 = controller.device!.devices!.map((e) =>
             Obx(()=>controller.isexpanded.value?
-            AvalonDataRow(_.device!.devices!.indexOf(e),e, isRasp: true,)
+            AvalonDataRow(controller.device!.devices!.indexOf(e),e, isRasp: true,)
                 : Container())).toList();
+
+
+         */
+    /*
         return Column(
-          children: _tmp..addAll(_tmp2),
-         // children: _.device!.devices!.map((e) => Obx(()=>controller.isexpanded.value? AvalonDataRow(0,e) : Container())).toList(),
+          children: _tmp,
+           // children: _tmp.addAll(controller.device!.devices!.map((e) => Obx(()=>controller.isexpanded.value? AvalonDataRow(1,e) : Container())).toList())
         );
-      },
-    );
+
+     */
+         /*
+        return Obx(()=> Column(
+          children: controller.device!=null&&controller.device!.devices!=null ?
+          controller.device!.devices!.map((e) => Obx(()=>controller.isexpanded.value? AvalonDataRow(0,e) : Container())).toList()
+          : [Container()],
+          //  children: _tmp..addAll(_tmp2),
+           // children: [Container()],
+           // children: _.device!.devices!.map((e) => Obx(()=>controller.isexpanded.value? AvalonDataRow(0,e) : Container())).toList(),
+          ),
+        );
+
+
+          */
+
+
+
+
     /*
     return Obx(()=>Column(
         children: [
@@ -154,5 +292,73 @@ class RasberryDataRow extends StatelessWidget {
 
 
      */
+  }
+  List<Widget> devices(List<AvalonData> devices, RaspController controller, ScanListController scanListController){
+    List<Widget> _tmp = [
+      Row(
+        children: [
+          Container(
+            height: 40,
+            width: 34,
+            decoration: BoxDecoration(
+                border: Border.all()
+            ),
+
+            child: Obx(() =>
+                Checkbox(
+                    value: scanListController.selectedIps.contains(widget.data.ip),
+                    onChanged: (value) {
+                      scanListController.selectIp(widget.data.ip ?? '', value!);
+                    }
+                )
+            ),
+          ),
+          ContentContainerWithSort(0, widget.data.status, widget.data.ip??'', 'status' ),
+          ContentContainerWithSort(1, widget.data.ip, widget.data.ip??'', 'ip'),
+          ContentContainerWithSort(2, widget.data.company, widget.data.ip??'', 'manufacture'),
+          ContentContainerWithSort(3, widget.data.model, widget.data.ip??'', 'model'),
+          ContentContainerWithSort(4, widget.data.elapsedString, widget.data.ip??'', 'elapsed'),
+          //TODO do like normal format
+          ContentContainerWithSort(
+              5, widget.data.currentSpeed!.toStringAsFixed(2), widget.data.ip??'', 'Th/s',
+              'min_speed_s'),
+          ContentContainerWithSort(6, widget.data.averageSpeed != null
+              ? widget.data.averageSpeed!.toStringAsFixed(2)
+              : null, widget.data.ip??'','Th/s avg','min_speed_s'),
+          ContentContainerWithSort(7, widget.data.tempInput, widget.data.ip??'','tempInput','temp_input'),
+          ContentContainerWithSort(8, widget.data.tMax, widget.data.ip??'','tepMax','temp_max'),
+          ContentContainerWithSort(9, widget.data.fans,widget.data.ip??'','fans', 'null_list'),
+          ContentContainerWithSort(10, widget.data.mm,widget.data.ip??'', 'mm'),
+          ContentContainerWithSort(11, 'errors',widget.data.ip??'', 'errors'),
+          ContentContainerWithSort(12, widget.data.ps,widget.data.ip??'', 'ps'),
+          ContentContainerWithSort(13, widget.data.netFail,widget.data.ip??'', 'net_fail'),
+          ContentContainerWithSort(14, widget.data.mm,widget.data.ip??'', 'pool1'),
+          //pool1
+          ContentContainerWithSort(15, widget.data.mm,widget.data.ip??'','worker1'),
+          //worker1
+          ContentContainerWithSort(16, widget.data.mm, widget.data.ip??'','pool2'),
+          //pool2
+          ContentContainerWithSort(17, widget.data.mm, widget.data.ip??'','worker2'),
+          //worker2
+          ContentContainerWithSort(18, widget.data.mm, widget.data.ip??'','pool3'),
+          //pool3
+          ContentContainerWithSort(19, widget.data.mm, widget.data.ip??'','worker3'),
+          //worker3
+        ],
+      ),
+    ];
+    for(int i = 0; i < devices.length; i++){
+      _tmp.add(Obx(()=>controller.isexpanded.value? AvalonDataRow(i,controller.device.devices![i], isRasp: true,) : Container()));
+    }
+    return _tmp;
+  }
+  Widget r(ScanListController scanListController, RaspController controller){
+
+
+          return Column(
+            children: devices(controller.device.devices??[], controller, scanListController),
+          );
+
+
   }
 }

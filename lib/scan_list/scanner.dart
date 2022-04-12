@@ -146,21 +146,21 @@ handleCallback(String callback, String ip){
   EventModel _event;
   if(callback.contains('STATUS=')&&callback.contains('ID=AVA')){
     _data = AvalonData.fromString(callback, ip);
-    _event = EventModel('device', _data, ip);
+    _event = EventModel('device', _data, ip, callback);
   }
   else if(callback.contains('STATUS=')&&callback.contains('ID=AV')){
     _data = RaspberryAva.fromString(callback, ip);
-    _event = EventModel('device', _data, ip);
+    _event = EventModel('device', _data, ip, callback);
   }
   else if(callback.contains('STATUS=')&&callback.contains('Pool(s)')){
     _data = Pool.fromString(callback);
-    _event = EventModel('pool', _data, ip);
+    _event = EventModel('pool', _data, ip, callback);
   }
   else if(callback.contains('STATUS=')){
-    _event = EventModel('update', callback, ip);
+    _event = EventModel('update', callback, ip, callback);
   }
   else{
-    _event = EventModel('error', callback, ip);
+    _event = EventModel('error', callback, ip, callback);
   }
   scanResult.add(_event);
 }
