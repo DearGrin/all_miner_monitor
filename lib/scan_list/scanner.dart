@@ -23,7 +23,7 @@ class Scanner extends GetxController{
  // int threadsInP = 0;
   //int threadsDone = 0;
  // List<AvalonData?> data = <AvalonData>[];
-  StreamController scanResult = StreamController<dynamic>();
+  StreamController scanResult = StreamController<dynamic>.broadcast();
   StreamController computeStatus = StreamController<String>();
   StreamController progressStream = StreamController<double>();
   StreamController isolateStream = StreamController<EventModel>();
@@ -69,36 +69,38 @@ handledevice(EventModel event){
       scanResult.add(event);
 
 }
-  universalCreate(List<String> ips, List<String> commands) async {
+  universalCreate(List<String?>? ips, List<String> commands) async {
    // commands.clear();
       // await compute(_toDo[i],'');
       //final p = ReceivePort();
+    if(ips!=null) {
       finalProgress = ips.length;
       jobsDone = 0;
       Box box = await Hive.openBox('settings');
-      int _threads =  box.get('max_threads')??20;
-      int maxTasks = (ips.length/_threads).ceil();
-      List<List<String>> tasksByThread = [];
+      int _threads = box.get('max_threads') ?? 20;
+      int maxTasks = (ips.length / _threads).ceil();
+      List<List<String?>> tasksByThread = [];
       List<List<String>> commandsByThread = [];
-      for(int i = 0; i < _threads; i++)
-      {
-        List<String> _ = ips.skip(i*maxTasks).take(maxTasks).toList();
-        if(commands.length>1) {
+      for (int i = 0; i < _threads; i++) {
+        List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
+        if (commands.length > 1) {
           List<String> _c = commands.skip(i * maxTasks).take(maxTasks).toList();
           commandsByThread.add(_c);
         }
-        else{
+        else {
           commandsByThread.add(commands);
         }
-        if(_.isNotEmpty){
+        if (_.isNotEmpty) {
           tasksByThread.add(_);
         }
       }
       stopStream.add(true);
-      for(int i =0; i < tasksByThread.length; i++){
+      for (int i = 0; i < tasksByThread.length; i++) {
         //print(commandsByThread[i]);
-       startCompute(tasksByThread[i], commandsByThread[i], isolateStream, stopStream);
+        startCompute(
+            tasksByThread[i], commandsByThread[i], isolateStream, stopStream);
       }
+    }
 
       //await Isolate.spawn(go, [p.sendPort,_toDo[i]]);
      // String callback = await p.first as String;

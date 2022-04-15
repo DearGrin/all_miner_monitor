@@ -14,7 +14,7 @@ import 'package:hive/hive.dart';
 
 //var filenames = [];
 
-void startCompute(List<String> f, List<String> commands,
+void startCompute(List<String?> f, List<String> commands,
     StreamController eventStream, StreamController stopStream) async{
   //filenames = f;
   /*
@@ -42,7 +42,7 @@ void startCompute(List<String> f, List<String> commands,
     eventStream.add(result);
   }
 }
-Stream<EventModel> _sendAndReceive(List<String> filenames, List<String> commands,
+Stream<EventModel> _sendAndReceive(List<String?> filenames, List<String> commands,
     StreamController stopStream) async* {
 
 

@@ -1,4 +1,5 @@
 import 'package:avalon_tool/control_panel/control_panel_controller.dart';
+import 'package:avalon_tool/visual_layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,6 +36,10 @@ class ScanListControls extends StatelessWidget {
             OutlinedButton(
               onPressed: (){controller.onClick(4, context);},
               child: Text('settings'.tr, overflow: TextOverflow.ellipsis,),
+            ),
+            OutlinedButton(
+              onPressed: (){Get.to(()=>const LayoutScreen());},
+              child: Text('layout'.tr, overflow: TextOverflow.ellipsis,),
             ),
           ],
         ),

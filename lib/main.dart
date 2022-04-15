@@ -7,6 +7,8 @@ import 'package:avalon_tool/scan_list/table_header_model.dart';
 import 'package:avalon_tool/settings/header_list_model.dart';
 import 'package:avalon_tool/styles/d_l_theme.dart';
 import 'package:avalon_tool/ui/desktop_scan_screen.dart';
+import 'package:avalon_tool/visual_constructor/constructor_model.dart';
+import 'package:avalon_tool/visual_layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,6 +19,10 @@ Future<void> main() async {
   Hive.registerAdapter(PoolAdapter());
   Hive.registerAdapter(TableHeaderModelAdapter());
   Hive.registerAdapter(HeadersListModelAdapter());
+  Hive.registerAdapter(LayoutAdapter());
+  Hive.registerAdapter(RigAdapter());
+  Hive.registerAdapter(ShelfAdapter());
+  Hive.registerAdapter(PlaceAdapter());
   checkSettings();
   //TODO check all adapters
   runApp(const MyApp());
@@ -65,6 +71,7 @@ class MyApp extends StatelessWidget {
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en','US'),
       home: const DesktopScanScreen(),
+      //home: LayoutScreen(),
     );
   }
 }

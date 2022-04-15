@@ -65,4 +65,30 @@ class AnalyseResolver extends GetxController{
     }
     return _;
   }
+  bool hasErrors(String? type, dynamic value){
+    bool _ = false;
+    if(value !=null) {
+      switch (type) {
+        case 'temp_max':
+         _ = value < maxTempInput;
+         break;
+        case 'null_list':
+          List<int?> _i = value;
+          _ = _i.contains(0);
+          break;
+        case 'dh':
+          _ = value < dh;
+          break;
+        case 'min_speed':
+          _ = value>minSpeed;
+          break;
+        default:
+           _ = false;
+      }
+    }
+    else{
+      _ = false;
+    }
+    return _;
+  }
 }
