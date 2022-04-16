@@ -81,12 +81,21 @@ class IpManagementController extends GetxController{
     Get.back();
   }
   onDeleteSelectedIps(){
+    List<IpRangeModel> _toDel = [];
+    List<dynamic> _keys = [];
     for(int i = 0; i < selectedIps.length; i++)
       {
-        box.deleteAt(i);
-        ips.removeAt(i);
-        selectedIps.clear();
+        _toDel.add(ips[selectedIps[i]]);
+        _keys.add(box.keys.toList()[selectedIps[i]]);
       }
+    for(IpRangeModel del in _toDel){
+      ips.remove(del);
+    }
+    for(dynamic _k in _keys){
+      box.delete(_k);
+    }
+    selectedIps.clear();
+
 
   }
   onTap(int index){
