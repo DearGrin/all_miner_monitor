@@ -17,7 +17,7 @@ class AvalonDataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScanListController controller = Get.put(ScanListController());
     return GestureDetector(
-      onDoubleTap: (){controller.currentDevice.runtimeType==AvalonData?controller.onDoubleTap(data):null;},
+      onDoubleTap: (){controller.onDoubleTap(data);},
       onTap: (){controller.selectByClick(index);},
       child: Row(
         children: [

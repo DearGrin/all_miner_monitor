@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
@@ -25,7 +26,9 @@ class ScanListController extends GetxController{
   SummaryModel summary = SummaryModel();
   StreamSubscription? scanResult;
   late StreamController progress;
-  Rx<dynamic> currentDevice = null.obs;
+  Rx<AvalonData> currentDevice = AvalonData().obs;
+  Rx<AntMinerModel> currentAntDevice = AntMinerModel().obs;
+  //dynamic currentDevice;
   RxInt displayMode = 0.obs;
   final Api api = Api();
   final CommandConstructor commandConstructor = CommandConstructor();
@@ -293,10 +296,19 @@ class ScanListController extends GetxController{
      */
    // scanner.startToChangePools(selectedIps, pools);
   }
-  onDoubleTap(AvalonData data){
-   // generateInfo(index);
-    currentDevice.value = data;
-    Get.dialog(const OverviewScreen()); //TODO change to go to named with params and keep alive
+  onDoubleTap(dynamic data){
+    if(data.runtimeType==AvalonData) {
+      currentDevice.value = data;
+      Get.dialog(const OverviewScreen(type: 'avalon',));
+    }
+    else if(data.runtimeType==AntMinerModel){
+      currentAntDevice.value = data;
+      Get.dialog(const OverviewScreen(type: 'antminer',));
+    }
+    else{
+      //TODO add unknown support
+    }
+     //TODO change to go to named with params and keep alive
   }
   selectByClick(int index){
     String _ip = devices[index].ip!;

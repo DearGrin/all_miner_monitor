@@ -1,3 +1,5 @@
+import 'package:avalon_tool/antminer/antminer_model.dart';
+import 'package:avalon_tool/antminer/mock_ant.dart';
 import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/mock_data.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
@@ -95,6 +97,10 @@ class PlaceController extends GetxController{
     }
     else{
       print('no device');
+      //dynamic _device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
+      //dynamic _device = AvalonData.fromString(mockData, '10.10.10.10');
+      //print(_device);
+      //controller.onDoubleTap(_device);
     }
   }
 }
