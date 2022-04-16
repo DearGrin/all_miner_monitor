@@ -40,14 +40,12 @@ class PlaceUI extends StatelessWidget {
                             init: Get.put(PlaceController(), tag: '${place.id}/$placeIndex'),
                             id: 'text',
                             builder: (_){
-                              double f = controller.device.currentSpeed ?? 0;
-                              String _f = f.toStringAsFixed(2);
                               return RichText(
                                 text: TextSpan(
                                     text: '',
                                     children: [
                                       TextSpan(text: controller.device!=null? '${controller.device.ip??' '}\n' : '${controller.place?.ip??' '}',),
-                                      TextSpan(text: controller.device!=null? '${_f??' '} Th/s!\n' : ' '),
+                                      TextSpan(text: controller.device!=null? '${_.device.currentSpeed.toStringAsFixed(2)} Th/s!\n' : ' '),
                                       TextSpan(text: controller.device!=null? '${controller.device.tMax??' '} C': ' '),
                                     ]
                                 ),
