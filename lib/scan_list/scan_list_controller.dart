@@ -25,7 +25,7 @@ class ScanListController extends GetxController{
   SummaryModel summary = SummaryModel();
   StreamSubscription? scanResult;
   late StreamController progress;
-  Rx<AvalonData> currentDevice = AvalonData().obs;
+  Rx<dynamic> currentDevice = null.obs;
   RxInt displayMode = 0.obs;
   final Api api = Api();
   final CommandConstructor commandConstructor = CommandConstructor();
@@ -46,6 +46,18 @@ class ScanListController extends GetxController{
       });
    progress = scanner.progressStream;
    // await Raspberry().printData('1');
+
+    /*
+    try{
+    AntMinerModel model = AntMinerModel.fromString(mockAnt, '10.10.10.10');
+    print(model);}
+    catch(e){
+      print(e);
+    }
+
+
+     */
+
     super.onInit();
   }
 
@@ -56,7 +68,6 @@ class ScanListController extends GetxController{
     if(event.runtimeType==EventModel && event.type=='device')
       {
         devices.add(event.data);
-
         summary.count ++;
         if(event.data.currentSpeed!=null)
         {
@@ -66,16 +77,17 @@ class ScanListController extends GetxController{
         {
           summary.averageHash += event.data.averageSpeed!;
         }
-        if(event.data.ECMM!.isNotEmpty) // TODO add into count ECHU errors and PS
-            {
-          summary.withErrors ++;
-        }
         if(event.data.tMax!=null && summary.maxTemp < event.data.tMax!)
         {
           summary.maxTemp = event.data.tMax!;
         }
-
-
+        if(event.data.company!='AntMiner') {
+          if (event.data.ECMM!
+              .isNotEmpty) // TODO add into count ECHU errors and PS
+              {
+            summary.withErrors ++;
+          }
+        }
 
         update(['list', 'summary']);
       }
@@ -95,8 +107,8 @@ class ScanListController extends GetxController{
     }
 
   }
-  startScan(String startIp, String endIp) async {
-    await scanner.newScan(ipManagementController.ips);
+  startScan() async {
+    await scanner.newScan(scanList: ipManagementController.ips);
   }
   selectIp(String ip, bool value){
     if(value)
@@ -124,9 +136,13 @@ class ScanListController extends GetxController{
     summary.clear();
     update(['list', 'summary']);
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
-    scanner.newScan(ipsToScan);
+    scanner.newScan(scanList: ipsToScan);
   }
-
+  clearQuery(){
+    devices.clear();
+    summary.clear();
+    update(['list', 'summary']);
+  }
   sort(String type, bool reverse){
     switch(type){
       case 'status':

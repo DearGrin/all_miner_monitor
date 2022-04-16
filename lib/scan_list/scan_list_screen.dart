@@ -1,3 +1,4 @@
+import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
@@ -126,169 +127,15 @@ class ScanListScreen extends StatelessWidget{
 
        */
   }
-    else{
+    else if (data.runtimeType == RaspberryAva){
       RaspberryAva rasp = data;
-      //return Container();
       return RasberryDataRow(index, data);
-      //return RaspRow(data);
-
-      List<Widget> _tmp = [
-        Row(
-          children: [
-            Container(
-              height: 40,
-              decoration: BoxDecoration(
-                  border: Border.all()
-              ),
-              child: Obx(() =>
-                  Checkbox(
-                      value: controller.selectedIps.contains(data.ip),
-                      onChanged: (value) {
-                        controller.selectIp(data.ip ?? '', value!);
-                      }
-                  )
-              ),
-            ),
-            contentContainer(0, data.status, index, context),
-            contentContainer(1, data.ip, index, context),
-            contentContainer(2, data.company, index, context),
-            contentContainer(3, data.model, index, context),
-            contentContainer(4, data.elapsedString, index, context),
-            //TODO do like normal format
-            contentContainer(
-                5, data.currentSpeed!.toStringAsFixed(2), index, context,
-                'min_speed_s'),
-            contentContainer(6, data.averageSpeed != null
-                ? data.averageSpeed!.toStringAsFixed(2)
-                : null, index, context, 'min_speed_s'),
-            contentContainer(7, data.tempInput, index, context, 'temp_input'),
-            contentContainer(8, data.tMax, index, context, 'temp_max'),
-            contentContainer(9, data.fans, index, context, 'null_list'),
-            contentContainer(10, data.mm, index, context),
-            contentContainer(11, 'errors', index, context),
-            contentContainer(12, data.ps, index, context),
-            contentContainer(13, data.netFail, index, context),
-            contentContainer(14, data.mm, index, context),
-            //pool1
-            contentContainer(15, data.mm, index, context),
-            //worker1
-            contentContainer(16, data.mm, index, context),
-            //pool2
-            contentContainer(17, data.mm, index, context),
-            //worker2
-            contentContainer(18, data.mm, index, context),
-            //pool3
-            contentContainer(19, data.mm, index, context),
-            //worker3
-
-          ],
-        ),
-      ];
-      for(int i =0; i<rasp.devices!.length; i++){
-        /*
-        for(int n =0; n<rasp.aucs![i].length;n++){
-          _tmp.add(Row(
-            children: [
-              Container(width: 35, height: 40, decoration: BoxDecoration(border: Border.all()),),
-              contentContainer(0, rasp.aucs![i][n].status, index, context),
-              contentContainer(1, rasp.aucs![i][n].ip, index, context),
-              contentContainer(2, rasp.aucs![i][n].company, index, context),
-              contentContainer(3, rasp.aucs![i][n].model, index, context),
-              contentContainer(4, rasp.aucs![i][n].elapsedString, index, context),
-              //TODO do like normal format
-              contentContainer(
-                  5, rasp.aucs![i][n].currentSpeed!.toStringAsFixed(2), index, context,
-                  'min_speed_s'),
-              contentContainer(6, data.averageSpeed != null
-                  ? rasp.aucs![i][n].averageSpeed!.toStringAsFixed(2)
-                  : null, index, context, 'min_speed_s'),
-              contentContainer(7, rasp.aucs![i][n].tempInput, index, context, 'temp_input'),
-              contentContainer(8, rasp.aucs![i][n].tMax, index, context, 'temp_max'),
-              contentContainer(9, rasp.aucs![i][n].fans, index, context, 'null_list'),
-              contentContainer(10, rasp.aucs![i][n].mm, index, context),
-              contentContainer(11, 'errors', index, context),
-              contentContainer(12, rasp.aucs![i][n].ps, index, context),
-              contentContainer(13, rasp.aucs![i][n].netFail, index, context),
-              contentContainer(14, rasp.aucs![i][n].mm, index, context),
-              //pool1
-              contentContainer(15, rasp.aucs![i][n].mm, index, context),
-              //worker1
-              contentContainer(16, rasp.aucs![i][n].mm, index, context),
-              //pool2
-              contentContainer(17, rasp.aucs![i][n].mm, index, context),
-              //worker2
-              contentContainer(18, rasp.aucs![i][n].mm, index, context),
-              //pool3
-              contentContainer(19, rasp.aucs![i][n].mm, index, context),
-            ],
-          ));
-        }
-
-
-         */
-      }
-      return GetBuilder<ScanListController>(
-        id: 'expand_$index',
-        builder: (_){
-          if(_.expandedRasp.contains(index)) {
-            return Column(
-              children: _tmp,
-            );
-          }
-          else{
-            return Row(
-              children: [
-                Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                      border: Border.all()
-                  ),
-                  child: Obx(() =>
-                      Checkbox(
-                          value: controller.selectedIps.contains(data.ip),
-                          onChanged: (value) {
-                            controller.selectIp(data.ip ?? '', value!);
-                          }
-                      )
-                  ),
-                ),
-                contentContainer(0, data.status, index, context),
-                contentContainer(1, data.ip, index, context),
-                contentContainer(2, data.company, index, context),
-                contentContainer(3, data.model, index, context),
-                contentContainer(4, data.elapsedString, index, context),
-                //TODO do like normal format
-                contentContainer(
-                    5, data.currentSpeed!.toStringAsFixed(2), index, context,
-                    'min_speed_s'),
-                contentContainer(6, data.averageSpeed != null
-                    ? data.averageSpeed!.toStringAsFixed(2)
-                    : null, index, context, 'min_speed_s'),
-                contentContainer(7, data.tempInput, index, context, 'temp_input'),
-                contentContainer(8, data.tMax, index, context, 'temp_max'),
-                contentContainer(9, data.fans, index, context, 'null_list'),
-                contentContainer(10, data.mm, index, context),
-                contentContainer(11, 'errors', index, context),
-                contentContainer(12, data.ps, index, context),
-                contentContainer(13, data.netFail, index, context),
-                contentContainer(14, data.mm, index, context),
-                //pool1
-                contentContainer(15, data.mm, index, context),
-                //worker1
-                contentContainer(16, data.mm, index, context),
-                //pool2
-                contentContainer(17, data.mm, index, context),
-                //worker2
-                contentContainer(18, data.mm, index, context),
-                //pool3
-                contentContainer(19, data.mm, index, context),
-                //worker3
-
-              ],
-            );
-          }
-        },
-      );
+    }
+    else if (data.runtimeType == AntMinerModel){
+      return AvalonDataRow(index, data);
+    }
+    else{
+      return Container();
     }
 
   }

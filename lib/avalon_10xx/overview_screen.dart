@@ -1,4 +1,5 @@
 import 'package:avalon_tool/avalon_10xx/controller_avalon.dart';
+import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/ui/hashboard_display.dart';
 import 'package:avalon_tool/ui/miner_info.dart';
@@ -45,10 +46,11 @@ class OverviewScreen extends StatelessWidget {
                     flex: 3,
                       child: MinerInfo()
                   ),
+                 controller.currentDevice.runtimeType==AvalonData?
                  Expanded(
                     flex: 7,
                       child: HashboardDisplay(),
-                  ),
+                  ) : Container(),
                 ],
               ),
             ),

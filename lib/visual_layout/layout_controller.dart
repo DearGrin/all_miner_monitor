@@ -116,7 +116,9 @@ class LayoutController extends GetxController{
     finalProgress = layout.value.ips!.length;
     if(layout.value.ips!.isNotEmpty) {
       print('ip is not empty');
-      scanner.universalCreate(layout.value.ips, ['estats']);
+      scanner.newScan(ips: layout.value.ips);
+      scanlistController.clearQuery();
+    //  scanner.universalCreate(layout.value.ips, ['estats']);
       scanInProgressStream.add(true);
     }
     else{

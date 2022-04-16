@@ -8,7 +8,6 @@ import 'package:avalon_tool/settings/header_list_model.dart';
 import 'package:avalon_tool/styles/d_l_theme.dart';
 import 'package:avalon_tool/ui/desktop_scan_screen.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -28,6 +27,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 checkSettings() async {
+
   var box = await Hive.openBox('Settings');
   List<dynamic>? _headers =  box.get('headers');
   if(_headers == null)
@@ -55,7 +55,6 @@ checkSettings() async {
     Get.updateLocale(_l);
   }
   Get.changeThemeMode(_isDarkMode? ThemeMode.dark:ThemeMode.light);
-
 }
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

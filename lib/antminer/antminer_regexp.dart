@@ -1,0 +1,22 @@
+final RegExp mm = RegExp(r'(Type\=)(.*?)(\|)');
+final RegExp elapsed = RegExp(r'(Elapsed\=)(.*?)(,)');
+final RegExp currentSpeed = RegExp(r'(GHS 5s\=)(.*?)(,)');
+final RegExp averageSpeed = RegExp(r'(GHS av\=)(.*?)(,)');
+final RegExp frequency = RegExp(r'(frequency\=)(.*?)(,)');
+final RegExp freqs = RegExp(r'(frequency[0-9]\=)(.*?)(,)');
+final RegExp volt = RegExp(r'(volt[0-9]\=)(.*?)(,)');
+final RegExp watt = RegExp(r'(watt[0-9]\=)(.*?)(,)');
+final RegExp fan_num = RegExp(r'(fan_num\=)(.*?)(,)');
+final RegExp fans = RegExp(r'(fan[0-9]\=)(.*?)(,)');
+final RegExp temp_num = RegExp(r'(temp_num\=)(.*?)(,)');
+final RegExp tMax = RegExp(r'(temp_max\=)(.*?)(,)');
+final RegExp tChipsO = RegExp(r'(temp[0-9]\=)(.*?)(,)');
+final RegExp tChipsI = RegExp(r'(temp3[0-9]\=)(.*?)(,)');
+final RegExp tPcbO = RegExp(r'(temp2_[0-9]\=)(.*?)(,)');
+final RegExp tPcbI = RegExp(r'(temp4_[0-9]\=)(.*?)(,)');
+final RegExp temps = RegExp(r'((temp[0-9]\=)|temp([0-9]_[0-9]\=))(.*?)(,)'); //TODO remove it later
+final RegExp chain_acn = RegExp(r'(chain_acn[0-9]\=)(.*?)(,)');
+final RegExp chain_acs = RegExp(r'(chain_acs[0-9]\=)(.*?)(,)');
+final RegExp hw = RegExp(r'(chain_hw[0-9]\=)(.*?)(,)');
+final RegExp chain_rate = RegExp(r'(chain_rate[0-9]\=)(.*?)(,|(\|root))');
+final RegExp miner_count = RegExp(r'(miner_count\=)(.*?)(,)');

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class AvalonDataRow extends StatelessWidget {
   final int index;
-  final AvalonData data;
+  final dynamic data;
   final bool? isRasp;
   const AvalonDataRow(this.index, this.data, {Key? key, this.isRasp}) : super(key: key);
 
@@ -17,7 +17,7 @@ class AvalonDataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScanListController controller = Get.put(ScanListController());
     return GestureDetector(
-      onDoubleTap: (){controller.onDoubleTap(data);},
+      onDoubleTap: (){controller.currentDevice.runtimeType==AvalonData?controller.onDoubleTap(data):null;},
       onTap: (){controller.selectByClick(index);},
       child: Row(
         children: [
@@ -69,13 +69,13 @@ class AvalonDataRow extends StatelessWidget {
           ContentContainer(6, data.averageSpeed != null
               ? data.averageSpeed!.toStringAsFixed(2)
               : null, 'min_speed_s'),
-          ContentContainer(7, data.tempInput, 'temp_input'),
+          data.runtimeType==AvalonData?   ContentContainer(7, data.tempInput, 'temp_input') : ContentContainer(7, 0, 'temp_input'),
           ContentContainer(8, data.tMax, 'temp_max'),
           ContentContainer(9, data.fans,'null_list'),
           ContentContainer(10, data.mm,),
           ContentContainer(11, 'errors',),
-          ContentContainer(12, data.ps,),
-          ContentContainer(13, data.netFail,),
+          data.runtimeType==AvalonData?  ContentContainer(12, data.ps,) : ContentContainer(12, data.volt,),
+          data.runtimeType==AvalonData?  ContentContainer(13, data.netFail,) : ContentContainer(13, const [],),
           ContentContainer(14, data.pools!.isNotEmpty? data.pools![0].addr:'',),
           //pool1
           ContentContainer(15, data.pools!.isNotEmpty? data.pools![0].worker:'',),

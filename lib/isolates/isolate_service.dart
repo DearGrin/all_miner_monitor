@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:async/async.dart';
+import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
@@ -120,7 +121,7 @@ Future<void> sendCommand(SendPort p) async{
 
 
 
-    if(command=='estats'||command=='stats|debug'){
+    if(command=='estats'||command=='stats|debug'||command=='stats'){
 
       if(data.contains('ID=AVA1')) {
         try{
@@ -144,6 +145,15 @@ Future<void> sendCommand(SendPort p) async{
         }
         //data.pools = [Pool.fromString(_call2)];
         //  eventModel = EventModel('device', data, ip);
+      }
+      else if(data.toLowerCase().contains('antminer')){
+        try {
+          String _data = data.replaceAll('"', '').replaceAll(':', '=');
+          device = AntMinerModel.fromString(_data, ip);
+        }
+        catch(e){
+          eventModel = EventModel('error', e.toString(),ip, data);
+        }
       }
       else{
         data = data;
@@ -209,7 +219,7 @@ Future<void> sendCommand(SendPort p) async{
       catch(err){
         data = '$err';
         eventModel = EventModel('error', data, message.keys.first, data);
-        handler(p, mockRasp, message.values.first,  message.keys.first);
+       // handler(p, mockRasp, message.values.first,  message.keys.first);
         //p.send(eventModel);
         // callback = mockData;
       }

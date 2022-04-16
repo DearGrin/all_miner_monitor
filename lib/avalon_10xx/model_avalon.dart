@@ -117,7 +117,7 @@ class AvalonData{
         int.tryParse(nullCheck(e))
     ).toList();
     List<int?>? _fans;
-    if(_model!.startsWith('1'))
+    if(_model!.startsWith('1')) //TODO is it needed?
       {
         List<int?>? _f = regexp.fans.allMatches(data).map((e) =>
         int.tryParse(nullCheck(e.group(4)))

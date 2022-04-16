@@ -192,37 +192,39 @@ handleCallback(String callback, String ip){
 
  */
 
-  newScan(List<IpRangeModel> scanList) async {
+  newScan({List<IpRangeModel>? scanList, List<String?>? ips}) async {
     clearQuery();
    // List<dynamic> _toDo = [];
-    List<String> _ips = [];
-    for(int i = 0; i < scanList.length; i++)
-    {
-      List<int>? _start = scanList[i].startIp?.split('.').map((e) => int.tryParse(e)!).toList();
-      List<int>? _end = scanList[i].endIp?.split('.').map((e) => int.tryParse(e)!).toList();
-      while(_start![3] <= _end![3]) {
-        String _ip = _start[0].toString() + '.' + _start[1].toString() + '.' +
-            _start[2].toString() + '.' + _start[3].toString();
+    List<String?> _ips = [];
+    if(scanList!=null) {
+      for (int i = 0; i < scanList.length; i++) {
+        List<int>? _start = scanList[i].startIp?.split('.').map((e) =>
+        int.tryParse(e)!).toList();
+        List<int>? _end = scanList[i].endIp?.split('.').map((e) =>
+        int.tryParse(e)!).toList();
+        while (_start![3] <= _end![3]) {
+          String _ip = _start[0].toString() + '.' + _start[1].toString() + '.' +
+              _start[2].toString() + '.' + _start[3].toString();
 
-     //  toScan.add((){createComputeScan(_ip);});
+          //  toScan.add((){createComputeScan(_ip);});
 
-      //_toDo.add(Api.sendCommand(_ip, 4028, command.getStats(), 1));
-      _ips.add(_ip);
-        if (_start[3] != _end[3]) {
-          _start[3]++;
-        }
-        else {
-          if (_start[2] < _end[2]) {
-            _start[3] = 1;
-            _start[2] ++;
-          }
-          else {
+          //_toDo.add(Api.sendCommand(_ip, 4028, command.getStats(), 1));
+          _ips.add(_ip);
+          if (_start[3] != _end[3]) {
             _start[3]++;
           }
+          else {
+            if (_start[2] < _end[2]) {
+              _start[3] = 1;
+              _start[2] ++;
+            }
+            else {
+              _start[3]++;
+            }
+          }
         }
-      }
-     // List<String> _ = [command.getStats()];
-    //  for(var element in _ips){_toDo.add(Api.sendCommand(element, 4028, command.getPools(), 1));}
+        // List<String> _ = [command.getStats()];
+        //  for(var element in _ips){_toDo.add(Api.sendCommand(element, 4028, command.getPools(), 1));}
 
 /*
       finalProgress = toScan.length;
@@ -234,8 +236,12 @@ handleCallback(String callback, String ip){
 
 
  */
+      }
     }
-    universalCreate(_ips, ['stats|debug']);
+    if(ips!=null){
+      _ips=ips;
+    }
+    universalCreate(_ips, ['stats']);
   }
 /*
 startToChangePools(List<String> ips, List<Pool> _pools){
