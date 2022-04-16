@@ -15,6 +15,7 @@ class LayoutListController extends GetxController{
     try {
       box = await Hive.openBox('layouts');
       tags = box.keys.toList();
+      update(['layout_list']);
     }
     catch(e){
       print(e);
