@@ -8,11 +8,11 @@ import 'package:get/get.dart';
 import 'mock_data.dart';
 
 class OverviewScreen extends StatelessWidget {
-  const OverviewScreen({Key? key}) : super(key: key);
+  final String type;
+  const OverviewScreen({required this.type, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //final AvalonController controller = Get.put(AvalonController('10.10.10.10', 1111));
     final ScanListController controller = Get.put(ScanListController());
     return Scaffold(
       appBar: AppBar(
@@ -39,24 +39,35 @@ class OverviewScreen extends StatelessWidget {
           children: [
             Expanded(
               flex: 8,
-              child: Row(
-                children: [
-
-                  Expanded(
-                    flex: 3,
-                      child: MinerInfo()
-                  ),
-                 controller.currentDevice.runtimeType==AvalonData?
-                 Expanded(
-                    flex: 7,
-                      child: HashboardDisplay(),
-                  ) : Container(),
-                ],
-              ),
+              child: overviewBody(type)
             ),
           ],
         ),
       ),
     );
+  }
+  Widget overviewBody(String type){
+    switch (type){
+      case 'avalon':
+        return Row(
+          children: [
+            Expanded(
+                flex: 3,
+                child: MinerInfo()
+            ),
+            const Expanded(
+              flex: 7,
+              child: HashboardDisplay(),
+            ),
+          ],
+        );
+      case 'antminer':
+        return Card(
+          color: Colors.grey,
+          child: Text('antminer data should be here'),
+        );
+      default:
+        return Container();
+    }
   }
 }
