@@ -45,17 +45,12 @@ class ConstructorLayout extends StatelessWidget {
             child: GetBuilder<ConstructorController>(
              id: 'stack',
               builder: (_){
-                return CustomScrollView(
-                 slivers: [
-                   SliverFillRemaining(
-                     hasScrollBody: false,
-                     child: IndexedStack(
+                return IndexedStack(
                        index: controller.selectedItem.value,
                        children: controller. layout.value.rigs!.map((element) => RigConstructor(element)).toList(),
-                     ),
-                   )
-                 ],
-                );
+                     );
+
+
               },
             )
             ),

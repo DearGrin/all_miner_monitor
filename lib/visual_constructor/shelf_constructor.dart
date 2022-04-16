@@ -19,7 +19,14 @@ class ShelfConstructor extends StatelessWidget {
           color: Theme.of(context).cardColor,
           child: Row(
             children: [
-              Text('Shelf $shelfId:'),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text('Shelf $shelfId:'),
+                  IconButton(onPressed: (){controller.deleteShelf(rigId, shelfId);},
+                      icon: const Icon(Icons.delete))
+                ],
+              ),
              const SizedBox(
                 width: 5,
               ),

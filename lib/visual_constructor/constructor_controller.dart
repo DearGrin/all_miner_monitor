@@ -177,6 +177,16 @@ class ConstructorController extends GetxController{
     _shelf.places = _places;
     update(['$rigId/$shelfId']);
   }
+  addShelf(int rigId){
+    Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
+    _rig.shelves?.add(Shelf(generateId()));
+    update(['rig_$rigId']);
+  }
+  deleteShelf(int rigId, int shelfId){
+    Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
+    _rig.shelves?.removeWhere((element) => element.id==shelfId);
+    update(['rig_$rigId']);
+  }
   editIp(int rigId, int shelfId, int placeId, String value){
     Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
     Shelf _shelf = _rig.shelves!.firstWhere((element) => element.id==shelfId);
