@@ -26,6 +26,20 @@ class LayoutsList extends StatelessWidget {
       body: GetBuilder<LayoutListController>(
         id: 'layout_list',
         builder: (_){
+          return GridView.builder(
+              shrinkWrap: true,
+              itemCount: _.tags.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (BuildContext context, int index){
+                return layoutTile(context, _.tags[index], controller);
+              }
+          );
+
           return Column(
             children: _.tags.map((e) => layoutTile(context, e, _)).toList()
           );
