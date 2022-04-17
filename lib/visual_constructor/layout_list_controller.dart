@@ -1,3 +1,4 @@
+import 'package:avalon_tool/visual_constructor/auto_wizard.dart';
 import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
 import 'package:avalon_tool/visual_constructor/edit_tag_dialog.dart';
 import 'package:get/get.dart';
@@ -76,5 +77,18 @@ class LayoutListController extends GetxController{
   }
   newLayout(){
     Get.to(()=>const ConstructorLayout());
+  }
+  newAuto(){
+    Get.dialog(const AutoWizard());
+  }
+  updateList() async {
+    try {
+      box = await Hive.openBox('layouts');
+      tags = box.keys.toList();
+      update(['layout_list']);
+    }
+    catch(e){
+      print(e);
+    }
   }
 }

@@ -15,6 +15,10 @@ class LayoutsList extends StatelessWidget {
           OutlinedButton(
               onPressed: (){controller.newLayout();},
               child: Text('add')
+          ),
+          OutlinedButton(
+              onPressed: (){controller.newAuto();},
+              child: Text('auto add')
           )
         ],
       ),
