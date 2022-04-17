@@ -1,4 +1,4 @@
-import 'package:avalon_tool/visual_constructor/auto_wizard.dart';
+import 'package:avalon_tool/auto_layout/wizard_ui.dart';
 import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
 import 'package:avalon_tool/visual_constructor/edit_tag_dialog.dart';
 import 'package:get/get.dart';

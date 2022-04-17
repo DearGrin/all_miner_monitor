@@ -1,7 +1,7 @@
+import 'package:avalon_tool/auto_layout/wizard_warning.dart';
 import 'package:avalon_tool/ip_section/ip_range_model.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_constructor/wizard_model.dart';
-import 'package:avalon_tool/visual_constructor/wizard_warning.dart';
+import 'package:avalon_tool/auto_layout/wizard_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
