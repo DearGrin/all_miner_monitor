@@ -68,7 +68,7 @@ class AutoWizard extends StatelessWidget {
       ),
       body: Card(
         color: Theme.of(context).cardColor,
-        child: Column(
+        child: Stack(
           children: [
             GetBuilder<WizardController>(
               id: 'rig_wizard',
@@ -82,7 +82,9 @@ class AutoWizard extends StatelessWidget {
                 );
                 }
             ),
-            IconButton(onPressed: (){controller.addItem();}, icon: Icon(Icons.add))
+            Align(
+              alignment: Alignment.bottomCenter,
+                child: IconButton(onPressed: (){controller.addItem();}, icon: Icon(Icons.add)))
           ],
         ),
       ),
