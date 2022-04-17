@@ -1,4 +1,4 @@
-final RegExp mm = RegExp(r'(Type\=)(.*?)(\|)');
+final RegExp mm = RegExp(r'(Type\=)(.*?)((\|)|(,))');
 final RegExp elapsed = RegExp(r'(Elapsed\=)(.*?)(,)');
 final RegExp currentSpeed = RegExp(r'(GHS 5s\=)(.*?)(,)');
 final RegExp averageSpeed = RegExp(r'(GHS av\=)(.*?)(,)');

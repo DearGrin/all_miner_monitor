@@ -67,10 +67,12 @@ class ScanListController extends GetxController{
   handleEvent(EventModel event){
   //  RaspberryAva ava = event.data;
    // print(ava.devices?.length);
+    errors.add('${event.ip} ${event.type}');
     errors.add(event.rawData.toString());
     if(event.runtimeType==EventModel && event.type=='device')
       {
         devices.add(event.data);
+/*
         summary.count ++;
         if(event.data.currentSpeed!=null)
         {
@@ -84,13 +86,17 @@ class ScanListController extends GetxController{
         {
           summary.maxTemp = event.data.tMax!;
         }
-        if(event.data.company!='AntMiner') {
+if(event.data.company!='AntMiner') {
           if (event.data.ECMM!
               .isNotEmpty) // TODO add into count ECHU errors and PS
               {
             summary.withErrors ++;
           }
         }
+
+ */
+
+
 
         update(['list', 'summary']);
       }

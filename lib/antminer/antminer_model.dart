@@ -1,4 +1,5 @@
 import 'package:avalon_tool/antminer/antminer_regexp.dart' as regexp;
+import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 String nullCheck(String? data){return data ?? '-';}
@@ -56,11 +57,12 @@ class AntMinerModel{
   List<String?>? chainString;
   List<int?>? hwPerChain;
   List<double?>? ratePerChain;
+  List<Pool>? pools;
   AntMinerModel({this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
     this.freqs, this.fans, this.tMax, this.tChipO, this.tChipI, this.tPcbO, this.tPcbI,
     this.hashCount, this.volt, this.watt, this.chipPerChain, this.chainString,
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
-    this.ipInt, this.company, this.status='', this.mm, this.elapsedString});
+    this.ipInt, this.company, this.status='', this.mm, this.elapsedString, this.pools});
 
   factory AntMinerModel.fromString(String data, String _ip){
     print(data);
@@ -161,6 +163,7 @@ class AntMinerModel{
       chainString: _chipString,
       hwPerChain: _hw,
       ratePerChain: _rate,
+      pools: [],
     );
   }
 }

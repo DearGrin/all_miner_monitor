@@ -18,34 +18,7 @@ class AutoWizard extends StatelessWidget {
           onPressed: (){Get.back();layoutListController.updateList();},
           icon: Icon(Icons.arrow_back_ios_outlined),
         ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Vertical direction: '),
-              Obx(()=> ToggleButtons(
-                    children: <Widget>[
-                      Icon(Icons.arrow_downward_outlined),
-                      Icon(Icons.arrow_upward_outlined)
-                    ],
-                    isSelected: controller.hor,
-                  onPressed: (int index){controller.onDirectionHorChange(index);},
-                ),
-              ),
-              Text('Vertical direction: '),
-              Obx(()=> ToggleButtons(
-                children: <Widget>[
-                  Icon(Icons.arrow_right_outlined),
-                  Icon(Icons.arrow_left_outlined)
-                ],
-                isSelected: controller.vert,
-                onPressed: (int index){controller.onDirectionVertChange(index);},
-              ),
-              ),
-            ],
-          ),
-        ),
+
         centerTitle: true,
         title: SizedBox(
           width: 400,
@@ -70,21 +43,67 @@ class AutoWizard extends StatelessWidget {
         color: Theme.of(context).cardColor,
         child: Stack(
           children: [
-            GetBuilder<WizardController>(
-              id: 'rig_wizard',
-                builder: (_){
-                return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _.model.rigs!.length,
-                    itemBuilder: (BuildContext context, int index){
-                      return WizardItem(_.model.rigs![index].id!);
-                    }
-                );
-                }
+            Align(
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Vertical direction: '),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(0);}, child: Text('from top'),
+                        style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                controller.vert[0]? Colors.blueGrey: Colors.transparent)),
+                    ),
+                    ),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(1);}, child: Text('from bottom'),
+                      style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              controller.vert[1]? Colors.blueGrey: Colors.transparent)),
+                    ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text('Horizontal direction: '),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(0);}, child: Text('from left'),
+                      style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              controller.hor[0]? Colors.blueGrey: Colors.transparent)),
+                    ),
+                    ),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(1);}, child: Text('from right'),
+                      style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              controller.hor[1]? Colors.blueGrey: Colors.transparent)),
+                    ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50.0, top: 50.0),
+              child: GetBuilder<WizardController>(
+                id: 'rig_wizard',
+                  builder: (_){
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _.model.rigs!.length,
+                      itemBuilder: (BuildContext context, int index){
+                        return WizardItem(_.model.rigs![index].id!);
+                      }
+                  );
+                  }
+              ),
             ),
             Align(
-              alignment: Alignment.bottomCenter,
-                child: IconButton(onPressed: (){controller.addItem();}, icon: Icon(Icons.add)))
+                alignment: Alignment.bottomCenter,
+                child: IconButton(onPressed: (){controller.addItem();}, icon: Icon(Icons.add))),
+
           ],
         ),
       ),

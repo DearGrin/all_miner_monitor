@@ -79,7 +79,8 @@ class LayoutListController extends GetxController{
     Get.to(()=>const ConstructorLayout());
   }
   newAuto(){
-    Get.dialog(const AutoWizard());
+    //Get.dialog(const AutoWizard());
+    Get.to(()=>const AutoWizard());
   }
   updateList() async {
     try {

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class ConstructorController extends GetxController{
-  List<int> settings = [10, 6, 5].obs;
+  List<int> settings = [10, 7, 5].obs;
   //List<int> items = [0,1,2,3,4,5].obs;
   RxInt selectedItem = 0.obs; //TODO change type and track
   Rig? selectedRig;

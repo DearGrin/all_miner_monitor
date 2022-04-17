@@ -104,21 +104,26 @@ Stream<EventModel> _sendAndReceive(List<String?> filenames, List<String> command
 Future<void> sendCommand(SendPort p) async{
   final commandPort = ReceivePort();
   p.send(commandPort.sendPort);
-  EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
-  dynamic device;
+
   /*
   handleCallback(SendPort p, EventModel eventModel){
     p.send(eventModel);
   }
 
    */
+  /*
   handler2(SendPort p, String data, String ip, dynamic device, String prevRawData){
     //Pool pool = Pool.fromString(data);
     String actualRawData = 'prevRawData \n data';
-    eventModel = EventModel('device', device, ip, actualRawData); //TODO
+   //eventModel = EventModel('device', device, ip, actualRawData); //TODO
   }
+
+
+   */
   handler(SendPort p, String data, String command, String ip) async {
 
+    EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
+    dynamic device;
 
 
     if(command=='estats'||command=='stats|debug'||command=='stats'){
@@ -126,7 +131,7 @@ Future<void> sendCommand(SendPort p) async{
       if(data.contains('ID=AVA1')) {
         try{
           device = AvalonData.fromString(data, ip);
-       //   eventModel = EventModel('device', device, ip, data);
+          eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
           eventModel = EventModel('error', e.toString(),ip, data);
@@ -138,7 +143,7 @@ Future<void> sendCommand(SendPort p) async{
       else if (data.contains('ID=AV')){
         try {
           device = RaspberryAva.fromString(data, ip);
-     //     eventModel = EventModel('device', device, ip, data);
+         eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
           eventModel = EventModel('error', e.toString(),ip, data);
@@ -150,6 +155,7 @@ Future<void> sendCommand(SendPort p) async{
         try {
           String _data = data.replaceAll('"', '').replaceAll(':', '=');
           device = AntMinerModel.fromString(_data, ip);
+          eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
           eventModel = EventModel('error', e.toString(),ip, data);
@@ -162,7 +168,7 @@ Future<void> sendCommand(SendPort p) async{
     //  RaspberryAva device = RaspberryAva.fromString(mockRasp, ip);
 
       //eventModel = EventModel('device', device, ip);
-
+/*
       try {
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
@@ -185,6 +191,9 @@ Future<void> sendCommand(SendPort p) async{
         //p.send(eventModel);
         // callback = mockData;
       }
+
+
+ */
     }
     else{
       if(data.contains('STATUS=')) {
@@ -218,9 +227,9 @@ Future<void> sendCommand(SendPort p) async{
       }
       catch(err){
         data = '$err';
-        eventModel = EventModel('error', data, message.keys.first, data);
-       // handler(p, mockRasp, message.values.first,  message.keys.first);
-        //p.send(eventModel);
+        eventModel = EventModel('error', '$err', message.keys.first, '$err');
+       // handler(p, '$err', message.values.first,  message.keys.first);
+        p.send(eventModel);
         // callback = mockData;
       }
     //  eventModel = EventModel('error', data, message.keys.first);
