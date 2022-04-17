@@ -10,6 +10,8 @@ class WizardController extends GetxController{
   int counter = 0;
   WizardModel model = WizardModel(rigs: []);
   RxBool tagError = false.obs;
+  List<bool> vert = [true, false].obs;
+  List<bool> hor = [true, false].obs;
   onEditTag(String value){
     print('tag is $value');
     tag = value;
@@ -99,13 +101,15 @@ class WizardController extends GetxController{
         //TODO add ip check
         List<String> _ips = getIpList([IpRangeModel.fromString(rig.ip!, '')]);
         List<Shelf> _shelves = [];
+        if(_ips.length!=rig.placePerShelf!*rig.shelfCount!){
+          matchError = true;
+          print(_ips.length);
+          print(rig.placePerShelf!*rig.shelfCount!);
+        }
         for (int i = 0; i < rig.shelfCount!; i++) {
           List<Place> _places = [];
           List<String> _ipOnShelf = [];
-          if(_ipOnShelf.length!=rig.placePerShelf!*rig.shelfCount!){
-            matchError = true;
-          }
-          if (rig.fromTop!) {
+          if (model.fromTop!) {
             _ipOnShelf = _ips.skip(rig.placePerShelf! * i).take(
                 rig.placePerShelf!).toList();
           }
@@ -114,7 +118,7 @@ class WizardController extends GetxController{
                 _ips.skip(rig.placePerShelf! * (rig.shelfCount! - i)).take(
                     rig.placePerShelf!).toList();
           }
-          if (!rig.fromLeft!) {
+          if (model.fromLeft!) {
             _ipOnShelf = _ipOnShelf.reversed.toList();
           }
           for (int p = 0; p < rig.placePerShelf!; p++) {
@@ -181,5 +185,35 @@ class WizardController extends GetxController{
     bool overwrite = box.keys.contains(tag);
     box.close();
     return overwrite;
+  }
+  onDirectionVertChange(int index){
+    for (int buttonIndex = 0; buttonIndex < vert.length; buttonIndex++) {
+      if (buttonIndex == index) {
+        vert[buttonIndex] = true;
+      } else {
+        vert[buttonIndex] = false;
+      }
+    }
+    if(index==0){
+      model.fromTop = true;
+    }
+    else{
+      model.fromTop = false;
+    }
+  }
+  onDirectionHorChange(int index){
+    for (int buttonIndex = 0; buttonIndex < vert.length; buttonIndex++) {
+      if (buttonIndex == index) {
+        hor[buttonIndex] = true;
+      } else {
+        hor[buttonIndex] = false;
+      }
+    }
+    if(index==0){
+      model.fromLeft = true;
+    }
+    else{
+      model.fromLeft = false;
+    }
   }
 }

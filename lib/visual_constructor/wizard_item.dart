@@ -21,14 +21,6 @@ class WizardItem extends StatelessWidget {
             height: 60,
             child: Obx(()=>TextField(
               controller: ipController,
-              /*,
-                controller: ipController..text=controller.ipRange!.value..selection=
-                TextSelection.fromPosition(TextPosition(offset: controller.ipRange!.value.length,
-                    affinity: TextAffinity.upstream)
-                ),
-
-
-               */
                 onChanged: (value){
                   controller.editIp(value, id);
                 },

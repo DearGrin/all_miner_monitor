@@ -18,6 +18,34 @@ class AutoWizard extends StatelessWidget {
           onPressed: (){Get.back();layoutListController.updateList();},
           icon: Icon(Icons.arrow_back_ios_outlined),
         ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Vertical direction: '),
+              Obx(()=> ToggleButtons(
+                    children: <Widget>[
+                      Icon(Icons.arrow_downward_outlined),
+                      Icon(Icons.arrow_upward_outlined)
+                    ],
+                    isSelected: controller.hor,
+                  onPressed: (int index){controller.onDirectionHorChange(index);},
+                ),
+              ),
+              Text('Vertical direction: '),
+              Obx(()=> ToggleButtons(
+                children: <Widget>[
+                  Icon(Icons.arrow_right_outlined),
+                  Icon(Icons.arrow_left_outlined)
+                ],
+                isSelected: controller.vert,
+                onPressed: (int index){controller.onDirectionVertChange(index);},
+              ),
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         title: SizedBox(
           width: 400,
