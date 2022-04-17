@@ -14,17 +14,22 @@ class RigConstructor extends StatelessWidget {
     return GetBuilder<ConstructorController>(
       id: 'rig_${rig.id}',
         builder: (_){
-          return Column(
+          return Stack(
             children: [
-              ListView.builder(
-                shrinkWrap: true,
-                  controller: ScrollController(),
-                  itemCount: _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?.length??0,
-                  itemBuilder: (BuildContext context, int index){
-                    return ShelfConstructor(rig.id, _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?[index].id??0);
-                  }
+              Padding(
+                padding: const EdgeInsets.only(bottom: 50.0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                    controller: ScrollController(),
+                    itemCount: _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?.length??0,
+                    itemBuilder: (BuildContext context, int index){
+                      return ShelfConstructor(rig.id, _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?[index].id??0);
+                    }
+                ),
               ),
-              IconButton(onPressed: (){controller.addShelf(rig.id);}, icon: const Icon(Icons.add))
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: IconButton(onPressed: (){controller.addShelf(rig.id);}, icon: const Icon(Icons.add)))
             ],
           );
        /*
