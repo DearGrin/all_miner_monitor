@@ -48,6 +48,10 @@ class WizardController extends GetxController{
     WizardRig? rig = model.rigs?.firstWhere((element) => element.id==rigId);
     rig?.placePerShelf = value;
   }
+  setGapCount(int rigId, int value){
+    WizardRig? rig = model.rigs?.firstWhere((element) => element.id==rigId);
+    rig?.gap = value;
+  }
   validateData(){}
   onSaveClick() async {
     Layout _model = generateLayout();
@@ -99,13 +103,13 @@ class WizardController extends GetxController{
       _model.tag = tag;
       for (var rig in model.rigs!) {
         //TODO add ip check
-        List<String> _ips = getIpList([IpRangeModel.fromString(rig.ip!, '')]);
+        List<String> _ips = getIpList([IpRangeModel.fromString(rig.ip!, '')],rig.gap);
         List<Shelf> _shelves = [];
+        /* //check for match ip and places
         if(_ips.length!=rig.placePerShelf!*rig.shelfCount!){
           matchError = true;
-          print(_ips.length);
-          print(rig.placePerShelf!*rig.shelfCount!);
         }
+        */
         for (int i = 0; i < rig.shelfCount!; i++) {
           List<Place> _places = [];
           List<String> _ipOnShelf = [];
@@ -118,7 +122,7 @@ class WizardController extends GetxController{
                 _ips.skip(rig.placePerShelf! * (rig.shelfCount! - i)).take(
                     rig.placePerShelf!).toList();
           }
-          if (model.fromLeft!) {
+          if (!model.fromLeft!) {
             _ipOnShelf = _ipOnShelf.reversed.toList();
           }
           for (int p = 0; p < rig.placePerShelf!; p++) {
@@ -151,7 +155,8 @@ class WizardController extends GetxController{
       );
     }
   }
-  List<String> getIpList(List<IpRangeModel>? scanList) {
+  List<String> getIpList(List<IpRangeModel>? scanList, int? gap) {
+    print('gap is $gap');
     List<String> _tmp = [];
     if (scanList != null) {
       for (int i = 0; i < scanList.length; i++) {
@@ -164,7 +169,7 @@ class WizardController extends GetxController{
               _start[2].toString() + '.' + _start[3].toString();
           _tmp.add(_ip);
           if (_start[3] != _end[3]) {
-            _start[3]++;
+            _start[3] = gap!+1+_start[3];
           }
           else {
             if (_start[2] < _end[2]) {
@@ -172,7 +177,7 @@ class WizardController extends GetxController{
               _start[2] ++;
             }
             else {
-              _start[3]++;
+              _start[3] = gap!+1+_start[3];
             }
           }
         }

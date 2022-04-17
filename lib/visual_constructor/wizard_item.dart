@@ -12,6 +12,7 @@ class WizardItem extends StatelessWidget {
     final TextEditingController ipController = TextEditingController();
     final TextEditingController shelfController = TextEditingController();
     final TextEditingController placeController = TextEditingController();
+    final TextEditingController gapController = TextEditingController();
     return  Row(
       children: [
         Padding(
@@ -96,6 +97,44 @@ class WizardItem extends StatelessWidget {
                           labelText: 'place count'
                       ),
                     ),
+                  )
+              ),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  children: [
+                    OutlinedButton(onPressed: (){controller.placePlus(id);}, child: const Text('+')),
+                    OutlinedButton(onPressed: (){controller.placeMinus(id);}, child: const Text('-'))
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        SizedBox(
+          width: 100,
+          height: 60,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                  flex: 7,
+                  child: Obx(()=>TextField(
+                    controller: gapController..text='${controller.gap.value}'
+                      ..selection=TextSelection.fromPosition(
+                          TextPosition(offset: controller.gap.value.toString().length,
+                              affinity: TextAffinity.upstream)
+                      ),
+                    onChanged: (value){controller.editGapCount(value, id);},
+                    style: Theme.of(context).textTheme.bodyText1,
+                    decoration: InputDecoration(
+                        hintText: 'gap',
+                        labelText: 'gap'
+                    ),
+                  ),
                   )
               ),
               Expanded(

@@ -6,6 +6,7 @@ class WizardItemController extends GetxController{
   RxBool ipError = false.obs;
   RxInt shelfCount = 0.obs;
   RxInt placeCount = 0.obs;
+  RxInt gap = 0.obs;
   final WizardController controller = Get.put(WizardController());
   editIp(String value, int rigId){
     ipRange?.value = value;
@@ -87,6 +88,37 @@ class WizardItemController extends GetxController{
     else{
       placeCount.value--;
       controller.setPlaceCount(rigId, placeCount.value);
+    }
+  }
+  editGapCount(String value, int rigId) {
+    int oldValue = gap.value;
+    if (value == '') {
+      gap.value = -1;
+      gap.value = 0;
+    }
+    else {
+      try {
+        gap.value = int.parse(value);
+      }
+      catch (e) {
+        print(e);
+        gap.value = 99;
+        gap.value = oldValue;
+      }
+    }
+    controller.setGapCount(rigId, gap.value);
+  }
+  gapPlus(int rigId){
+    gap.value++;
+    controller.setGapCount(rigId, gap.value);
+  }
+  gapMinus(int rigId){
+    if(gap.value==0){
+      print('zero');
+    }
+    else{
+      gap.value--;
+      controller.setGapCount(rigId, gap.value);
     }
   }
   deleteRig(int rigId){
