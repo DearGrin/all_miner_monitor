@@ -1,6 +1,6 @@
 import 'package:avalon_tool/auto_layout/wizard_ui.dart';
 import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
-import 'package:avalon_tool/visual_constructor/edit_tag_dialog.dart';
+import 'package:avalon_tool/visual_layout/edit_tag_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

@@ -8,32 +8,12 @@ import 'package:hive/hive.dart';
 
 class ConstructorController extends GetxController{
   List<int> settings = [10, 7, 5].obs;
-  //List<int> items = [0,1,2,3,4,5].obs;
   RxInt selectedItem = 0.obs; //TODO change type and track
   Rig? selectedRig;
-  //String? tag = 'test';
- // final rigs = [].obs;
   final layout = Layout(tag: null, rigs: []).obs;
   int counter = 0;
- // bool canSave = false;
   String? initialTag;
-  @override
-  onInit() async {
-    /*
-    Box box = await Hive.openBox('settings');
-    try {
-      settings = box.get('constructor_settings');
-     // generateRigs(settings[0]);
-    }
-    catch(e){
-      print(e);
-    }
-    generateRigs(settings[0]);
-    rigSelect(0);
-    update(['rigs']);
-    */
-    super.onInit();
-  }
+
   setData(String? tag)async{
     if(tag!=null && tag!='a very new layout'){
       Box box = await Hive.openBox('layouts');
@@ -146,9 +126,7 @@ class ConstructorController extends GetxController{
       print(e);
     }
   }
-  onNextClick(){
-   // Get.to(()=>ContConstructorScreen());
-  }
+
   List<Place> getPlace(int rigId, int shelfId){
     Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
     Shelf _shelf = _rig.shelves!.firstWhere((element) => element.id==shelfId);
@@ -212,8 +190,6 @@ class ConstructorController extends GetxController{
     if(canSave()) {
       Box box = await Hive.openBox('layouts');
       var _keys = box.keys;
-
-      print(layout.value.tag);
       if (_keys.contains(layout.value.tag)) {
         Get.defaultDialog(
           title: '',
@@ -225,7 +201,10 @@ class ConstructorController extends GetxController{
       }
     }
     else{
-      print('empty tag');
+      Get.defaultDialog(
+        title: '',
+        content: const SaveResult('Tag is empty'),
+      );
     }
   }
   save() async {

@@ -1,7 +1,7 @@
 import 'package:avalon_tool/visual_constructor/constructor_controller.dart';
 import 'package:avalon_tool/visual_constructor/cont_rig_row_controls.dart';
-import 'package:avalon_tool/visual_constructor/layout_list_controller.dart';
 import 'package:avalon_tool/visual_constructor/rig_constructor.dart';
+import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

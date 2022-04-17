@@ -1,6 +1,6 @@
-import 'package:avalon_tool/visual_constructor/layout_list_controller.dart';
 import 'package:avalon_tool/auto_layout/wizard_controller.dart';
 import 'package:avalon_tool/auto_layout/wizard_item.dart';
+import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
