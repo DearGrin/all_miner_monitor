@@ -65,9 +65,7 @@ class AntMinerModel{
     this.ipInt, this.company, this.status='', this.mm, this.elapsedString, this.pools});
 
   factory AntMinerModel.fromString(String data, String _ip){
-    print(data);
     List<String> _octet = _ip.split('.');
-    print(_octet);
     if(_octet[3].length==1){
       _octet[3] = '00${_octet[3]}';
     }
@@ -75,11 +73,13 @@ class AntMinerModel{
       _octet[3] = '0${_octet[3]}';
     }
     int? _ipInt = int.tryParse(_octet.join());
-    print(_ipInt);
-    print(regexp.mm.firstMatch(data)?.group(0));
-    print(regexp.mm.firstMatch(data)?.group(2));
-    String _mm = regexp.mm.firstMatch(data)?.group(2)??'';
-    print(_mm);
+   String _mm = '';
+   try{
+    _mm = regexp.mm.firstMatch(data)?.group(2)??'';
+   }
+   catch(e){
+     print(e);
+   }
     String _model = 'Unknown';
     if(_mm.contains('L3')){
       _model = 'L3';
@@ -93,49 +93,93 @@ class AntMinerModel{
     else if (_mm.contains('T9')){
       _model = 'T9';
     }
-    print(_model);
-    print(regexp.freqs.firstMatch(data)?.group(2));
     List<int?>? _freqs;
-    _freqs = regexp.freqs.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_freqs);
+    try {
+      _freqs = regexp.freqs.allMatches(data).map((e) =>
+          int.tryParse(nullCheck(e.group(2)))).toList();
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _volt;
-    _volt = regexp.volt.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_volt);
+    try {
+      _volt = regexp.volt.allMatches(data).map((e) =>
+          int.tryParse(nullCheck(e.group(2)))).toList();
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _watt;
-    _watt = regexp.watt.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_watt);
+    try {
+      _watt = regexp.watt.allMatches(data).map((e) =>
+          int.tryParse(nullCheck(e.group(2)))).toList();
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _fans;
+    try{
     _fans = regexp.fans.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_fans);
-   // List<List<int?>?>? _allTemps;
-    List<int?>? _temps;
-   // print(regexp.temps.firstMatch(data)?.group(4));
-   // _temps = regexp.temps.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(4)))).toList();
-   // print(_temps);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _tChipI;
+    try{
     _tChipI = regexp.tChipsI.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_tChipI);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _tChipO;
+    try{
     _tChipO = regexp.tChipsO.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_tChipO);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _tPcbI;
+    try{
     _tPcbI =  regexp.tPcbI.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_tPcbI);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _tPcbO;
+    try{
     _tPcbO =  regexp.tPcbO.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_tPcbO);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _hw;
+    try{
     _hw = regexp.hw.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_hw);
+    }
+    catch(e){
+      print(e);
+    }
     List<double?>? _rate;
+    try{
     _rate = regexp.chain_rate.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))).toList();
-    print(_rate);
+    }
+    catch(e){
+      print(e);
+    }
     List<String?>? _chipString;
+    try{
     _chipString = regexp.chain_acs.allMatches(data).map((e) => e.group(2)).toList();
-    print(_chipString);
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _chips;
+    try{
     _chips = regexp.chain_acn.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    print(_chips);
+    }
+    catch(e){
+      print(e);
+    }
     return AntMinerModel(
       ip: _ip,
       ipInt: _ipInt,
