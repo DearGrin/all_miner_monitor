@@ -19,6 +19,7 @@ class PlaceController extends GetxController{
   Place? place;
   int? placeIndex;
   dynamic device;
+  RxDouble size = 105.0.obs;
   RxBool fanError = false.obs;
   RxBool tempError = false.obs;
   RxBool dhError = false.obs;
@@ -32,13 +33,25 @@ class PlaceController extends GetxController{
   RxString ip = 'ip: '.obs;
   Offset? offset;
   StreamSubscription? sub;
+  StreamSubscription? resize;
   //RxInt counter = 0.obs;
   setData(Place _place, int _placeIndex){
     place = _place;
     placeIndex = _placeIndex;
     sub?? controller.scanProgressStream.stream.listen((event) {getDevice();});
+    resize?? controller.resizeStream.stream.listen((event) {resizeIt(event);});
     analyseIt();
     update(['text']);
+  }
+  resizeIt(String event){
+    if(event=='in'){
+      size.value +=5.0;
+    }
+    else{
+      if(size.value - 5.0 > 55) {
+        size.value -= 5.0;
+      }
+    }
   }
   getDevice(){
 //    print('scan complete');

@@ -21,6 +21,7 @@ class LayoutController extends GetxController{
   dynamic currentDevice;
   final ScanListController scanlistController = Get.put(ScanListController());
   final Scanner scanner = Get.put(Scanner());
+  final StreamController<String> resizeStream = StreamController<String>.broadcast();
   StreamSubscription? sub;
   int finalProgress = 0;
   int jobsDone = 0;
@@ -151,6 +152,12 @@ class LayoutController extends GetxController{
   }
   closePopup(){
     offset.value = const Offset(0, 0);
+  }
+  zoomIn(){
+    resizeStream.add('in');
+  }
+  zoomOut(){
+    resizeStream.add('out');
   }
   /*
   List<PlaceLayout> getPlacesInRow(int rigIndex, int rowIndex){

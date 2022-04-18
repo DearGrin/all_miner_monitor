@@ -49,6 +49,8 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
         title: Text(widget.tag, style: Theme.of(context).textTheme.bodyText2,),
         centerTitle: true,
         actions: [
+          IconButton(onPressed: (){controller.zoomIn();}, icon: const Icon(Icons.zoom_in)),
+          IconButton(onPressed: (){controller.zoomOut();}, icon: const Icon(Icons.zoom_out)),
           IconButton(onPressed: (){Get.defaultDialog(title: '', content: const HelpUI());}, icon: const Icon(Icons.help_outline_outlined)),
           RotationTransition(
               turns: _animation,
