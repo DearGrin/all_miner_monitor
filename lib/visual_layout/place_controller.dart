@@ -23,6 +23,7 @@ class PlaceController extends GetxController{
   RxBool speedLow = false.obs;
   RxBool noData = true.obs;
   RxBool invalidIp = false.obs;
+  Offset? offset;
   //RxInt counter = 0.obs;
   setData(Place _place, int _placeIndex){
     place = _place;
@@ -102,5 +103,12 @@ class PlaceController extends GetxController{
       //print(_device);
       //controller.onDoubleTap(_device);
     }
+  }
+  setOffset(PointerEvent event){
+    offset = event.position;
+
+  }
+  onSingleTap(){
+    controller.onSingleTap(offset, device);
   }
 }

@@ -13,6 +13,7 @@ class ContainerLayout extends StatefulWidget {
 
 class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderStateMixin{
   final LayoutController  controller = Get.put(LayoutController());
+  final ScrollController scrollController = ScrollController();
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 2),
     vsync: this,
@@ -54,10 +55,28 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
       body: GetBuilder<LayoutController>(
           id: 'rigs_builder',
           builder: (_){
-            return Card(
-              color: Theme.of(context).cardColor,
-              child: Row(
-                children: rigs(controller),
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: scrollController,
+              child: Card(
+                color: Theme.of(context).cardColor,
+                child: Stack(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: rigs(controller),
+                        ),
+                        Obx(()=>Positioned(
+                          //TODO get max row possible + get size of pop up
+                            left: (controller.offset.value.dx + scrollController.offset+50)>Get.width?(controller.offset.value.dx + scrollController.offset-50):(controller.offset.value.dx + scrollController.offset),
+                            top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
+                            child: Container(width: 100, height: 50, color: Colors.red, child: Text('${controller.offset.value.dy}'),)))
+                      ],
+
+
+                ),
               ),
             );
           }
@@ -69,10 +88,7 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
     List<Widget> _tmp = [];
     if(controller.layout.value.rigs!=null) {
       for (int i = 0; i < controller.layout.value.rigs!.length; i++) {
-        _tmp.add(Expanded(
-            flex: 1,
-            child: RigUI(i)
-        )
+        _tmp.add(RigUI(i)
         );
       }
     }

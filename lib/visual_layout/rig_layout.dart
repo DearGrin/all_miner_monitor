@@ -15,21 +15,21 @@ class RigUI extends StatelessWidget {
         border: Border.all()
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: rows(controller),
       ),
     );
   }
   List<Widget> rows(LayoutController  controller){
     List<Widget> _tmp = [
-      Text('$rigIndex'),
+      Text('Rig #${rigIndex+1}'),
     ];
     if(controller.layout.value.rigs![rigIndex].shelves!=null) {
       for (int i = 0; i <
           controller.layout.value.rigs![rigIndex].shelves!.length; i++) {
-        _tmp.add(Expanded(
-            flex: 1,
-            child: RowUI(rigIndex, i)));
+        _tmp.add(RowUI(rigIndex, i));
       }
     }
     return _tmp;

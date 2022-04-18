@@ -24,6 +24,7 @@ class LayoutController extends GetxController{
   StreamSubscription? sub;
   int finalProgress = 0;
   int jobsDone = 0;
+  Rx<Offset> offset = Offset(0, 0).obs;
   /*
   final LayoutModel testModel = LayoutModel(
     tag: 'test cont',
@@ -141,6 +142,11 @@ class LayoutController extends GetxController{
       scanInProgressStream.add(false);
     }
    // scanProgressStream.add(true);
+  }
+  onSingleTap(Offset? _offset, dynamic device){
+    if(_offset!=null) {
+      offset.value = _offset;
+    }
   }
   /*
   List<PlaceLayout> getPlacesInRow(int rigIndex, int rowIndex){

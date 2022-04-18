@@ -15,16 +15,19 @@ class RowUI extends StatelessWidget {
     final LayoutController  controller = Get.put(LayoutController());
     return Container(
       decoration: BoxDecoration(
-        border: Border.symmetric(horizontal: BorderSide())
+        border: Border.symmetric(horizontal: BorderSide()),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: places(controller),
       ),
     );
   }
   List<Widget> places(LayoutController  controller){
     List<Widget> _tmp = [
-      Text('$rowIndex',),
+      SizedBox(
+          width: 10,
+          child: Text('${rowIndex+1}',)),
     ];
     int _placeIndex = 0;
     if(controller.layout.value.rigs![rigIndex].shelves![rowIndex].places!=null) {
@@ -33,29 +36,18 @@ class RowUI extends StatelessWidget {
               .length; i++) {
         Place _place = controller.layout.value.rigs![rigIndex]
             .shelves![rowIndex].places![i];
-        print(_place.type);
         if (_place.type == 'miner') {
-          //print('is miner');
           _tmp.add(PlaceUI(_place, _placeIndex),);
           _placeIndex++;
         }
         else {
-          //print('is rasp');
           for (int c = 0; c < 5; c++) {
             _tmp.add(PlaceUI(_place, _placeIndex + c));
-            print(_tmp.length);
           }
           _placeIndex += 5; //TODO get from setttings
         }
       }
     }
-    /*
-    List<PlaceLayout> places = controller.getPlacesInRow(rigIndex, rowIndex);
-    for(PlaceLayout p in places){
-      _tmp.add(PlaceUI(p));
-    }
-     */
-
     return _tmp;
   }
 }
