@@ -155,6 +155,15 @@ class AntMinerModel{
     catch(e){
       print(e);
     }
+    int? _tMax;
+    try{
+      for(int? temp in _tChipO!){
+        _tMax==null? temp : _tMax<temp!? _tMax=temp: null;
+      }
+    }
+    catch(e){
+      print(e);
+    }
     List<int?>? _hw;
     try{
     _hw = regexp.hw.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
@@ -202,7 +211,7 @@ class AntMinerModel{
       tChipO: _tChipO,
       tPcbI: _tPcbI,
       tPcbO: _tPcbO,
-      tMax: getInt(regexp.tMax.firstMatch(data)?.group(2)),
+      tMax: _tMax,
       fanNum: getInt(regexp.fan_num.firstMatch(data)?.group(2)),
       fans: _fans,
       hashCount: getInt(regexp.miner_count.firstMatch(data)?.group(2)),
