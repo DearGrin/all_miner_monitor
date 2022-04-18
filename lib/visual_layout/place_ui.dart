@@ -15,8 +15,8 @@ class PlaceUI extends StatelessWidget {
     final PlaceController controller = Get.put(PlaceController(), tag: '${place.id}/$placeIndex');
     controller.setData(place, placeIndex);
     return SizedBox(
-      width: 50,
-      height: 50,
+      width: 55,
+      height: 55,
       child: MouseRegion(
         onHover: (PointerEvent details){controller.setOffset(details);},
         child: GestureDetector(
@@ -32,7 +32,7 @@ class PlaceUI extends StatelessWidget {
               child: Column(
                 children: [
                   Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
