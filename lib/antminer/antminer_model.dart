@@ -58,11 +58,12 @@ class AntMinerModel{
   List<int?>? hwPerChain;
   List<double?>? ratePerChain;
   List<Pool>? pools;
+  bool? isScrypt;
   AntMinerModel({this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
     this.freqs, this.fans, this.tMax, this.tChipO, this.tChipI, this.tPcbO, this.tPcbI,
     this.hashCount, this.volt, this.watt, this.chipPerChain, this.chainString,
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
-    this.ipInt, this.company, this.status='', this.mm, this.elapsedString, this.pools});
+    this.ipInt, this.company, this.status='', this.mm, this.elapsedString, this.pools, this.isScrypt});
 
   factory AntMinerModel.fromString(String data, String _ip){
     List<String> _octet = _ip.split('.');
@@ -81,8 +82,10 @@ class AntMinerModel{
      print(e);
    }
     String _model = 'Unknown';
+   bool _isScrypt = false;
     if(_mm.contains('L3')){
       _model = 'L3';
+      _isScrypt = true;
     }
     else if (_mm.contains('S9')){
       _model = 'S9';
@@ -207,6 +210,7 @@ class AntMinerModel{
       chainString: _chipString,
       hwPerChain: _hw,
       ratePerChain: _rate,
+      isScrypt: _isScrypt,
       pools: [],
     );
   }
