@@ -67,8 +67,9 @@ class LayoutListController extends GetxController{
       error.value = 'Unique and not empty tag is required';
     }
   }
-  deleteLayout(String? tag){
-    box.delete('$tag');
+  deleteLayout(String? tag) async{
+    Box _box = await Hive.openBox('layouts');
+    _box.delete('$tag');
     tags.remove(tag);
     update(['layout_list']);
   }
