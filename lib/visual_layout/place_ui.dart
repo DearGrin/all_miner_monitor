@@ -77,7 +77,7 @@ class PlaceUI extends StatelessWidget {
                                 ///dh or acn_s
                                   fit: BoxFit.scaleDown,
                                   child: Obx(()=>Icon(
-                                      Icons.error_outline, size: 10,
+                                      Icons.error_outline,
                                     color: controller.dhError.value? Colors.red : Colors.transparent,
                                     ),
                                   )
@@ -86,7 +86,7 @@ class PlaceUI extends StatelessWidget {
                                ///fan
                                  fit: BoxFit.scaleDown,
                                  child: Obx(()=>Icon(
-                                     Icons.flip_camera_android_outlined, size: 10,
+                                     Icons.flip_camera_android_outlined,
                                    color: controller.fanError.value? Colors.red : Colors.transparent,
                                    ),
                                  )
@@ -95,7 +95,7 @@ class PlaceUI extends StatelessWidget {
                                ///temp
                                  fit: BoxFit.scaleDown,
                                  child: Obx(()=> Icon(
-                                     Icons.ac_unit_outlined, size: 10,
+                                     Icons.ac_unit_outlined,
                                    color: controller.tempError.value? Colors.red : Colors.transparent,
                                    ),
                                  )
@@ -115,7 +115,7 @@ class PlaceUI extends StatelessWidget {
                                 ///chip count
                                   fit: BoxFit.scaleDown,
                                   child: Obx(()=> Icon(
-                                    Icons.details, size: 10,
+                                    Icons.details,
                                     color: controller.chipCount.value? Colors.red : controller.hashCount.value? Colors.red : Colors.transparent,
                                   ),
                                   )
