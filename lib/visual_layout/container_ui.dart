@@ -57,6 +57,7 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
       ),
       body: Container(
         height: Get.height,
+        constraints: BoxConstraints(minWidth: Get.width),
         child: Stack(
           children: [
             GetBuilder<LayoutController>(
