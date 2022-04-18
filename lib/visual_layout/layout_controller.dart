@@ -144,9 +144,13 @@ class LayoutController extends GetxController{
    // scanProgressStream.add(true);
   }
   onSingleTap(Offset? _offset, dynamic device){
+    currentDevice = device;
     if(_offset!=null) {
       offset.value = _offset;
     }
+  }
+  closePopup(){
+    offset.value = const Offset(0, 0);
   }
   /*
   List<PlaceLayout> getPlacesInRow(int rigIndex, int rowIndex){

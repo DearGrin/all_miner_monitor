@@ -1,4 +1,6 @@
+import 'package:avalon_tool/visual_layout/help_ui.dart';
 import 'package:avalon_tool/visual_layout/layout_controller.dart';
+import 'package:avalon_tool/visual_layout/popup_details.dart';
 import 'package:avalon_tool/visual_layout/rig_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,39 +49,56 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
         title: Text(widget.tag, style: Theme.of(context).textTheme.bodyText2,),
         centerTitle: true,
         actions: [
+          IconButton(onPressed: (){Get.defaultDialog(title: '', content: const HelpUI());}, icon: const Icon(Icons.help_outline_outlined)),
           RotationTransition(
               turns: _animation,
               child: IconButton(onPressed: (){controller.onRefresh();}, icon: const Icon(Icons.refresh)))
         ],
       ),
-      body: GetBuilder<LayoutController>(
-          id: 'rigs_builder',
-          builder: (_){
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              child: Card(
-                color: Theme.of(context).cardColor,
-                child: Stack(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: rigs(controller),
+      body: Container(
+        height: Get.height,
+        child: Stack(
+          children: [
+            GetBuilder<LayoutController>(
+                id: 'rigs_builder',
+                builder: (_){
+                  return Scrollbar(
+                    controller: scrollController,
+                    isAlwaysShown: true,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        controller: scrollController,
+                        child: Card(
+                          color: Theme.of(context).cardColor,
+                          child: Stack(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: rigs(controller),
+                                  ),
+                                ],
+
+
+                          ),
                         ),
-                        Obx(()=>Positioned(
-                          //TODO get max row possible + get size of pop up
-                            left: (controller.offset.value.dx + scrollController.offset+50)>Get.width?(controller.offset.value.dx + scrollController.offset-50):(controller.offset.value.dx + scrollController.offset),
-                            top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
-                            child: Container(width: 100, height: 50, color: Colors.red, child: Text('${controller.offset.value.dy}'),)))
-                      ],
-
-
-                ),
-              ),
-            );
-          }
+                      ),
+                    ),
+                  );
+                }
+            ),
+            Obx(()=>Positioned(
+              //TODO get max row possible + get size of pop up
+              left: (controller.offset.value.dx + scrollController.offset+500)>Get.width?(controller.offset.value.dx + scrollController.offset-500):(controller.offset.value.dx + scrollController.offset),
+              top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
+              child: controller.offset.value == const Offset(0,0)? Container() : PopupDetails(),
+            )
+            )
+          ],
+        ),
       ),
     );
   }

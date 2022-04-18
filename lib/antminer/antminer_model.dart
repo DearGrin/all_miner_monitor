@@ -158,7 +158,12 @@ class AntMinerModel{
     int? _tMax;
     try{
       for(int? temp in _tChipO!){
-        _tMax==null? temp : _tMax<temp!? _tMax=temp: null;
+        if(_tMax==null&&temp!=null){
+          _tMax = temp;
+        }
+        else if(temp!=null&&_tMax!=null&&_tMax<temp){
+          _tMax = temp;
+        }
       }
     }
     catch(e){

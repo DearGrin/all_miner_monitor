@@ -44,12 +44,18 @@ class PlaceUI extends StatelessWidget {
                               id: 'text',
                               builder: (_){
                                 return RichText(
+                                  textAlign: TextAlign.center,
                                   text: TextSpan(
                                       text: '',
                                       children: [
+                                        TextSpan(text: controller.speed.value,),
+                                        TextSpan(text: controller.temp.value),
+                                        TextSpan(text: controller.ip.value),
+                                        /*
                                         TextSpan(text: controller.device!=null? '${controller.device.ip??' '}\n' : '${controller.place?.ip??' '}',),
                                         TextSpan(text: controller.device!=null? '${_.device.currentSpeed.toStringAsFixed(2)} Th/s!\n' : ' '),
                                         TextSpan(text: controller.device!=null? '${controller.device.tMax??' '} C': ' '),
+                                        */
                                       ]
                                   ),
                                 );
@@ -64,41 +70,56 @@ class PlaceUI extends StatelessWidget {
                       flex: 1,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 1.0),
-                        child: Stack(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                                child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Obx(()=>Icon(
-                                        Icons.error_outline, size: 15,
-                                      color: controller.dhError.value? Colors.red : Colors.transparent,
-                                      ),
-                                    )
+                            FittedBox(
+                              ///dh or acn_s
+                                fit: BoxFit.scaleDown,
+                                child: Obx(()=>Icon(
+                                    Icons.error_outline, size: 10,
+                                  color: controller.dhError.value? Colors.red : Colors.transparent,
+                                  ),
                                 )
                             ),
-                           Align(
-                               alignment: Alignment.center,
-                               child: FittedBox(
-                                   fit: BoxFit.scaleDown,
-                                   child: Obx(()=>Icon(
-                                       Icons.flip_camera_android_outlined, size: 15,
-                                     color: controller.fanError.value? Colors.red : Colors.transparent,
-                                     ),
-                                   )
+                           FittedBox(
+                             ///fan
+                               fit: BoxFit.scaleDown,
+                               child: Obx(()=>Icon(
+                                   Icons.flip_camera_android_outlined, size: 10,
+                                 color: controller.fanError.value? Colors.red : Colors.transparent,
+                                 ),
                                )
                            ),
-                           Align(
-                               alignment: Alignment.centerRight,
-                               child: FittedBox(
-                                   fit: BoxFit.scaleDown,
-                                   child: Obx(()=> Icon(
-                                       Icons.hot_tub_outlined, size: 15,
-                                     color: controller.tempError.value? Colors.red : Colors.transparent,
-                                     ),
-                                   )
+                           FittedBox(
+                             ///temp
+                               fit: BoxFit.scaleDown,
+                               child: Obx(()=> Icon(
+                                   Icons.ac_unit_outlined, size: 10,
+                                 color: controller.tempError.value? Colors.red : Colors.transparent,
+                                 ),
                                )
                            ),
+                            /*
+                            FittedBox(
+                              ///hash count
+                                fit: BoxFit.scaleDown,
+                                child: Obx(()=> Icon(
+                                  Icons.book_rounded, size: 10,
+                                  color: controller.hashCount.value? Colors.red : Colors.transparent,
+                                ),
+                                )
+                            ),
+                            */
+                            FittedBox(
+                              ///chip count
+                                fit: BoxFit.scaleDown,
+                                child: Obx(()=> Icon(
+                                  Icons.details, size: 10,
+                                  color: controller.chipCount.value? Colors.red : controller.hashCount.value? Colors.red : Colors.transparent,
+                                ),
+                                )
+                            ),
                           ],
                         ),
                       )

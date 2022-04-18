@@ -17,7 +17,11 @@ class SettingsController extends GetxController{
   RxString language = 'english'.obs;
   RxInt maxTemp = 100.obs;
   RxInt maxTempInput = 90.obs;
-  RxDouble minHash = 50.0.obs;
+  RxDouble minHashDefault = 50.0.obs;
+  RxDouble minHashL3 = 500.0.obs;
+  RxDouble minHashS9 = 15.0.obs;
+  RxDouble minHashS19 = 100.0.obs;
+  RxDouble minHashT9 = 12.0.obs;
   RxInt volReq = 1200.obs;
   RxDouble maxDh = 7.5.obs;
   RxDouble kWork = 10.0.obs;
@@ -83,12 +87,40 @@ class SettingsController extends GetxController{
     else{
       maxTempInput.value = _maxTempInput;
     }
-    double? _minHash = box.get('min_hash');
-    if(_minHash==null){
-      box.put('min_hash', 50.0);
+    double? _minHashDefault = box.get('min_hash_default');
+    if(_minHashDefault==null){
+      box.put('min_hash_default', 50.0);
     }
     else{
-      minHash.value = _minHash;
+      minHashDefault.value = _minHashDefault;
+    }
+    double? _minHashL3 = box.get('min_hash_L3');
+    if(_minHashL3==null){
+      box.put('min_hash_L3', 500.0);
+    }
+    else{
+      minHashL3.value = _minHashL3;
+    }
+    double? _minHashS9 = box.get('min_hash_S9');
+    if(_minHashS9==null){
+      box.put('min_hash_S9', 15.0);
+    }
+    else{
+      minHashS9.value = _minHashS9;
+    }
+    double? _minHashS19 = box.get('min_hash_S19');
+    if(_minHashS19==null){
+      box.put('min_hash_S19', 15.0);
+    }
+    else{
+      minHashS19.value = _minHashS19;
+    }
+    double? _minHashT9 = box.get('min_hash_T9');
+    if(_minHashT9==null){
+      box.put('min_hash_T9', 15.0);
+    }
+    else{
+      minHashT9.value = _minHashT9;
     }
     int? _volReq = box.get('min_vol');
     if(_volReq==null){
@@ -159,11 +191,11 @@ class SettingsController extends GetxController{
       box.put('max_temp_input', _);
     }
   }
-  setMinHash(String value){
+  setMinHash(String value, String type){
     double? _ = double.tryParse(value);
     if(_!=null){
-      minHash.value = _;
-      box.put('min_hash', _);
+     // minHash.value = _;
+      box.put('min_hash_$type', _);
     }
   }
   setMinVol(String value){

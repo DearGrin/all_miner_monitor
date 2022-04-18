@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/antminer/mock_ant.dart';
 import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
@@ -22,13 +24,20 @@ class PlaceController extends GetxController{
   RxBool dhError = false.obs;
   RxBool speedLow = false.obs;
   RxBool noData = true.obs;
+  RxBool hashCount = false.obs;
+  RxBool chipCount = false.obs;
   RxBool invalidIp = false.obs;
+  RxString speed = 'speed no data\n'.obs;
+  RxString temp = 'temp no data\n'.obs;
+  RxString ip = 'ip: '.obs;
   Offset? offset;
+  StreamSubscription? sub;
   //RxInt counter = 0.obs;
   setData(Place _place, int _placeIndex){
     place = _place;
     placeIndex = _placeIndex;
-    controller.scanProgressStream.stream.listen((event) {getDevice();});
+    sub?? controller.scanProgressStream.stream.listen((event) {getDevice();});
+    analyseIt();
     update(['text']);
   }
   getDevice(){
@@ -36,7 +45,8 @@ class PlaceController extends GetxController{
   if(checkIp()) {
     /// get device
     try {
-      device = controller.getDevice(place!, placeIndex!);
+     // device = controller.getDevice(place!, placeIndex!);
+      device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
     }
     catch(e){
       print(e);
@@ -64,6 +74,12 @@ class PlaceController extends GetxController{
   }
   analyseIt() {
     noData.value = device == null ? true : false;
+    try{
+      ip.value = place!.ip!;
+    }
+    catch(e){
+      ip.value = 'no ip';
+    }
     if (device != null) {
       try {
         tempError.value = analyseResolver.hasErrors('temp_max', device.tMax);
@@ -72,10 +88,31 @@ class PlaceController extends GetxController{
         tempError.value = true;
       }
       try {
-        dhError.value = analyseResolver.hasErrors('dh', device.dh);
+        //
+        //TODO check hash count
+        //TODO check acn_s
+        if(device.company=='Antminer') {
+          dhError.value =
+              analyseResolver.hasErrors('acn_s', device.chainString);
+        }
+        else{
+          dhError.value = analyseResolver.hasErrors('dh', device.dh);
+        }
       }
       catch (e) {
         dhError.value = true;
+      }
+      try{
+        hashCount.value = analyseResolver.hasErrors('hash_count', device.hashCount, device.model);
+      }
+      catch(e){
+        hashCount.value = true;
+      }
+      try{
+        chipCount.value = analyseResolver.hasErrors('chip_count', device.chipPerChain, device.model);
+      }
+      catch(e){
+        chipCount.value = true;
       }
       try {
         fanError.value = analyseResolver.hasErrors('null_list', device.fans);
@@ -85,12 +122,30 @@ class PlaceController extends GetxController{
       }
       try {
         speedLow.value =
-            analyseResolver.hasErrors('min_speed', device.currentSpeed);
+            analyseResolver.hasErrors('min_speed', device.currentSpeed, device.model);
       }
       catch (e) {
+        print(e);
         speedLow.value = true;
       }
-    }
+      try {
+        if (device.isScrypt) {
+          speed.value = '${device.currentSpeed.toStringAsFixed(2)} Gh/s\n';
+        }
+        else {
+        speed.value = '${device.currentSpeed.toStringAsFixed(2)} Th/s\n';
+        }
+      }
+        catch(e){
+          speed.value = 'hash no data\n';
+        }
+        try{
+          temp.value = '${device.tMax} C\n';
+        }
+        catch(e){
+        temp.value = 'no temp data\n';
+        }
+      }
   }
   onDoubleTap(){
     if(device!=null) {

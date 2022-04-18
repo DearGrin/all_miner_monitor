@@ -92,6 +92,7 @@ class AvalonData{
   int? aucN;
   int? led;
   List<Pool>? pools;
+  bool isScrypt = false;
   AvalonData({this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
     this.tempInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
     this.tAvg, this.tMax, this.tMaxByHashBoard, this.ECMM, this.ECHU, this.hw, this.dh,
