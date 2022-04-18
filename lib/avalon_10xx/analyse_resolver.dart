@@ -28,7 +28,49 @@ class AnalyseResolver extends GetxController{
   onInit() async {
     box = await Hive.openBox('settings');
     getValues();
+    box.watch().listen((event) {handleChange(event);
+    });
     super.onInit();
+  }
+  handleChange(BoxEvent event){
+    try {
+      switch (event.key) {
+        case 'max_temp_input':
+          maxTempInput = event.value;
+          break;
+        case 'max_temp':
+          maxTemp = event.value;
+          break;
+        case 'k_work':
+          kWork = event.value;
+          break;
+        case 'min_vol':
+          minVoltage = event.value;
+          break;
+        case 'max_dh':
+          dh = event.value;
+          break;
+        case 'min_hash_default':
+          minSpeedDefault = event.value;
+          break;
+        case 'min_hash_L3':
+          minSpeedL3 = event.value;
+          break;
+        case 'min_hash_S9':
+          minSpeedS9 = event.value;
+          break;
+        case 'min_hash_S19':
+          minSpeedS19 = event.value;
+          break;
+        case 'min_hash_T9':
+          minSpeedT9 = event.value;
+          break;
+        default:
+      }
+    }
+    catch(e){
+      print(e);
+    }
   }
   getValues(){
     maxTempInput = box.get('max_temp_input')??90;
