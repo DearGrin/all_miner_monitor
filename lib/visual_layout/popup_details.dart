@@ -106,8 +106,10 @@ class PopupDetails extends StatelessWidget {
                     Wrap(
                       children: [
                         Text('chip status: '),
-                        Text('${controller.currentDevice != null ? controller
-                            .currentDevice.chainString : ''}')
+                        chainString(controller.currentDevice != null ? controller
+                            .currentDevice.chainString : null),
+                       // Text('${controller.currentDevice != null ? controller
+                       //     .currentDevice.chainString : ''}')
                       ],
                     ),
                   ],
@@ -230,5 +232,15 @@ class PopupDetails extends StatelessWidget {
         ),
       );
     }
+  }
+  Widget chainString(List<String?>? _chainString){
+    String _ = '';
+    if(_chainString!=null) {
+      for (String? s in _chainString) {
+        String _new = '$_ $s\n';
+        _ = _new;
+      }
+    }
+    return Text(_);
   }
 }
