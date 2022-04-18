@@ -95,10 +95,13 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
             ),
             Obx(()=>Positioned(
               //TODO get max row possible + get size of pop up
-              left: (controller.offset.value.dx + scrollController.offset+500)>Get.width?(controller.offset.value.dx -500):(controller.offset.value.dx + scrollController.offset),
+              left: (controller.offset.value.dx + 500)>Get.width?
+              (controller.offset.value.dx -500) // move to the left
+                  :
+              (controller.offset.value.dx), // place as is
               top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
-              child: controller.offset.value == const Offset(0,0)? Container() : PopupDetails(),
-             // child: controller.offset.value == const Offset(0,0)? Container() : Text('${controller.offset.value.dx} / ${scrollController.offset} / ${Get.width} / ${(controller.offset.value.dx + scrollController.offset+500)>Get.width? true:false} / ${(controller.offset.value.dx + scrollController.offset-500)}'),
+             child: controller.offset.value == const Offset(0,0)? Container() : PopupDetails(),
+            //  child: controller.offset.value == const Offset(0,0)? Container() : Text('${controller.offset.value.dx} / ${scrollController.offset} / ${Get.width} / ${(controller.offset.value.dx + scrollController.offset)>Get.width? true:false} / ${(controller.offset.value.dx + scrollController.offset)}'),
             )
             )
           ],

@@ -58,8 +58,8 @@ class PlaceController extends GetxController{
   if(checkIp()) {
     /// get device
     try {
-    //  device = controller.getDevice(place!, placeIndex!);
-      device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
+     device = controller.getDevice(place!, placeIndex!);
+     // device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
     }
     catch(e){
       print(e);
