@@ -30,6 +30,7 @@ String intToDate(int? value){
   }
 }
 class AntMinerModel{
+  String? rawData;
   String? ip;
   int? ipInt;
   String? company;
@@ -59,7 +60,7 @@ class AntMinerModel{
   List<double?>? ratePerChain;
   List<Pool>? pools;
   bool? isScrypt;
-  AntMinerModel({this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
+  AntMinerModel({this.rawData, this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
     this.freqs, this.fans, this.tMax, this.tChipO, this.tChipI, this.tPcbO, this.tPcbI,
     this.hashCount, this.volt, this.watt, this.chipPerChain, this.chainString,
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
@@ -146,6 +147,9 @@ class AntMinerModel{
     List<int?>? _tChipO;
     try{
     _tChipO = regexp.tChipsO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
+    if(_model=='S9'||_model=='T9'){
+      _tChipO = _tChipO.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
@@ -153,6 +157,9 @@ class AntMinerModel{
     List<int?>? _tPcbI;
     try{
     _tPcbI =  regexp.tPcbI.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
+    if(_model=='S9'||_model=='T9'){
+      _tPcbI = _tPcbI.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
@@ -160,6 +167,9 @@ class AntMinerModel{
     List<int?>? _tPcbO;
     try{
     _tPcbO =  regexp.tPcbO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
+    if(_model=='S9'||_model=='T9'){
+      _tPcbO = _tPcbO.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
@@ -244,6 +254,7 @@ class AntMinerModel{
       ratePerChain: _rate,
       isScrypt: _isScrypt,
       pools: [],
+      rawData: data,
     );
   }
 }
