@@ -1,27 +1,27 @@
 import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/ui/chip_ui.dart';
+import 'package:avalon_tool/miner_overview/avalon_chip.dart';
+import 'package:avalon_tool/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Hashboard89 extends StatelessWidget {
+class Avalon89Hashboard extends StatelessWidget {
  final int boardIndex;
-  const Hashboard89(this.boardIndex, {Key? key}) : super(key: key);
+  const Avalon89Hashboard(this.boardIndex, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ScanListController controller = Get.put(ScanListController());
+    final OverviewController controller = Get.put(OverviewController());
     List<Widget> _row1 = [];
-    for(int i = 0; i < (controller.currentDevice.value.hashBoards![boardIndex].chips!.length/2).round(); i++)
+    for(int i = 0; i < (controller.device[0].hashBoards![boardIndex].chips!.length/2).round(); i++)
       {
 
-        _row1.add(ChipUi(board: boardIndex, number: i)); //TODO get index of board
+        _row1.add(AvalonChip(board: boardIndex, number: i)); //TODO get index of board
       }
     List<Widget> _row2 = [];
-    for(int i = (controller.currentDevice.value.hashBoards![boardIndex].chips!.length/2).round(); i < controller.currentDevice.value.hashBoards![boardIndex].chips!.length; i++)
+    for(int i = (controller.device[0].hashBoards![boardIndex].chips!.length/2).round();
+      i < controller.device[0].hashBoards![boardIndex].chips!.length; i++)
     {
-      _row2.add(ChipUi(board: boardIndex, number: i)); //TODO get index of board
+      _row2.add(AvalonChip(board: boardIndex, number: i)); //TODO get index of board
     }
 
     return Card(
@@ -38,7 +38,7 @@ class Hashboard89 extends StatelessWidget {
               children: [
                 SelectableText.rich(
                     TextSpan(
-                        children: errors(controller.currentDevice.value.ECHU?[boardIndex], context)
+                        children: errors(controller.device[0].ECHU?[boardIndex], context)
                     )
                 ),
               ],

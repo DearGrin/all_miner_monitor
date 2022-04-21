@@ -1,26 +1,26 @@
 import 'package:avalon_tool/avalon_10xx/color_map.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:avalon_tool/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ChipUi extends StatelessWidget {
+class AvalonChip extends StatelessWidget {
   final int board;
   final int number;
-  const ChipUi({required this.board, required this.number, Key? key}) : super(key: key);
+  const AvalonChip({required this.board, required this.number, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ScanListController controller = Get.put(ScanListController());
+    final OverviewController controller = Get.put(OverviewController());
     return Obx(()=>Container(
             width: (MediaQuery.of(context).size.width*0.7/3-18)/6,
             height: (MediaQuery.of(context).size.width*0.7/3-18)/6,
             decoration: BoxDecoration(
               border: Border.all(),
-              color: controller.displayMode==0?
-              getChipColor(controller.currentDevice.value.hashBoards?[board].chips?[number].temp) : getChipColorWork(controller.currentDevice.value.hashBoards?[board].chips?[number].mw, controller.currentDevice.value.elapsed), // TODO get the data
+              color: controller.displayMode.value==0?
+              getChipColor(controller.device[0].hashBoards?[board].chips?[number].temp) : getChipColorWork(controller.device[0].hashBoards?[board].chips?[number].mw, controller.device[0].elapsed), // TODO get the data
             ),
             child: Obx(() {
-              if (controller.displayMode == 0) {
+              if (controller.displayMode.value == 0) {
                 return Stack(
                   children: [
                     Align(
@@ -32,7 +32,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].voltage.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
@@ -40,7 +40,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].temp.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
@@ -48,7 +48,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].mw.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW
@@ -68,7 +68,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].voltage.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
@@ -76,7 +76,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].temp.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
@@ -84,7 +84,7 @@ class ChipUi extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        controller.currentDevice.value.hashBoards![board]
+                        controller.device[0].hashBoards![board]
                             .chips![number].mw.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW

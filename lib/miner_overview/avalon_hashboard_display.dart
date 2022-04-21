@@ -1,40 +1,38 @@
 import 'package:avalon_tool/avalon_10xx/controller_avalon.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/ui/hashboard.dart';
-import 'package:avalon_tool/ui/hashboard_8_9.dart';
+import 'package:avalon_tool/miner_overview/overview_controller.dart';
+import 'package:avalon_tool/miner_overview/avalon_1xxx_hashboard.dart';
+import 'package:avalon_tool/miner_overview/avalon_hashboard_8_9.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HashboardDisplay extends StatelessWidget{
-  const HashboardDisplay({Key? key}) : super(key: key);
+class AvalonHashboardDisplay extends StatelessWidget{
+  const AvalonHashboardDisplay({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
-    final ScanListController controller = Get.put(ScanListController());
+    final OverviewController controller = Get.put(OverviewController());
 
-  print((controller.currentDevice.value.hashBoardCount));
     return SingleChildScrollView(
       controller: scrollController,
-      child: controller.currentDevice.value.model!.startsWith('1')? Row(
-        children: hashboards(controller.currentDevice.value.hashBoardCount, controller.currentDevice.value.hashBoards, controller.currentDevice.value.model), //TODO wtf with null check!
+      child: controller.device[0].model!.startsWith('1')? Row(
+        children: hashboards(controller.device[0].hashBoardCount, controller.device[0].hashBoards, controller.device[0].model), //TODO wtf with null check!
       )
       : Column(
         mainAxisSize: MainAxisSize.min,
-        children: hashboards(controller.currentDevice.value.hashBoardCount, controller.currentDevice.value.hashBoards, controller.currentDevice.value.model), //TODO wtf with null check!,
+        children: hashboards(controller.device[0].hashBoardCount, controller.device[0].hashBoards, controller.device[0].model), //TODO wtf with null check!,
       ),
     );
   }
 List<Widget> hashboards(int? hashBoardsCount, List<Hashboard>? _hashboards, String? model){
-    print(hashBoardsCount);
   List<Widget> _tmp = [];
   if(model!.startsWith('1')) {
     for (int i = 0; i < hashBoardsCount!; i++) {
       _tmp.add(
           Expanded(
               flex: 1,
-              child: HashBoard(boardIndex: i,))
+              child: Avalon1xxxHashboard(boardIndex: i,))
       );
     }
     if(_tmp.length>2)
@@ -51,7 +49,7 @@ List<Widget> hashboards(int? hashBoardsCount, List<Hashboard>? _hashboards, Stri
           Flexible(
             fit: FlexFit.loose,
             flex: 1,
-            child: Hashboard89(i,), //TODO add 8/9 ava hashboard
+            child: Avalon89Hashboard(i,), //TODO add 8/9 ava hashboard
           )
       );
     }

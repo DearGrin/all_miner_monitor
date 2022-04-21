@@ -1,16 +1,16 @@
 import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/ui/chip_ui.dart';
+import 'package:avalon_tool/miner_overview/avalon_chip.dart';
+import 'package:avalon_tool/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HashBoard extends StatelessWidget{
+class Avalon1xxxHashboard extends StatelessWidget{
   final int boardIndex;
-  const HashBoard({required this.boardIndex, Key? key}) : super(key: key);
+  const Avalon1xxxHashboard({required this.boardIndex, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ScanListController controller = Get.put(ScanListController());
+    final OverviewController controller = Get.put(OverviewController());
     return Card(
         color: Theme.of(context).cardTheme.color,
       child: Padding(
@@ -25,7 +25,7 @@ class HashBoard extends StatelessWidget{
               children: [
                SelectableText.rich(
                  TextSpan(
-                   children: errors(controller.currentDevice.value.ECHU?[boardIndex], context)
+                   children: errors(controller.device[0].ECHU?[boardIndex], context)
                  )
                ),
               ],
@@ -58,7 +58,7 @@ class HashBoard extends StatelessWidget{
   Widget chipRow(List<int> chipNumbers){
     return Row(
       children: chipNumbers.map(
-              (e) => ChipUi(number: e, board: boardIndex,)
+              (e) => AvalonChip(number: e, board: boardIndex,)
       ).toList(),
     );
   }
