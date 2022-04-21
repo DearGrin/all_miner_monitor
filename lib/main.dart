@@ -7,6 +7,7 @@ import 'package:avalon_tool/scan_list/table_header_model.dart';
 import 'package:avalon_tool/settings/header_list_model.dart';
 import 'package:avalon_tool/styles/d_l_theme.dart';
 import 'package:avalon_tool/ui/desktop_scan_screen.dart';
+import 'package:avalon_tool/utils/bindings.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: InitBinding(),
       title: 'Avalon tool',
       theme: lightTheme,
       darkTheme: darkTheme,
