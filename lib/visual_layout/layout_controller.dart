@@ -154,7 +154,6 @@ class LayoutController extends GetxController{
     offset.value = const Offset(0, 0);
   }
   zoomIn(){
-    print('zoom in');
     resizeStream.add('in');
   }
   zoomOut(){

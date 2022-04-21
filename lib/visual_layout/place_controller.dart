@@ -47,7 +47,6 @@ class PlaceController extends GetxController{
     update(['text']);
   }
   resizeIt(String event) async{
-    print('resize it');
     if(event=='in'){
       size.value +=5.0;
     }
