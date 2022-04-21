@@ -115,6 +115,43 @@ class AnalyseResolver extends GetxController{
         double _v = double.tryParse(value)??0;
           _ = _v > minSpeedDefault ? null : Colors.red; //TODO get rid of
           break;
+        case 'hash_count':
+          switch(model){
+            case 'L3':
+             _ = value<hashCountL3? Colors.red:null;
+              break;
+            case 'S9':
+              _ = value<hashCountS9? Colors.red:null;
+              break;
+            case 'S19':
+              _ = value<hashCountS19? Colors.red:null;
+              break;
+            case 'T9':
+              _ = value<hashCountT9? Colors.red:null;
+              break;
+            default:
+              _ = Colors.red;
+          }
+          break;
+        case 'chip_count':
+          switch(model){
+            case 'L3':
+              _ = value<chipCountL3? Colors.red:null;
+              break;
+            case 'S9':
+              _ = value<chipCountS9? Colors.red:null;
+              break;
+            case 'S19':
+              _ = value<chipCountS19? Colors.red:null;
+              break;
+            case 'T9':
+              _ = value<chipCountT9? Colors.red:null;
+              break;
+            default:
+              _ = Colors.red;
+          }
+          break;
+
         case 'min_speed':
           switch(model){
             case 'L3':
@@ -135,7 +172,6 @@ class AnalyseResolver extends GetxController{
           break;
         default:
           _ = null;
-          break;
       }
     }
     return _;
