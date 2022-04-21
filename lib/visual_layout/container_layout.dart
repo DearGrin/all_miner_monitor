@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ContainerLayout extends StatefulWidget {
-  final String tag;
-  const ContainerLayout(this.tag, {Key? key}) : super(key: key);
+  const ContainerLayout({Key? key}) : super(key: key);
 
   @override
   State<ContainerLayout> createState() => _ContainerLayoutState();
@@ -26,8 +25,6 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
   );
   @override
   void initState() {
-    // TODO: implement initState
-    controller.setData(widget.tag);
     controller.scanInProgressStream.stream.listen((event) {event==true? _controller.repeat():_controller.stop();});
     super.initState();
   }
@@ -38,15 +35,9 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
   }
   @override
   Widget build(BuildContext context) {
-
-
-
-    //controller.scanInProgressStream.stream.listen((event) {event==true? _controller.repeat():_controller.stop();});
-
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tag, style: Theme.of(context).textTheme.bodyText2,),
+        title: Text('${controller.layout.value.tag}', style: Theme.of(context).textTheme.bodyText2,),
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){controller.zoomIn();}, icon: const Icon(Icons.zoom_in)),

@@ -1,5 +1,6 @@
 import 'package:avalon_tool/auto_layout/wizard_ui.dart';
 import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
+import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/edit_tag_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 class LayoutListController extends GetxController{
   late Box box;
   List<dynamic> tags = [].obs;
+  List<Layout> layouts = [];
   String? oldTag;
   String? newTag;
   RxString error = ''.obs;
@@ -16,6 +18,9 @@ class LayoutListController extends GetxController{
     try {
       box = await Hive.openBox('layouts');
       tags = box.keys.toList();
+      for(String t in tags){
+        layouts.add(box.get(t));
+      }
       update(['layout_list']);
     }
     catch(e){
@@ -27,7 +32,7 @@ class LayoutListController extends GetxController{
     oldTag = tag;
     Get.defaultDialog(
       title: '',
-      content: EditTagDialog(),
+      content: const EditTagDialog(),
     );
   }
   onBack() async {

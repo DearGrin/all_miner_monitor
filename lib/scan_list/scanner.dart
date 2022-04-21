@@ -39,6 +39,7 @@ class Scanner extends GetxController{
   late StreamSubscription sub;
   int finalProgress = 0;
   int jobsDone = 0;
+  String? tag;
   @override
   void onInit(){
     sub = computeStatus.stream.listen((event) {
@@ -63,6 +64,7 @@ class Scanner extends GetxController{
     return regExp.hasMatch(ip);
   }
 handledevice(EventModel event){
+      event.tag = tag;
       jobsDone++;
       double _progress = jobsDone/finalProgress;
       progressStream.add(_progress);
@@ -192,7 +194,8 @@ handleCallback(String callback, String ip){
 
  */
 
-  newScan({List<IpRangeModel>? scanList, List<String?>? ips}) async {
+  newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tag}) async {
+    tag = tag;
     clearQuery();
    // List<dynamic> _toDo = [];
     List<String?> _ips = [];

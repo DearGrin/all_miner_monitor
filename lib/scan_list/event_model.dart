@@ -3,5 +3,6 @@ class EventModel{
   dynamic data;
   String ip;
   String rawData;
-  EventModel(this.type, this.data, this.ip, this.rawData);
+  String? tag;
+  EventModel(this.type, this.data, this.ip, this.rawData, {this.tag});
 }

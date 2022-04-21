@@ -1,5 +1,6 @@
-import 'package:avalon_tool/visual_layout/container_ui.dart';
+import 'package:avalon_tool/visual_layout/container_layout.dart';
 import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
+import 'package:avalon_tool/visual_layout/layout_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,17 +36,19 @@ class LayoutScreen extends StatelessWidget {
                 mainAxisSpacing: 10,
               ),
               itemBuilder: (BuildContext context, int index){
-                return layoutTile(context, _.tags[index], controller);
+              //  return layoutTile(context, _.tags[index], controller);
+                return LayoutTile(_.layouts[index]);
               }
           );
 
           return Column(
-              children: _.tags.map((e) => layoutTile(context, e, _)).toList()
+             // children: _.tags.map((e) => layoutTile(context, e, _)).toList()
           );
         },
       ),
     );
   }
+  /*
   Widget layoutTile(BuildContext context, String? tag, LayoutListController controller){
     return SizedBox(
       //  height: 150,
@@ -106,7 +109,7 @@ class LayoutScreen extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Expanded(child: OutlinedButton(onPressed: (){Get.to(()=>ContainerLayout(tag!));}, child: Text('details'))),
+                  Expanded(child: OutlinedButton(onPressed: (){Get.to(()=>ContainerLayout());}, child: Text('details'))),
                 ],
               ),
               SizedBox(
@@ -139,5 +142,6 @@ class LayoutScreen extends StatelessWidget {
       color: Colors.blueGrey,
     );
   }
+  */
 }
 

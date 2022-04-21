@@ -14,8 +14,8 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LayoutController extends GetxController{
-  String? tag;
-  final layout = Layout().obs;
+  //String? tag;
+  Rx<Layout> layout = Layout().obs;
   List<dynamic> devices = <dynamic>[];
   Offset position = const Offset(0,0);
   dynamic currentDevice;
@@ -26,26 +26,6 @@ class LayoutController extends GetxController{
   int finalProgress = 0;
   int jobsDone = 0;
   Rx<Offset> offset = Offset(0, 0).obs;
-  /*
-  final LayoutModel testModel = LayoutModel(
-    tag: 'test cont',
-    rigCount: 1,
-    rowCount: 1,
-    places: [
-      PlaceLayout(ip: '10.10.10.1', rigIndex: 0, rowIndex: 0, placeIndex: 0),
-      PlaceLayout(ip: '10.10.10.2', rigIndex: 0, rowIndex: 0, placeIndex: 1),
-      PlaceLayout(ip: '10.10.10.3', rigIndex: 0, rowIndex: 0, placeIndex: 2),
-    ],
-  );
-  final layoutModel = LayoutModel().obs;
-  List<dynamic> devices = <dynamic>[
-    AvalonData.fromString(mockData,  '10.10.10.1'),
-    AvalonData.fromString(mockData,  '10.10.10.2'),
-    AvalonData.fromString(mockData,  '10.10.10.3'),
-  ];
-
-
-   */
   StreamController scanProgressStream = StreamController<bool>.broadcast();
   StreamController scanInProgressStream = StreamController<bool>.broadcast();
   @override
@@ -57,13 +37,13 @@ class LayoutController extends GetxController{
   @override
   Future<void> onInit() async {
      //TODO get the tag
+    layout.value = Get.arguments;
    sub == null? sub = scanner.scanResult.stream.listen((event) {handleEvent(event);}):null;
-
-
-    //layoutModel.value = testModel; // TODO get from data base
 
     //TODO start scan - from where should get ip?
     //await startScan();
+    await startScan();
+    update(['rigs_builder']);
     super.onInit();
   }
 
@@ -77,15 +57,6 @@ class LayoutController extends GetxController{
       scanProgressStream.add(true);
       scanInProgressStream.add(false);
     }
-  }
-  setData(String _tag) async {
-    print('set data');
-    tag = _tag;
-    Box box = await Hive.openBox('layouts');
-    layout.value = box.get(_tag);
-    box.close(); //TODO check for errors on close
-    await startScan();
-    update(['rigs_builder']);
   }
   getDevice(Place place, int placeIndex){
     dynamic device;
@@ -136,8 +107,8 @@ class LayoutController extends GetxController{
     finalProgress = layout.value.ips!.length;
     if(layout.value.ips!.isNotEmpty) {
       print('ip is not empty');
-      scanner.newScan(ips: layout.value.ips);
       scanlistController.clearQuery();
+      scanner.newScan(ips: layout.value.ips);
     //  scanner.universalCreate(layout.value.ips, ['estats']);
       scanInProgressStream.add(true);
     }
