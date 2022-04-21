@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/antminer/mock_ant.dart';
-import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
+import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/mock_data.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart';

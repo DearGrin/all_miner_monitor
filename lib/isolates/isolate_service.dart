@@ -13,40 +13,15 @@ import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:hive/hive.dart';
 
-//var filenames = [];
-
 void startCompute(List<String?> f, List<String> commands,
     StreamController eventStream, StreamController stopStream) async{
-  //filenames = f;
-  /*
-  Box box = await Hive.openBox('settings');
-  int _threads =  box.get('max_threads')??20;
-  int maxTasks = (f.length/_threads).ceil();
-  List<List<String>> tasksByThread = [];
-  for(int i = 0; i < _threads; i++)
-  {
-    List<String> _ = f.skip(i*maxTasks).take(maxTasks).toList();
-    if(_.length>0){
-    tasksByThread.add(_);
-    }
-  }
-  print(tasksByThread.length);
-  for(int i =0; i < tasksByThread.length; i++)
-  {
-    await for (final jsonData in _sendAndReceive(tasksByThread[i])) {
-      print('Received JSON $i with ${jsonData.toString()} keys');
-  }
 
-   */
   await for (final result in _sendAndReceive(f, commands, stopStream)) {
-   // print('Received JSON with ${jsonData.toString()} keys');
     eventStream.add(result);
   }
 }
-Stream<EventModel> _sendAndReceive(List<String?> filenames, List<String> commands,
+Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
     StreamController stopStream) async* {
-
-
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -64,16 +39,16 @@ Stream<EventModel> _sendAndReceive(List<String?> filenames, List<String> command
     toFinish = true;
   });
 
-  for(int i = 0; i < filenames.length; i++){
+  for(int i = 0; i < ips.length; i++){
     // Send the next filename to be read and parsed
     if(toFinish){
       break;
     }
     if(commands.length>1) {
-      sendPort.send({'${filenames[i]}': '${commands[i]}'});
+      sendPort.send({'${ips[i]}': '${commands[i]}'});
     }
     else{
-      sendPort.send({'${filenames[i]}': '${commands[0]}'});
+      sendPort.send({'${ips[i]}': '${commands[0]}'});
     }
     // Receive the parsed JSON
     EventModel message = await events.next;
@@ -81,20 +56,6 @@ Stream<EventModel> _sendAndReceive(List<String?> filenames, List<String> command
     // Add the result to the stream returned by this async* function.
     yield message;
   }
-  /*
-  for (var filename in filenames) { //TODO get data here
-    // Send the next filename to be read and parsed
-    sendPort.send({'$filename':commands[0]});
-
-    // Receive the parsed JSON
-    String message = await events.next;
-
-    // Add the result to the stream returned by this async* function.
-    yield message;
-  }
-
-   */
-
   // Send a signal to the spawned isolate indicating that it should exit.
   sendPort.send(null);
 
@@ -269,12 +230,6 @@ Future<void> sendCommand(SendPort p) async{
       }
 
        */
-      //TODO than parse
-      //print(message);
-      //Future.delayed(Duration(seconds: 1));
-      // Send the result to the main isolate.
-     // await Future.delayed(Duration(seconds: 5));
-     // p.send(eventModel);
     } else if (message == null) {
       // Exit if the main isolate sends a null message, indicating there are no
       // more files to read and parse.

@@ -1,4 +1,4 @@
-import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
+import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/control_panel/control_panel_controller.dart';
 import 'package:avalon_tool/ip_section/ip_management_controller.dart';
 import 'package:avalon_tool/miner_overview/overview_controller.dart';

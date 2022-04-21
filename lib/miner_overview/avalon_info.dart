@@ -1,4 +1,4 @@
-import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
+import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/miner_overview/overview_controller.dart';
