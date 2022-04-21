@@ -12,6 +12,7 @@ import 'package:avalon_tool/visual_layout/layout_controller.dart';
 import 'package:avalon_tool/visual_layout/layout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class PlaceController extends GetxController{
   final LayoutController controller = Get.put(LayoutController());
@@ -35,15 +36,18 @@ class PlaceController extends GetxController{
   StreamSubscription? sub;
   StreamSubscription? resize;
   //RxInt counter = 0.obs;
-  setData(Place _place, int _placeIndex){
+  setData(Place _place, int _placeIndex) async {
     place = _place;
     placeIndex = _placeIndex;
     sub?? controller.scanProgressStream.stream.listen((event) {getDevice();});
     resize?? controller.resizeStream.stream.listen((event) {resizeIt(event);});
+    Box box = await Hive.openBox('settings');
+   size.value = box.get('place_size')??50.0;
     analyseIt();
     update(['text']);
   }
-  resizeIt(String event){
+  resizeIt(String event) async{
+    print('resize it');
     if(event=='in'){
       size.value +=5.0;
     }
@@ -52,14 +56,16 @@ class PlaceController extends GetxController{
         size.value -= 5.0;
       }
     }
+    Box box = await Hive.openBox('settings');
+    box.put('place_size', size.value);
   }
   getDevice(){
 //    print('scan complete');
   if(checkIp()) {
     /// get device
     try {
-     device = controller.getDevice(place!, placeIndex!);
-     // device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
+    //  device = controller.getDevice(place!, placeIndex!);
+      device = AntMinerModel.fromString(mockAnt, '10.10.10.10');
     }
     catch(e){
       print(e);
