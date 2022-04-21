@@ -4,6 +4,7 @@ final RegExp currentSpeed = RegExp(r'(GHS 5s\=)(.*?)(,)');
 final RegExp averageSpeed = RegExp(r'(GHS av\=)(.*?)(,)');
 final RegExp frequency = RegExp(r'(frequency\=)(.*?)(,)');
 final RegExp freqs = RegExp(r'(frequency[0-9]\=)(.*?)(,)');
+final RegExp freqsAvg = RegExp(r'(freq_avg[0-9]\=)(.*?)(,)');
 final RegExp volt = RegExp(r'(volt[0-9]\=)(.*?)(,)');
 final RegExp watt = RegExp(r'(watt[0-9]\=)(.*?)(,)');
 final RegExp fan_num = RegExp(r'(fan_num\=)(.*?)(,)');

@@ -100,6 +100,12 @@ class AntMinerModel{
     try {
       _freqs = regexp.freqs.allMatches(data).map((e) =>
           int.tryParse(nullCheck(e.group(2)))).toList();
+     if(_freqs.isEmpty){
+       _freqs = regexp.freqsAvg.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
+     }
+      if(_model=='S9'||_model=='T9'){
+        _freqs = _freqs.skip(5).take(3).toList();
+      }
     }
     catch(e){
       print(e);
@@ -123,34 +129,37 @@ class AntMinerModel{
     List<int?>? _fans;
     try{
     _fans = regexp.fans.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    if(_model=='S9'||_model=='T9'){
+      _fans = _fans.skip(4).take(2).toList();
+    }
     }
     catch(e){
       print(e);
     }
     List<int?>? _tChipI;
     try{
-    _tChipI = regexp.tChipsI.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    _tChipI = regexp.tChipsI.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
     }
     catch(e){
       print(e);
     }
     List<int?>? _tChipO;
     try{
-    _tChipO = regexp.tChipsO.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    _tChipO = regexp.tChipsO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
     }
     catch(e){
       print(e);
     }
     List<int?>? _tPcbI;
     try{
-    _tPcbI =  regexp.tPcbI.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    _tPcbI =  regexp.tPcbI.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
     }
     catch(e){
       print(e);
     }
     List<int?>? _tPcbO;
     try{
-    _tPcbO =  regexp.tPcbO.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    _tPcbO =  regexp.tPcbO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
     }
     catch(e){
       print(e);
@@ -172,6 +181,9 @@ class AntMinerModel{
     List<int?>? _hw;
     try{
     _hw = regexp.hw.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    if(_model=='S9'||_model=='T9'){
+      _hw = _hw.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
@@ -186,6 +198,9 @@ class AntMinerModel{
     List<String?>? _chipString;
     try{
     _chipString = regexp.chain_acs.allMatches(data).map((e) => e.group(2)).toList();
+    if(_model=='S9'||_model=='T9'){
+      _chipString = _chipString.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
@@ -193,6 +208,9 @@ class AntMinerModel{
     List<int?>? _chips;
     try{
     _chips = regexp.chain_acn.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
+    if(_model=='S9'||_model=='T9'){
+      _chips = _chips.skip(5).take(3).toList();
+    }
     }
     catch(e){
       print(e);
