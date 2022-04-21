@@ -55,7 +55,6 @@ class WizardController extends GetxController{
   validateData(){}
   onSaveClick() async {
     Layout _model = generateLayout();
-    print(_model.tag);
     if(_model.tag ==null || _model.rigs!.isEmpty){
       Get.defaultDialog(
           title: '',
@@ -139,7 +138,6 @@ class WizardController extends GetxController{
         }
         _model.rigs?.add(Rig(rig.id!, shelves: _shelves));
       }
-      print(matchError);
       if(!matchError) {
         return _model;
       }

@@ -59,9 +59,9 @@ class LayoutTile extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                OutlinedButton(onPressed: (){controller.onEditTagClick();}, child: Text('rename')),
-                                OutlinedButton(onPressed: (){controller.editLayout();}, child: Text('edit')),
-                                OutlinedButton(onPressed: (){controller.deleteLayout();}, child: Text('delete'))
+                                OutlinedButton(onPressed: (){controller.onEditTagClick();}, child: Text('rename'.tr)),
+                                OutlinedButton(onPressed: (){controller.editLayout();}, child: Text('edit'.tr)),
+                                OutlinedButton(onPressed: (){controller.deleteLayout();}, child: Text('delete'.tr))
                               ],
                             ),
                           ),
@@ -103,16 +103,12 @@ class LayoutTile extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-
-              SizedBox(
+             const  SizedBox(
                 height: 10,
               ),
               Row(
                 children: [
-                  Expanded(child: OutlinedButton(onPressed: (){controller.openLayout();}, child: Text('details'))),
+                  Expanded(child: OutlinedButton(onPressed: (){controller.openLayout();}, child: Text('details'.tr))),
                 ],
               ),
               const SizedBox(

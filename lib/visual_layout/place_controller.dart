@@ -10,7 +10,6 @@ import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
 import 'package:avalon_tool/utils/bindings.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/layout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';

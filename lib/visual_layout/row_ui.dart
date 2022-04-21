@@ -1,6 +1,5 @@
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/layout_model.dart';
 import 'package:avalon_tool/visual_layout/place_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

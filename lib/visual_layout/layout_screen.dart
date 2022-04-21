@@ -15,11 +15,11 @@ class LayoutScreen extends StatelessWidget {
         actions: [
           OutlinedButton(
               onPressed: (){controller.newLayout();},
-              child: Text('add')
+              child: Text('add'.tr)
           ),
           OutlinedButton(
               onPressed: (){controller.newAuto();},
-              child: Text('auto add')
+              child: Text('auto_add'.tr)
           )
         ],
       ),

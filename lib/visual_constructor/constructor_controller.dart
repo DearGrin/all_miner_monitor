@@ -1,7 +1,6 @@
 import 'package:avalon_tool/visual_constructor/confirm_overwrite.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_constructor/save_result.dart';
-import 'package:avalon_tool/visual_layout/layout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';

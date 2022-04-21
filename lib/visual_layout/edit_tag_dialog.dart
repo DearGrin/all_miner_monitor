@@ -10,8 +10,8 @@ class EditTagDialog extends StatelessWidget {
     final LayoutListController controller = Get.put(LayoutListController());
     return Column(
       children: [
-        Text('Edit tag', style: Theme.of(context).textTheme.bodyText2,),
-        SizedBox(
+        Text('edit_tag'.tr, style: Theme.of(context).textTheme.bodyText2,),
+        const SizedBox(
           height: 20,
         ),
         SizedBox(
@@ -29,8 +29,8 @@ class EditTagDialog extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            OutlinedButton(onPressed: (){Get.back();}, child: Text('Cancel', style: Theme.of(context).textTheme.bodyText1,)),
-            OutlinedButton(onPressed: (){controller.editTag();}, child: Text('Save', style: Theme.of(context).textTheme.bodyText1,)),
+            OutlinedButton(onPressed: (){Get.back();}, child: Text('cancel'.tr, style: Theme.of(context).textTheme.bodyText1,)),
+            OutlinedButton(onPressed: (){controller.editTag();}, child: Text('save'.tr, style: Theme.of(context).textTheme.bodyText1,)),
           ],
         )
       ],

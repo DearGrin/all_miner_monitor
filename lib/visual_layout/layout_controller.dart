@@ -8,18 +8,15 @@ import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/scan_list/scanner.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_layout/layout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class LayoutController extends GetxController{
-  //String? tag;
   Rx<Layout> layout = Layout().obs;
   List<dynamic> devices = <dynamic>[];
   Offset position = const Offset(0,0);
   dynamic currentDevice;
-  final ScanListController scanlistController = Get.put(ScanListController());
+  final ScanListController scanListController = Get.put(ScanListController());
   final Scanner scanner = Get.put(Scanner());
   final StreamController<String> resizeStream = StreamController<String>.broadcast();
   StreamSubscription? sub;
@@ -48,7 +45,6 @@ class LayoutController extends GetxController{
   }
 
   handleEvent(EventModel event){
-    print(event.data);
     if(event.type == 'device'){
         devices.add(event.data);
     }
@@ -107,7 +103,7 @@ class LayoutController extends GetxController{
     finalProgress = layout.value.ips!.length;
     if(layout.value.ips!.isNotEmpty) {
       print('ip is not empty');
-      scanlistController.clearQuery();
+      scanListController.clearQuery();
       scanner.newScan(ips: layout.value.ips);
     //  scanner.universalCreate(layout.value.ips, ['estats']);
       scanInProgressStream.add(true);

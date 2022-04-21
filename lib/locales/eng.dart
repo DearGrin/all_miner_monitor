@@ -96,4 +96,12 @@ final Map<String, String> en_US = {
   'ps_communication': 'power supply communication: ',
   'power_supply': 'Power Supply',
   'errors_det':'Errors:',
+  'edit_tag' : 'Edit tag',
+  'add': 'Add',
+  'auto_add': 'Add auto ip',
+  'details' : 'Details',
+  'rename' : 'Rename',
+  'edit' : 'Edit',
+  'delete' : 'Delete',
+  'layout' : 'Layouts',
 };
