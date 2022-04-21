@@ -3,6 +3,7 @@ import 'package:avalon_tool/avalon_10xx/chip_model.dart';
 import 'package:avalon_tool/avalon_10xx/error_handler.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
 import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart'; // TODO remove
 
 String nullCheck(String? data){return data ?? '-';}
@@ -85,8 +86,20 @@ class AvalonData{
     this.model, this.mm, this.company, this.aging, this.status='', this.aucN,
     this.ipInt, this.led, this.pools});
   factory AvalonData.fromString(String data, String ip, [int? _aucN]){
-    String _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
-    String? _model = regexp.version.firstMatch(data)?.group(2)?.split('-')[0];
+    String _company = 'Unknown';
+    try {
+      _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
+    }
+    catch(e){
+      print(e);
+    }
+    String? _model = 'Unknown';
+    try {
+      _model = regexp.version.firstMatch(data)?.group(2)?.split('-')[0];
+    }
+    catch(e){
+      print(e);
+    }
     List<String> _octet = ip.split('.');
     if(_octet[3].length==1){
       _octet[3] = '00${_octet[3]}';
@@ -94,49 +107,106 @@ class AvalonData{
     else if(_octet[3].length==2){
       _octet[3] = '0${_octet[3]}';
     }
-    int? _ipInt = int.tryParse(_octet.join());
+    int? _ipInt = 0;
+    try {
+      _ipInt = int.tryParse(_octet.join());
+    }
+    catch(e){
+      print(e);
+    }
    // String _elapsed = regexp.elapsed.firstMatch(data)?.group(2) ?? '-';
    // String _tempInput = regexp.tempInput.firstMatch(data)?.group(2) ?? '-';
-    List<int?>? _netFail = regexp.netFail.firstMatch(data)?.group(2)?.split(' ').map((e) =>
+    List<int?>? _netFail;
+    try{
+    _netFail = regexp.netFail.firstMatch(data)?.group(2)?.split(' ').map((e) =>
         int.tryParse(nullCheck(e))
     ).toList();
+    }
+    catch(e){
+      print(e);
+    }
+
     List<int?>? _fans;
-    if(_model!.startsWith('1')) //TODO is it needed?
-      {
+    try{
         List<int?>? _f = regexp.fans.allMatches(data).map((e) =>
         int.tryParse(nullCheck(e.group(4)))
         ).toList();
         _fans = _f;
-      }
-    else{
-      List<int?>? _f = regexp.fans.allMatches(data).map((e) =>
-      int.tryParse(nullCheck(e.group(4)))
-      ).toList();
-      _fans = _f;
     }
-    List<int?>? _tMaxByBoard = regexp.tMaxByBoard.firstMatch(data)?.group(2)?.
-        split(' ').map((e) => getInt(e)).toList();
+    catch(e){
+      print(e);
+    }
+    List<int?>? _tMaxByBoard;
+    try {
+      _tMaxByBoard = regexp.tMaxByBoard.firstMatch(data)?.group(2)?.
+      split(' ').map((e) => getInt(e)).toList();
+    }
+    catch(e){
+      print(e);
+    }
    // String _fanR = regexp.fanR.firstMatch(data)?.group(2) ?? '-';
-    List<int?>? _ps = regexp.ps.firstMatch(data)?.group(2)?.split(' ').map((e) => getInt(e)).toList();
-    int _maxHashBoards = regexp.mw.allMatches(data).length;
+    List<int?>? _ps;
+    try {
+      _ps = regexp.ps.firstMatch(data)?.group(2)?.split(' ').map((
+          e) => getInt(e)).toList();
+    }
+    catch(e){
+      print(e);
+    }
+    int _maxHashBoards = 0; //TODO very scary
+    try {
+      _maxHashBoards = regexp.mw
+          .allMatches(data)
+          .length;
+    }
+    catch(e){
+      print(e);
+    }
     List<Hashboard>? _hashBoards = [];
-    List<int?> _rawEchu = regexp.echu.firstMatch(data)?.group(2)?.split(' ').map((e) => getInt(e)).toList()??[];
-    List<List<AvalonError>?> _echu = _rawEchu.map((e) =>
-      ErrorHandler().getErrors(e)
+    List<int?>? _rawEchu;
+    try {
+      _rawEchu = regexp.echu.firstMatch(data)?.group(2)
+          ?.split(' ')
+          .map((e) => getInt(e))
+          .toList() ?? [];
+    }
+    catch(e){
+      print(e);
+    }
+    List<List<AvalonError>?>? _echu;
+    try {
+      _echu = _rawEchu!.map((e) =>
+          ErrorHandler().getErrors(e)
       ).toList();
+    }
+    catch(e){
+      print(e);
+    }
 
     for(int i = 0; i < _maxHashBoards; i++)
       {
-        _hashBoards.add(Hashboard.fromString(i, data,));
-      }
-    int _chipCount = 0;
-    for(int i = 0; i < _hashBoards.length; i++)
-      {
-        for(int c = 0; c <_hashBoards[i].chips!.length; c++){
-          int _v = _hashBoards[i].chips?[c].voltage ?? -40;
-          if(_v > 0){_chipCount++;}
+        try {
+          _hashBoards.add(Hashboard.fromString(i, data,));
+        }
+        catch(e){
+          print(e);
         }
       }
+
+    int _chipCount = 0;
+    try {
+      for (int i = 0; i < _hashBoards.length; i++) {
+        for (int c = 0; c < _hashBoards[i].chips!.length; c++) {
+          int _v = _hashBoards[i].chips?[c].voltage ?? -40;
+          if (_v > 0) {
+            _chipCount++;
+          }
+        }
+      }
+    }
+    catch(e){
+      print(e);
+    }
     return AvalonData(
       version: regexp.version.firstMatch(data)?.group(2) ?? '-',
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
@@ -171,9 +241,9 @@ class AvalonData{
       hashBoards: _hashBoards,
       ip: ip,
       ipInt: _ipInt,
-      model: regexp.version.firstMatch(data)?.group(2)?.split('-')[0],
+      model: _model,
       mm: regexp.version.firstMatch(data)?.group(2)?.split('-')[1],
-      company: _company.contains('AVA')? 'Avalon': 'unknown',
+      company: _company,
       aging: getInt(regexp.aging.firstMatch(data)?.group(2)),
       aucN: _aucN,
       led: getInt(regexp.led.firstMatch(data)?.group(2)),
@@ -190,27 +260,69 @@ class Hashboard{
   factory Hashboard.fromString(int index, String data){
     var _pvtT;
     var _pvtV;
-    if(regexp.pvtT.allMatches(data).isNotEmpty) {
-      _pvtT = regexp.pvtT.allMatches(data).elementAt(index).group(2)?.split(
+    try {
+      if (regexp.pvtT
+          .allMatches(data)
+          .isNotEmpty) {
+        _pvtT = regexp.pvtT.allMatches(data).elementAt(index).group(2)?.split(
+            ' ');
+        _pvtT!.removeWhere((element) => element == '');
+      }
+    }
+    catch(e){
+      print(e);
+    }
+    try {
+      if (regexp.pvtV
+          .allMatches(data)
+          .isNotEmpty) {
+        _pvtV =
+            regexp.pvtV.allMatches(data).elementAt(index).group(2)?.split(' ');
+      }
+    }
+    catch(e){
+      print(e);
+    }
+    List<String?>? _mw = [];
+    try {
+      _mw = regexp.mw.allMatches(data).elementAt(index).group(2)?.split(
           ' ');
-       _pvtT!.removeWhere((element) => element=='');
     }
-    if(regexp.pvtV.allMatches(data).isNotEmpty) {
-      _pvtV = regexp.pvtV.allMatches(data).elementAt(index).group(2)?.split(' ');
+    catch(e){
+      print(e);
     }
-   final _mw = regexp.mw.allMatches(data).elementAt(index).group(2)?.split(' ');
-   final _errors = regexp.echu.firstMatch(data)?.group(2)?.split(' ')  ?? [];
-   List<AvalonError>? _er = ErrorHandler().getErrors(int.parse(_errors[index]));
+    List<String?>? _errors = [];
+    try {
+      _errors = regexp.echu.firstMatch(data)?.group(2)?.split(' ') ?? [];
+    }
+    catch(e){
+      print(e);
+    }
+    List<AvalonError>? _er;
+    try {
+      List<AvalonError>? _er = ErrorHandler().getErrors(
+          int.parse(nullCheck(_errors?[index])));
+    }
+    catch(e){
+      print(e);
+    }
+
    List<ChipModel> _tmp = [];
+
    for(int i = 0; i < _mw!.length; i++)
      {
-       ChipModel _ = ChipModel(
-           number: i+1,
-           temp: _pvtT==null? null : int.tryParse(_pvtT[i]),
-           voltage: _pvtV==null? null : int.tryParse(_pvtV[i]),
-           mw: int.tryParse(_mw![i])
-       );
-       _tmp.add(_);
+       try {
+         ChipModel _ = ChipModel(
+             number: i + 1,
+             temp: _pvtT == null ? null : int.tryParse(_pvtT[i]),
+             voltage: _pvtV == null ? null : int.tryParse(_pvtV[i]),
+             mw: int.tryParse(nullCheck(_mw[i]))
+         );
+         _tmp.add(_);
+       }
+       catch(e){
+         print(e);
+       }
      }
     return Hashboard(
       chips: _tmp,
@@ -242,7 +354,13 @@ class RaspberryAva extends AvalonData{
     this.model, this.company, this.ipInt});
 
   factory RaspberryAva.fromString(String data, String _ip) {
-    List<RegExpMatch> _aucs = regexp.aucs.allMatches(data).toList();
+    List<RegExpMatch> _aucs = [];
+    try {
+      _aucs = regexp.aucs.allMatches(data).toList();
+    }
+    catch(e){
+      print(e);
+    }
     List<AvalonData> _tmp = [];
     int? _tempInput;
     int? _tMax;
@@ -256,31 +374,44 @@ class RaspberryAva extends AvalonData{
       _octet[3] = '0${_octet[3]}';
     }
     int? _ipInt = int.tryParse(_octet.join());
-    for(int n = 0; n < _aucs.length; n++)
-    {
-      List<RegExpMatch> _auc = regexp.singleData.allMatches(_aucs[n].group(2)??'').toList();
+    for(int n = 0; n < _aucs.length; n++) {
+      List<RegExpMatch> _auc = [];
+      try {
+        _auc = regexp.singleData.allMatches(
+          _aucs[n].group(2) ?? '').toList();
+    }
+    catch(e){
+        print(e);
+    }
       //print(_aucs[1].group(2));
       for(int i =0; i < _auc.length; i++)
       {
      //   print(_auc[i].group(2));
-        AvalonData _data = AvalonData.fromString(_auc[i].group(2)??'', '$_ip', n);
-        _tmp.add(_data);
-        if(_tempInput==null&&_data.tempInput!=null || _tempInput!<_data.tempInput!)
-        {
-          _tempInput = _data.tempInput;
-        }
-        if(_tMax==null&&_data.tMax!=null || _tMax!<_data.tMax!)
-        {
-          _tMax = _data.tMax;
-        }
-        if(_data.currentSpeed!=null)
-        {
-          _currentSpeed += _data.currentSpeed!;
-        }
-        if(!_models.contains(_data.model))
+        try {
+          AvalonData _data = AvalonData.fromString(
+              _auc[i].group(2) ?? '', '$_ip', n);
+          _tmp.add(_data);
+          if(_tempInput==null&&_data.tempInput!=null || _tempInput!<_data.tempInput!)
+          {
+            _tempInput = _data.tempInput;
+          }
+          if(_tMax==null&&_data.tMax!=null || _tMax!<_data.tMax!)
+          {
+            _tMax = _data.tMax;
+          }
+          if(_data.currentSpeed!=null)
+          {
+            _currentSpeed += _data.currentSpeed!;
+          }
+          if(!_models.contains(_data.model))
           {
             _models.add(_data.model);
           }
+        }
+        catch(e){
+          print(e);
+        }
+
       }
     }
     return RaspberryAva(
