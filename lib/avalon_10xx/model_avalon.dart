@@ -32,25 +32,8 @@ String intToDate(int? value){
     return '';
   }
 }
-/*
-class AvalonModel{
-  General? general;
-  Hashboards? hashboards;
-  Speed? speed;
-  PowerSupply? powerSupply;
-  Extras? extras;
-  List<Hashboard>? hashboard = [];
-  AvalonModel({this.general, this.hashboards, this.speed, this.powerSupply, this.extras, this.hashboard});
-  factory AvalonModel.fromData(AvalonData data){
-    return AvalonModel(
-
-    );
-  }
-}
-
- */
-
 class AvalonData{
+  String? rawData;
   String? version;
   int? elapsed;
   String? elapsedString;
@@ -93,7 +76,7 @@ class AvalonData{
   int? led;
   List<Pool>? pools;
   bool isScrypt = false;
-  AvalonData({this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
+  AvalonData({this.rawData, this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
     this.tempInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
     this.tAvg, this.tMax, this.tMaxByHashBoard, this.ECMM, this.ECHU, this.hw, this.dh,
     this.freq, this.currentSpeed, this.averageSpeed, this.ps, this.psErrors, this.voltageMM,
@@ -195,6 +178,7 @@ class AvalonData{
       aucN: _aucN,
       led: getInt(regexp.led.firstMatch(data)?.group(2)),
       pools: [],
+      rawData: data,
     );
   }
 

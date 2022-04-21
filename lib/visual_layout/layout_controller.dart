@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/mock_data.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/avalon_10xx/overview_screen.dart';
+import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/scan_list/scanner.dart';
@@ -106,14 +106,16 @@ class LayoutController extends GetxController{
     }
     return device;
   }
+  /*
   onDoubleTap(dynamic device){
+    Get.to(()=>const MinerOverviewScreen(), arguments: device);
     if(device.runtimeType==AvalonData) {
       scanlistController.currentDevice.value = device;
-      Get.dialog(const OverviewScreen(type: 'avalon',));
+    //  Get.dialog(const OverviewScreen(type: 'avalon',));
     }
     else if(device.runtimeType==AntMinerModel){
       scanlistController.currentAntDevice.value = device;
-      Get.dialog(const OverviewScreen(type: 'antminer',));
+  //    Get.dialog(const OverviewScreen(type: 'antminer',));
     }
     else{
       //TODO add unknown support
@@ -123,6 +125,8 @@ class LayoutController extends GetxController{
     //print(scanlistController.currentDevice.value);
     //Get.to(()=>const OverviewScreen());
   }
+
+   */
   onRefresh() async {
     await startScan();
   }

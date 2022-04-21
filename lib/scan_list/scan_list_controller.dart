@@ -4,9 +4,9 @@ import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/avalon_10xx/overview_screen.dart';
 import 'package:avalon_tool/ip_section/ip_management_controller.dart';
 import 'package:avalon_tool/ip_section/ip_range_model.dart';
+import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:avalon_tool/scan_list/scanner.dart';
@@ -14,6 +14,7 @@ import 'package:avalon_tool/scan_list/summary_model.dart';
 import 'package:avalon_tool/pools_editor/set_pool.dart';
 import 'package:avalon_tool/control_panel/reboot_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -303,13 +304,14 @@ if(event.data.company!='AntMiner') {
    // scanner.startToChangePools(selectedIps, pools);
   }
   onDoubleTap(dynamic data){
+    Get.to(()=>const MinerOverviewScreen(), arguments: data);
     if(data.runtimeType==AvalonData) {
       currentDevice.value = data;
-      Get.dialog(const OverviewScreen(type: 'avalon',));
+      //Get.dialog(const MinerOverviewScreen(), arguments: data);
     }
     else if(data.runtimeType==AntMinerModel){
       currentAntDevice.value = data;
-      Get.dialog(const OverviewScreen(type: 'antminer',));
+      //Get.dialog(const MinerOverviewScreen(), arguments: data);
     }
     else{
       //TODO add unknown support
@@ -367,6 +369,12 @@ if(event.data.company!='AntMiner') {
   }
   onModeSwitch(int value){
     displayMode.value = value;
+  }
+  showLog(){
+    Get.defaultDialog(
+        title: '',
+        content: SelectableText('${currentAntDevice.value.rawData}')
+    );
   }
   expand(int index){
     if(expandedRasp.contains(index)){

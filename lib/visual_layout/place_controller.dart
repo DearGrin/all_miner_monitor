@@ -5,8 +5,9 @@ import 'package:avalon_tool/antminer/mock_ant.dart';
 import 'package:avalon_tool/avalon_10xx/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/mock_data.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/avalon_10xx/overview_screen.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart';
+import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
+import 'package:avalon_tool/utils/bindings.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/layout_controller.dart';
 import 'package:avalon_tool/visual_layout/layout_model.dart';
@@ -63,10 +64,15 @@ class PlaceController extends GetxController{
   if(checkIp()) {
     /// get device
     try {
+      ///get device from scan results
     //  device = controller.getDevice(place!, placeIndex!);
-      //device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
-      String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
-      device = AntMinerModel.fromString(_data, '10.10.10.10');
+      ///mock L3
+      device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
+      ///mock S9
+      //String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
+      //device = AntMinerModel.fromString(_data, '10.10.10.10');
+      ///mock Avalon 1066
+    //  device = AvalonData.fromString(mockData, '10.10.10.10');
     }
     catch(e){
       print(e);
@@ -168,8 +174,9 @@ class PlaceController extends GetxController{
       }
   }
   onDoubleTap(){
+    Get.to(()=> const MinerOverviewScreen(), binding: MinerOverviewBinding(), arguments: device);
     if(device!=null) {
-    controller.onDoubleTap(device);
+   // controller.onDoubleTap(device);
     }
     else{
       print('no device');
