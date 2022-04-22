@@ -115,8 +115,8 @@ handleCallback(String callback, String ip){
   scanResult.add(_event);
 }
 
-  newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tag}) async {
-    tag = tag;
+  newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tg}) async {
+    tag = tg;
     clearQuery();
     List<String?> _ips = [];
     if(scanList!=null) {

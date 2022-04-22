@@ -40,6 +40,7 @@ class LayoutTileController extends GetxController{
   }
   handleScanResult(EventModel event){
     if(event.tag!=null && event.tag==layout.tag) {
+      jobsDone++;
       progress.value = jobsDone / layout.ips!.length;
       if (event.type == 'device') {
         devices.add(event.data);
@@ -57,15 +58,22 @@ class LayoutTileController extends GetxController{
     }
   }
   scan(){
+    clearSummary();
     if(layout.ips!.isNotEmpty){
      // scanlistController.clearQuery();
-      scanner.newScan(ips: layout.ips);
+      scanner.newScan(ips: layout.ips, tg: layout.tag);
     }
   }
   clearSummary(){
     jobsDone = 0;
     progress.value = 0.0;
     devices.clear();
+    speedSCRYPT.value = 0;
+    speedAvgSCRYPT.value = 0;
+    speedAvgSHA256.value = 0;
+    speedSHA256.value = 0;
+    deviceCountSCRYPT.value = 0;
+    deviceCountSHA256.value = 0;
   }
   onEditTagClick(){
     controller.onEditTagClick(layout.tag);
