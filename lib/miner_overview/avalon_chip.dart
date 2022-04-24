@@ -17,7 +17,7 @@ class AvalonChip extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(),
               color: controller.displayMode.value==0?
-              getChipColor(controller.device[0].hashBoards?[board].chips?[number].temp) : getChipColorWork(controller.device[0].hashBoards?[board].chips?[number].mw, controller.device[0].elapsed), // TODO get the data
+              getChipColor(controller.device[0].data.hashBoards?[board].chips?[number].temp) : getChipColorWork(controller.device[0].data.hashBoards?[board].chips?[number].mw, controller.device[0].data.elapsed), // TODO get the data
             ),
             child: Obx(() {
               if (controller.displayMode.value == 0) {
@@ -32,7 +32,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].voltage.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
@@ -40,7 +40,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].temp.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
@@ -48,7 +48,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].mw.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW
@@ -68,7 +68,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.topRight,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].voltage.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
@@ -76,7 +76,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].temp.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
@@ -84,7 +84,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        controller.device[0].hashBoards![board]
+                        controller.device[0].data.hashBoards![board]
                             .chips![number].mw.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW

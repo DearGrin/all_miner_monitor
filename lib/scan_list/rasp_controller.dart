@@ -1,10 +1,13 @@
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
+import 'package:avalon_tool/models/device_model.dart';
 import 'package:avalon_tool/scan_list/header_defaults.dart';
 import 'package:avalon_tool/scan_list/table_header_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class RaspController extends GetxController{
+  final DeviceModel data;
+  RaspController(this.data);
   List<int> sortId = <int>[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].obs;
   RaspberryAva device = RaspberryAva();
   RxBool isexpanded = false.obs;
@@ -20,6 +23,7 @@ class RaspController extends GetxController{
      // sortId.add(0);
      // update(['header_$i']);
     }
+    device = data.data;
     super.onInit();
   }
 
@@ -49,7 +53,7 @@ class RaspController extends GetxController{
         device.devices?.sort((a,b)=>a.ipInt!.compareTo(b.ipInt!));
         break;
       case 'manufacture':
-        device.devices?.sort((a,b)=>a.company!.compareTo(b.company!));
+        device.devices?.sort((a,b)=>a.manufacture!.compareTo(b.manufacture!));
         break;
       case 'model':
         device.devices?.sort((a,b)=>a.model!.compareTo(b.model!));
@@ -64,7 +68,7 @@ class RaspController extends GetxController{
         device.devices?.sort((a,b)=>a.averageSpeed!.compareTo(b.averageSpeed!));
         break;
       case 'tempInput':
-        device.devices?.sort((a,b)=>a.tempInput!.compareTo(b.tempInput!));
+        device.devices?.sort((a,b)=>a.tInput!.compareTo(b.tInput!));
         break;
       case 'tempMax':
         device.devices?.sort((a,b)=>a.tMax!.compareTo(b.tMax!)); //TODO check for null

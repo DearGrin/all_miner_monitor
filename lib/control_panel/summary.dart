@@ -22,9 +22,10 @@ class Summary extends GetView<ScanListController> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('devices'.trParams({'value':controller.summary.count.toString()})),
-                        Text('total'.trParams({'value':controller.summary.totalHash.toStringAsFixed(2)})),
-                        Text('average'.trParams({'value':(controller.summary.averageHash/controller.summary.count).toStringAsFixed(2)})),
+                        Text('SHA256'),
+                        Text('devices'.trParams({'value':controller.summary.countSHA256.toString()})),
+                        Text('total'.trParams({'value':controller.summary.totalHashSHA256.toStringAsFixed(2)})),
+                        Text('average'.trParams({'value':(controller.summary.averageHashSHA256/controller.summary.countSHA256).toStringAsFixed(2)})),
                       ],
                     );
                   }
@@ -32,16 +33,22 @@ class Summary extends GetView<ScanListController> {
             ),
             Expanded(
                 flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('with_errors'.trParams({'value':controller.summary.count.toString()})),
-                    Text('max_temp'.trParams({'value':controller.summary.count.toString()})),
-                    const Text(''),
-                  ],
+                child: GetBuilder<ScanListController>(
+                  id: 'summary',
+                  builder: (_){
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('SCRYPT'),
+                        Text('devicesGH'.trParams({'value':controller.summary.countSCRYPT.toString()})),
+                        Text('totalGH'.trParams({'value':controller.summary.totalHashSCRYPT.toStringAsFixed(2)})),
+                        Text('averageGH'.trParams({'value':(controller.summary.averageHashSCRYPT/controller.summary.countSCRYPT).toStringAsFixed(2)})),
+                      ],
+                    );
+                  },
                 ),
-            ),
+                ),
           ],
         ),
       ),

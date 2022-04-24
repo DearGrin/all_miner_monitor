@@ -2,9 +2,9 @@ import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
-import 'package:avalon_tool/scan_list/errors_degugger.dart';
-import 'package:avalon_tool/scan_list/rasberry_row.dart';
-import 'package:avalon_tool/scan_list/resize_cotroller.dart';
+import 'package:avalon_tool/scan_list/errors_debugger.dart';
+import 'package:avalon_tool/scan_list/raspberry_row.dart';
+import 'package:avalon_tool/scan_list/resize_controller.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,7 +70,7 @@ class ScanListScreen extends StatelessWidget{
       );
   }
   Widget infoRow(int index, BuildContext context, dynamic data) {
-    if (data.runtimeType == AvalonData)
+    if (data.data.runtimeType == AvalonData)
     {
       return AvalonDataRow(index, data);
       /*
@@ -127,11 +127,10 @@ class ScanListScreen extends StatelessWidget{
 
        */
   }
-    else if (data.runtimeType == RaspberryAva){
-      RaspberryAva rasp = data;
+    else if (data.data.runtimeType == RaspberryAva){
       return RasberryDataRow(index, data);
     }
-    else if (data.runtimeType == AntMinerModel){
+    else if (data.data.runtimeType == AntMinerModel){
       return AvalonDataRow(index, data);
     }
     else{

@@ -13,7 +13,6 @@ import 'package:avalon_tool/scan_list/scanner.dart';
 import 'package:avalon_tool/scan_list/summary_model.dart';
 import 'package:avalon_tool/pools_editor/set_pool.dart';
 import 'package:avalon_tool/control_panel/reboot_ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -73,31 +72,32 @@ class ScanListController extends GetxController{
     if(event.runtimeType==EventModel && event.type=='device')
       {
         devices.add(event.data);
-/*
-        summary.count ++;
-        if(event.data.currentSpeed!=null)
-        {
-          summary.totalHash +=event.data.currentSpeed!;
-        }
-        if(event.data.averageSpeed!=null)
-        {
-          summary.averageHash += event.data.averageSpeed!;
-        }
-        if(event.data.tMax!=null && summary.maxTemp < event.data.tMax!)
-        {
-          summary.maxTemp = event.data.tMax!;
-        }
-if(event.data.company!='AntMiner') {
-          if (event.data.ECMM!
-              .isNotEmpty) // TODO add into count ECHU errors and PS
-              {
-            summary.withErrors ++;
+        if(event.data.isScrypt){
+          summary.countSCRYPT ++;
+          if(event.data.currentSpeed!=null)
+          {
+            summary.totalHashSCRYPT +=event.data.currentSpeed!;
+          }
+          if(event.data.averageSpeed!=null)
+          {
+            summary.averageHashSCRYPT += event.data.averageSpeed!;
           }
         }
-
- */
-
-
+        else{
+          summary.countSHA256 ++;
+          if(event.data.currentSpeed!=null)
+          {
+            summary.totalHashSHA256 +=event.data.currentSpeed!;
+          }
+          if(event.data.averageSpeed!=null)
+          {
+            summary.averageHashSHA256 += event.data.averageSpeed!;
+          }
+          if(event.data.tMax!=null && summary.maxTemp < event.data.tMax!)
+          {
+            summary.maxTemp = event.data.tMax!;
+          }
+        }
 
         update(['list', 'summary']);
       }
@@ -162,7 +162,7 @@ if(event.data.company!='AntMiner') {
         devices.sort((a,b)=>a.ipInt.compareTo(b.ipInt));
         break;
       case 'manufacture':
-        devices.sort((a,b)=>a.company!.compareTo(b.company!));
+        devices.sort((a,b)=>a.manufacture!.compareTo(b.manufacture!));
         break;
       case 'model':
         devices.sort((a,b)=>a.model!.compareTo(b.model!));
@@ -177,7 +177,7 @@ if(event.data.company!='AntMiner') {
         devices.sort((a,b)=>a.averageSpeed!.compareTo(b.averageSpeed!));
         break;
       case 'tempInput':
-        devices.sort((a,b)=>a.tempInput!.compareTo(b.tempInput!));
+        devices.sort((a,b)=>a.tInput!.compareTo(b.tInput!));
         break;
       case 'tempMax':
         devices.sort((a,b)=>a.tMax!.compareTo(b.tMax!)); //TODO check for null
@@ -189,7 +189,7 @@ if(event.data.company!='AntMiner') {
         devices.sort((a,b)=>a.mm!.compareTo(b.mm!));
         break;
       case 'errors':
-        devices.sort((a,b)=>a.ECMM!.first.id.toString().compareTo(b.ECMM!.first.id.toString())); //TODO check for null
+        devices.sort((a,b)=>a.errors!.first.id.toString().compareTo(b.errors!.first.id.toString())); //TODO check for null
         break;
       case 'ps':
         devices.sort((a,b)=>a.ps.toString().compareTo(b.ps.toString()));
@@ -270,7 +270,7 @@ if(event.data.company!='AntMiner') {
     {
       String _suffix = '';
       if(suffixMode[0]==1) {
-        _suffix = pools[0]!.addr!.contains('.')? '':'.'; //TODO nul check?
+        _suffix = pools[0].addr!.contains('.')? '':'.'; //TODO nul check?
        // List<String> _octet = devices[i].ip.split('.');
        var _ = devices.firstWhere((element) => element.ip==selectedIps[i]);
         List<String> _octet = _.ip.split('.');
@@ -287,7 +287,7 @@ if(event.data.company!='AntMiner') {
 
 
       commands.add(commandConstructor.setPools('root', 'root',
-          pools[0]!.addr!+_suffix, pools[0]?.worker??'', pools[0]?.passwd??''));
+          pools[0].addr!+_suffix, pools[0].worker??'', pools[0].passwd??''));
     }
     scanner.universalCreate(selectedIps, commands);
     /*

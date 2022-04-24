@@ -1,5 +1,5 @@
 import 'package:avalon_tool/utils/analyse_resolver.dart';
-import 'package:avalon_tool/scan_list/resize_cotroller.dart';
+import 'package:avalon_tool/scan_list/resize_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +7,7 @@ class ContentContainer extends StatelessWidget {
   final int index;
   final dynamic value;
   final String? type;
-  ContentContainer(this.index, this.value, [this.type,Key? key]) : super(key: key);
+  const ContentContainer(this.index, this.value, [this.type,Key? key]) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ContentContainer extends StatelessWidget {
                   decoration: BoxDecoration(border: Border.all(), color: Theme.of(context).cardTheme.color,),
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    value.toString(),
+                    value==null? '' :value==-100? '' : value==-100.0? '' : value.runtimeType.toString()=='double'? value.toStringAsFixed(2) : value.toString(),
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: analyseResolver.getColor(type, value)),
                   ),

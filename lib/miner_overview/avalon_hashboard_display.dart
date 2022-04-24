@@ -17,11 +17,11 @@ class AvalonHashboardDisplay extends StatelessWidget{
     return SingleChildScrollView(
       controller: scrollController,
       child: controller.device[0].model!.startsWith('1')? Row(
-        children: hashboards(controller.device[0].hashBoardCount, controller.device[0].hashBoards, controller.device[0].model), //TODO wtf with null check!
+        children: hashboards(controller.device[0].data.hashBoardCount, controller.device[0].data.hashBoards, controller.device[0].data.model), //TODO wtf with null check!
       )
       : Column(
         mainAxisSize: MainAxisSize.min,
-        children: hashboards(controller.device[0].hashBoardCount, controller.device[0].hashBoards, controller.device[0].model), //TODO wtf with null check!,
+        children: hashboards(controller.device[0].data.hashBoardCount, controller.device[0].data.hashBoards, controller.device[0].data.model), //TODO wtf with null check!,
       ),
     );
   }

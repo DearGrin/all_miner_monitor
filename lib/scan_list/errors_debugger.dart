@@ -9,7 +9,7 @@ class ErrorsDebugger extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScanListController controller = Get.put(ScanListController());
     return Container(
-      width: 500,
+      width: 700,
       height: 700,
       color: Theme.of(context).cardTheme.color,
       child: SingleChildScrollView(

@@ -1,6 +1,6 @@
 import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/scan_list/rasp_controller.dart';
-import 'package:avalon_tool/scan_list/resize_cotroller.dart';
+import 'package:avalon_tool/scan_list/resize_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +16,7 @@ class ContentContainerWithSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AnalyseResolver analyseResolver = Get.put(AnalyseResolver());
-    final RaspController controller = Get.put(RaspController(), tag: tag);
+    final RaspController controller = Get.find(tag: tag);
     return GetBuilder<ResizeController>(
         id: 'content_$index',
         builder: (_) {
@@ -35,7 +35,7 @@ class ContentContainerWithSort extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            value.toString(),
+                            value==null? '' :value==-100? '' : value==-100.0? '' : value.runtimeType.toString()=='double'? value.toStringAsFixed(2) : value.toString(),
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: analyseResolver.getColor(type, value)),
                           ),

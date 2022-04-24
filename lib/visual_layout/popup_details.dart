@@ -8,7 +8,7 @@ class PopupDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final LayoutController  controller = Get.put(LayoutController());
-    if(controller.currentDevice!=null && controller.currentDevice.company=='Antminer') {
+    if(controller.currentDevice!=null && controller.currentDevice.manufacture=='Antminer') {
       return SizedBox(
         width: 500,
         child: Card(

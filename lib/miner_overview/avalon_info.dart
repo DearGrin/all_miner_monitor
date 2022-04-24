@@ -41,38 +41,38 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('version'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].version ?? '', style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.version ?? '', style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('elapsed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].elapsedString.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.elapsedString.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('dna'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].dna ?? '', style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.dna ?? '', style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('work_mode'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].workMode ?? '', style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.workMode ?? '', style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('temp_input'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].tempInput.toString(),
+                                SelectableText(controller.device[0].data.tInput.toString(),
                                     style: Theme.of(context).textTheme.bodyText1?.
                                     copyWith(color: analyseResolver.getColor(
-                                        'temp_input', controller.device[0].tempInput))
+                                        'temp_input', controller.device[0].data.tInput))
                                 ), //TODO get color scheme
                               ],
                             ),
@@ -82,7 +82,7 @@ class AvalonInfo extends StatelessWidget {
                                 Text('fans'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: fans(controller.device[0].fans, controller.device[0].fanR, context, analyseResolver),
+                                    children: fans(controller.device[0].data.fans, controller.device[0].data.fanR, context, analyseResolver),
                                   ),
                                 ),
                               ],
@@ -93,7 +93,7 @@ class AvalonInfo extends StatelessWidget {
                                 Text('errors_ecmm'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: errors(controller.device[0].ECMM, context),
+                                    children: errors(controller.device[0].data.ECMM, context),
                                   ),
                                 ),
                               ],
@@ -131,10 +131,10 @@ class AvalonInfo extends StatelessWidget {
                               children: [
                                 Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
 
-                                SelectableText(controller.device[0].hashBoardCount.toString(),
+                                SelectableText(controller.device[0].data.hashBoardCount.toString(),
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: controller.device[0].hashBoardCount!
-                                        < controller.device[0].maxHashBoards!
+                                    copyWith(color: controller.device[0].data.hashBoardCount!
+                                        < controller.device[0].data.maxHashBoards!
                                         ? Colors.red:null)),
 
 
@@ -149,17 +149,17 @@ class AvalonInfo extends StatelessWidget {
                                   TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: controller.device[0].tAvg.toString(),
+                                            text: controller.device[0].data.tAvg.toString(),
                                             style: Theme.of(context).textTheme.bodyText2!.
                                             copyWith(color: analyseResolver.getColor(
-                                                'temp_max', controller.device[0].tAvg))
+                                                'temp_max', controller.device[0].data.tAvg))
                                         ),
                                         TextSpan(text: '/', style: Theme.of(context).textTheme.bodyText2),
                                         TextSpan(
-                                            text: controller.device[0].tMax.toString(),
+                                            text: controller.device[0].data.tMax.toString(),
                                             style: Theme.of(context).textTheme.bodyText2!.
                                             copyWith(color:analyseResolver.getColor(
-                                                'max_temp', controller.device[0].tMax))
+                                                'max_temp', controller.device[0].data.tMax))
                                         ),
                                       ]
                                   ),
@@ -176,7 +176,7 @@ class AvalonInfo extends StatelessWidget {
 
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: tempsByBoard(controller.device[0].tMaxByHashBoard,controller.device[0].hashBoards,  context, analyseResolver),
+                                    children: tempsByBoard(controller.device[0].data.tMaxByHashBoard,controller.device[0].data.hashBoards,  context, analyseResolver),
                                   ),
                                 ),
 
@@ -189,7 +189,7 @@ class AvalonInfo extends StatelessWidget {
 
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: hardwareErrors(controller.device[0].dh, controller.device[0].hw, context, analyseResolver),
+                                    children: hardwareErrors(controller.device[0].data.dh, controller.device[0].data.hw, context, analyseResolver),
                                   ),
                                 ),
 
@@ -229,14 +229,14 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('frequency'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].freq.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.freq.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('current_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].currentSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
+                                SelectableText(controller.device[0].data.currentSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
                                     style: Theme.of(context).textTheme.bodyText2?.
                                     copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].currentSpeed))
                                 ),
@@ -246,9 +246,9 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('average_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].averageSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
+                                SelectableText(controller.device[0].data.averageSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].averageSpeed))
+                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.averageSpeed))
                                 ),
                               ],
                             ),
@@ -286,21 +286,21 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('voltage_mm'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].voltageMM.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.voltageMM.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('voltage_out'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].voltageOutput.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.voltageOutput.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('voltage_req'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].voltageOutput.toString()+'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.voltageOutput.toString()+'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
 
@@ -308,8 +308,8 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('hash_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].powerHashBoards.toString() +
-                                    'A/' + controller.device[0].consumption.toString() +
+                                SelectableText(controller.device[0].data.powerHashBoards.toString() +
+                                    'A/' + controller.device[0].data.consumption.toString() +
                                     'W', style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
@@ -317,14 +317,14 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('total_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].consumption.toString()+ 'W', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.consumption.toString()+ 'W', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('ps_communication'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].psCommunication.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.psCommunication.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
                           ],
@@ -360,7 +360,7 @@ class AvalonInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('aging'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].aging.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.aging.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                           ],

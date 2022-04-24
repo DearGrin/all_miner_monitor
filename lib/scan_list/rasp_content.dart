@@ -15,11 +15,9 @@ class RaspContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('ip is $ip');
     // final ScanListController scanListController = Get.put(ScanListController());
-    final RaspController controller = Get.put(RaspController(), tag: ip);
+    final RaspController controller = Get.find<RaspController>(tag: ip);
     //  print('in ui list_$ip');
-    print('ip of controller  ${controller.device.ip}');
     
     return Obx(() =>
          controller.isexpanded.value ?

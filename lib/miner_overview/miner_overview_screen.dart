@@ -15,7 +15,7 @@ class MinerOverviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(controller.device[0].ip),
-        actions: controller.device[0].company=='Antminer'?
+        actions: controller.device[0].manufacture=='Antminer'?
          [
           OutlinedButton(onPressed: (){controller.showTempMap();}, child: const Text('boards Temp')),
           OutlinedButton(onPressed: (){controller.showLog();}, child: const Text('Log')),
@@ -32,7 +32,7 @@ class MinerOverviewScreen extends StatelessWidget {
         children: [
           Expanded(
               flex: 3,
-              child: controller.device[0].company=='Antminer'? const AntminerInfo():const AvalonInfo(),
+              child: controller.device[0].manufacture=='Antminer'? const AntminerInfo():const AvalonInfo(),
           ),
           Expanded(
               flex: 7,
@@ -48,13 +48,13 @@ class MinerOverviewScreen extends StatelessWidget {
                           alignment: WrapAlignment.start,
                           crossAxisAlignment: WrapCrossAlignment.start,
                           children: [
-                            SelectableText('${controller.device[0].rawData}')
+                            SelectableText('${controller.device[0].data.rawData}')
                           ],
                         ),
                       ),
                     ),
                     ///temp screen index 1
-                    controller.device[0].company=='Antminer'? const AntminerHashboards() : const AvalonHashboardDisplay(),
+                    controller.device[0].manufacture=='Antminer'? const AntminerHashboards() : const AvalonHashboardDisplay(),
                   ],
                 ),
               )

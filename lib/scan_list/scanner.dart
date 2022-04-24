@@ -1,15 +1,17 @@
 import 'dart:async';
+import 'package:avalon_tool/antminer/antminer_model.dart';
+import 'package:avalon_tool/antminer/mock_ant.dart';
 import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/mock_data.dart';
+import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/ip_section/ip_range_model.dart';
 import 'package:avalon_tool/isolates/isolate_service.dart';
+import 'package:avalon_tool/models/device_model.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:get/get.dart';
-
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:hive/hive.dart';
 
 class Scanner extends GetxController{
@@ -34,11 +36,10 @@ class Scanner extends GetxController{
     sub = computeStatus.stream.listen((event) {
 
       currentIndex++;
-      print(currentIndex);
     });
     isolateStream.stream.listen((event) {
       currentIndex++;
-      handledevice(event);
+      handleDevice(event);
     });
     super.onInit();
   }
@@ -52,11 +53,23 @@ class Scanner extends GetxController{
     final RegExp regExp = RegExp(r'^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$');
     return regExp.hasMatch(ip);
   }
-handledevice(EventModel event){
+handleDevice(EventModel event){
       event.tag = tag;
       jobsDone++;
       double _progress = jobsDone/finalProgress;
       progressStream.add(_progress);
+      ///mock L3
+     // var _device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
+      ///mock S9
+      //String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
+      //var _device = AntMinerModel.fromString(_data, '10.10.10.10');
+      ///mock Avalon 1066
+      //var _device = AvalonData.fromString(mockData, '10.10.10.10');
+      ///mock Avalon 9xx raspberry
+      //var _device = RaspberryAva.fromString(mockRasp, '10.10.10.10');
+      //var device = DeviceModel.fromData(_device, '10.10.10.10');
+      //scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
+
       scanResult.add(event);
 
 }

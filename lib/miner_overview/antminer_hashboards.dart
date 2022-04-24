@@ -14,7 +14,7 @@ class AntminerHashboards extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-         children: hashes(controller.device[0].chainString, context)
+         children: hashes(controller.device[0].data.chainString, context)
         ),
       ),
     );

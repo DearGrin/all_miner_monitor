@@ -41,13 +41,14 @@ class AvalonData{
   String? dna;
   String? workMode;
   List<int?>? netFail;
-  int? tempInput;
+  int? tInput;
   List<int?>? fans;
   int? fanR;
   int? hashBoardCount;
   int? chipCount;
   int? tAvg;
   int? tMax;
+  List<int?>? errors;
   List<int?>? tMaxByHashBoard;
   List<AvalonError>? ECMM;
   List<List<AvalonError>?>? ECHU;
@@ -70,7 +71,7 @@ class AvalonData{
   int? ipInt;
   String? model;
   String? mm;
-  String? company;
+  String? manufacture;
   int? aging;
   String? status;
   int? aucN;
@@ -78,17 +79,18 @@ class AvalonData{
   List<Pool>? pools;
   bool isScrypt = false;
   AvalonData({this.rawData, this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
-    this.tempInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
+    this.tInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
     this.tAvg, this.tMax, this.tMaxByHashBoard, this.ECMM, this.ECHU, this.hw, this.dh,
     this.freq, this.currentSpeed, this.averageSpeed, this.ps, this.psErrors, this.voltageMM,
     this.voltageOutput, this.powerHashBoards, this.requiredVoltage, this.consumption,
     this.psCommunication, this.hashBoards, this.maxHashBoards, this.ip,
-    this.model, this.mm, this.company, this.aging, this.status='', this.aucN,
-    this.ipInt, this.led, this.pools});
+    this.model, this.mm, this.manufacture, this.aging, this.status='', this.aucN,
+    this.ipInt, this.led, this.pools, this.errors});
   factory AvalonData.fromString(String data, String ip, [int? _aucN]){
     String _company = 'Unknown';
     try {
-      _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
+     // _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
+      _company = 'Avalon';
     }
     catch(e){
       print(e);
@@ -182,7 +184,29 @@ class AvalonData{
     catch(e){
       print(e);
     }
-
+    int? _rawEcmm;
+    try {
+      _rawEcmm = getInt(regexp.ecmm.firstMatch(data)?.group(2));
+    }
+    catch(e){
+      print(e);
+    }
+    List<AvalonError>? _ecmm;
+    try {
+      _ecmm = ErrorHandler().getErrors(_rawEcmm);
+    }
+    catch(e){
+      print(e);
+    }
+    List<int?>? _errors;
+    try{
+      List<int?>? _ = _rawEchu;
+      _?.insert(0, _rawEcmm);
+      _errors = _;
+    }
+    catch(e){
+      print(e);
+    }
     for(int i = 0; i < _maxHashBoards; i++)
       {
         try {
@@ -214,7 +238,7 @@ class AvalonData{
       dna: regexp.dna.firstMatch(data)?.group(2) ?? '-',
       workMode: regexp.workMode.firstMatch(data)?.group(2) ?? '-',
       netFail: _netFail,
-      tempInput: getInt(regexp.tempInput.firstMatch(data)?.group(2)),
+      tInput: getInt(regexp.tempInput.firstMatch(data)?.group(2)),
       fans: _fans,
       fanR: getInt(regexp.fanR.firstMatch(data)?.group(2)),
       hashBoardCount: getInt(regexp.hashBoardCount.firstMatch(data)?.group(2))??_hashBoards.length,
@@ -222,7 +246,7 @@ class AvalonData{
       tAvg: getInt(regexp.tAvg.firstMatch(data)?.group(2))??getInt(regexp.tAverage.firstMatch(data)?.group(2)),
       tMax: getInt(regexp.tMax.firstMatch(data)?.group(2)),
       tMaxByHashBoard: _tMaxByBoard,
-      ECMM: ErrorHandler().getErrors(getInt(regexp.ecmm.firstMatch(data)?.group(2))),
+      ECMM: _ecmm,
       ECHU: _echu,
       hw: getInt(regexp.hw.firstMatch(data)?.group(2)),
       dh: getDouble(regexp.dh.firstMatch(data)?.group(2)),
@@ -243,12 +267,13 @@ class AvalonData{
       ipInt: _ipInt,
       model: _model,
       mm: regexp.version.firstMatch(data)?.group(2)?.split('-')[1],
-      company: _company,
+      manufacture: _company,
       aging: getInt(regexp.aging.firstMatch(data)?.group(2)),
       aucN: _aucN,
       led: getInt(regexp.led.firstMatch(data)?.group(2)),
       pools: [],
       rawData: data,
+      errors: _errors,
     );
   }
 
@@ -336,7 +361,7 @@ class RaspberryAva extends AvalonData{
   String? version;
   int? elapsed;
   String? elapsedString;
-  int? tempInput;
+  int? tInput;
   int? tMax;
   double? currentSpeed;
   String? ip;
@@ -344,14 +369,14 @@ class RaspberryAva extends AvalonData{
   String? model;
   String? mm;
   @override
-  String? company;
+  String? manufacture;
   //String? status;
   //List<int?>? fans;
   //List<int?>? ps;
 // List<int?>? netFail;
   RaspberryAva({this.devices, this.version, this.elapsed, this.elapsedString,
-    this.tempInput, this.tMax, this.currentSpeed, this.ip, this.mm,
-    this.model, this.company, this.ipInt});
+    this.tInput, this.tMax, this.currentSpeed, this.ip, this.mm,
+    this.model, this.manufacture, this.ipInt});
 
   factory RaspberryAva.fromString(String data, String _ip) {
     List<RegExpMatch> _aucs = [];
@@ -391,9 +416,9 @@ class RaspberryAva extends AvalonData{
           AvalonData _data = AvalonData.fromString(
               _auc[i].group(2) ?? '', '$_ip', n);
           _tmp.add(_data);
-          if(_tempInput==null&&_data.tempInput!=null || _tempInput!<_data.tempInput!)
+          if(_tempInput==null&&_data.tInput!=null || _tempInput!<_data.tInput!)
           {
-            _tempInput = _data.tempInput;
+            _tempInput = _data.tInput;
           }
           if(_tMax==null&&_data.tMax!=null || _tMax!<_data.tMax!)
           {
@@ -418,11 +443,11 @@ class RaspberryAva extends AvalonData{
       devices: _tmp,
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
       elapsedString: intToDate(getInt(regexp.elapsed.firstMatch(data)?.group(2))),
-      tempInput: _tempInput,
+      tInput: _tempInput,
       tMax: _tMax,
       currentSpeed: _currentSpeed,
       ip: _ip,
-      company: 'Avalon',
+      manufacture: 'Avalon',
       model: _models.join(','),
       ipInt: _ipInt,
       );

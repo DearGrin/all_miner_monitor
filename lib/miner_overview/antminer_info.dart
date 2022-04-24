@@ -99,10 +99,10 @@ class AntminerInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].hashCount.toString(),
+                                SelectableText(controller.device[0].data.hashCount.toString(),
                                     style: Theme.of(context).textTheme.bodyText2?.
                                     copyWith(color: analyseResolver.getColor(
-                                        'hash_count', controller.device[0].hashCount,
+                                        'hash_count', controller.device[0].data.hashCount,
                                         controller.device[0].model))
                                 ),
                               ],
@@ -114,7 +114,7 @@ class AntminerInfo extends StatelessWidget {
                                 Text('chips_by_board'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: chipByChain(controller.device[0].chipPerChain,controller.device[0].model ,context, analyseResolver),
+                                    children: chipByChain(controller.device[0].data.chipPerChain,controller.device[0].model ,context, analyseResolver),
                                   ),
                                 ),
                               ],
@@ -126,7 +126,7 @@ class AntminerInfo extends StatelessWidget {
 
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: tempsByBoard(controller.device[0].tChipO, context, analyseResolver),
+                                    children: tempsByBoard(controller.device[0].data.tChipO, context, analyseResolver),
                                   ),
                                 ),
 
@@ -141,7 +141,7 @@ class AntminerInfo extends StatelessWidget {
 
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: tempsByBoard(controller.device[0].tPcbO, context, analyseResolver),
+                                    children: tempsByBoard(controller.device[0].data.tPcbO, context, analyseResolver),
                                   ),
                                 ),
 
@@ -153,7 +153,7 @@ class AntminerInfo extends StatelessWidget {
                                 Text('hard_errors'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: hardwareErrors(controller.device[0].hwPerChain, context),
+                                    children: hardwareErrors(controller.device[0].data.hwPerChain, context),
                                   ),
                                 ),
                               ],
@@ -191,16 +191,16 @@ class AntminerInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('frequency'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].freqs.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.freqs.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('current_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].currentSpeed?.toStringAsFixed(2) ?? '' '${controller.device[0].isScrypt? ' Gh/s':' Th/s'}',
+                                SelectableText(controller.device[0].data.currentSpeed?.toStringAsFixed(2) ?? '' '${controller.device[0].isScrypt? ' Gh/s':' Th/s'}',
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].currentSpeed, controller.device[0].model))
+                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.currentSpeed, controller.device[0].data.model))
                                 ),
                               ],
                             ),
@@ -237,14 +237,14 @@ class AntminerInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('voltage'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].volt.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                SelectableText(controller.device[0].data.volt.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('hash_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].watt.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.watt.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                           ],

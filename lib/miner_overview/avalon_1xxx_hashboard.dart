@@ -25,7 +25,7 @@ class Avalon1xxxHashboard extends StatelessWidget{
               children: [
                SelectableText.rich(
                  TextSpan(
-                   children: errors(controller.device[0].ECHU?[boardIndex], context)
+                   children: errors(controller.device[0].data.ECHU?[boardIndex], context)
                  )
                ),
               ],

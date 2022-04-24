@@ -1,15 +1,22 @@
 class SummaryModel{
-  int count;
-  double totalHash;
-  double averageHash;
+  int countSCRYPT;
+  int countSHA256;
+  double totalHashSHA256;
+  double totalHashSCRYPT;
+  double averageHashSCRYPT;
+  double averageHashSHA256;
   int withErrors;
   int maxTemp;
-  SummaryModel({this.count = 0, this.totalHash = 0, this.averageHash = 0,
+  SummaryModel({this.countSCRYPT = 0, this.countSHA256 = 0, this.totalHashSHA256 = 0,
+    this.totalHashSCRYPT = 0, this.averageHashSCRYPT = 0, this.averageHashSHA256 =0,
     this.withErrors = 0, this.maxTemp = 0});
   clear(){
-    count = 0;
-    totalHash = 0;
-    averageHash = 0;
+    countSCRYPT = 0;
+    countSHA256 = 0;
+    totalHashSHA256 = 0;
+    totalHashSCRYPT = 0;
+    averageHashSCRYPT = 0;
+    averageHashSHA256 = 0;
     withErrors = 0;
     maxTemp = 0;
   }

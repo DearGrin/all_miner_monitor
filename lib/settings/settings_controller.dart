@@ -1,5 +1,5 @@
 import 'package:avalon_tool/scan_list/header_defaults.dart';
-import 'package:avalon_tool/scan_list/resize_cotroller.dart';
+import 'package:avalon_tool/scan_list/resize_controller.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/scan_list/table_header_model.dart';
 import 'package:avalon_tool/settings/header_list_model.dart';

@@ -30,25 +30,33 @@ String intToDate(int? value){
   }
 }
 class AntMinerModel{
-  String? rawData;
+  ///general data
+  String? status;
   String? ip;
   int? ipInt;
-  String? company;
+  String? manufacture;
   String? model;
-  String? status;
+  bool? isScrypt;
   int? elapsed;
   String? elapsedString;
-  String? mm;
   double? currentSpeed;
   double? averageSpeed;
+  int? tMax;
+  int? tInput;
+  String? mm;
+  List<int?>? fans;
+  List<int?>? errors;
+  List<Pool>? pools;
+  String? rawData;
+  List<int?>? ps;
+  List<int?>? netFail;
+  ///manufacture specific data
   int? frequency;
   List<int?>? freqs;
   List<int?>? volt;
   List<int?>? watt;
   int? hashCount;
   int? fanNum;
-  List<int?>? fans;
-  int? tMax;
   int? tempCount;
   List<int?>? tChipI;
   List<int?>? tChipO;
@@ -58,13 +66,12 @@ class AntMinerModel{
   List<String?>? chainString;
   List<int?>? hwPerChain;
   List<double?>? ratePerChain;
-  List<Pool>? pools;
-  bool? isScrypt;
   AntMinerModel({this.rawData, this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
     this.freqs, this.fans, this.tMax, this.tChipO, this.tChipI, this.tPcbO, this.tPcbI,
     this.hashCount, this.volt, this.watt, this.chipPerChain, this.chainString,
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
-    this.ipInt, this.company, this.status='', this.mm, this.elapsedString, this.pools, this.isScrypt});
+    this.ipInt, this.manufacture, this.status='', this.mm, this.elapsedString,
+    this.pools, this.isScrypt, this.tInput, this.errors, this.ps, this.netFail});
 
   factory AntMinerModel.fromString(String data, String _ip){
     List<String> _octet = _ip.split('.');
@@ -228,7 +235,7 @@ class AntMinerModel{
     return AntMinerModel(
       ip: _ip,
       ipInt: _ipInt,
-      company: 'Antminer',
+      manufacture: 'Antminer',
       model: _model,
       mm: _mm,
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
@@ -255,6 +262,7 @@ class AntMinerModel{
       isScrypt: _isScrypt,
       pools: [],
       rawData: data,
+      ps: _volt,
     );
   }
 }
