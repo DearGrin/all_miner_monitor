@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
 import 'package:avalon_tool/avalon_10xx/chip_model.dart';
 import 'package:avalon_tool/avalon_10xx/error_handler.dart';
@@ -370,13 +372,26 @@ class RaspberryAva extends AvalonData{
   String? mm;
   @override
   String? manufacture;
+  String? status;
+  bool isScrypt = false;
+  double? averageSpeed;
+
+
+  List<int?>? fans;
+  List<int?>? errors;
+  List<Pool>? pools;
+  List<int?>? ps;
+  List<int?>? netFail;
+
+
   //String? status;
   //List<int?>? fans;
   //List<int?>? ps;
 // List<int?>? netFail;
   RaspberryAva({this.devices, this.version, this.elapsed, this.elapsedString,
     this.tInput, this.tMax, this.currentSpeed, this.ip, this.mm,
-    this.model, this.manufacture, this.ipInt});
+    this.model, this.manufacture, this.ipInt, this.fans, this.errors, this.pools,
+  this.ps, this.netFail, this.averageSpeed, this.isScrypt = false, this.status});
 
   factory RaspberryAva.fromString(String data, String _ip) {
     List<RegExpMatch> _aucs = [];
@@ -390,6 +405,8 @@ class RaspberryAva extends AvalonData{
     int? _tempInput;
     int? _tMax;
     double _currentSpeed = 0;
+    double _averageSpeed = 0.0;
+    int _count = 0;
     List<String?> _models = [];
     List<String> _octet = _ip.split('.');
     if(_octet[3].length==1){
@@ -437,6 +454,18 @@ class RaspberryAva extends AvalonData{
           print(e);
         }
 
+        try {
+          for (var a in _tmp) {
+            if (a.averageSpeed != null) {
+              _averageSpeed += a.averageSpeed!;
+              _count++;
+            }
+          }
+        }
+        catch(e){
+          print(e);
+        }
+        _averageSpeed = _averageSpeed/_count;
       }
     }
     return RaspberryAva(
@@ -450,6 +479,14 @@ class RaspberryAva extends AvalonData{
       manufacture: 'Avalon',
       model: _models.join(','),
       ipInt: _ipInt,
+      errors: [],
+      fans: [],
+      ps: [],
+      netFail: [],
+      version: '',
+      averageSpeed: _averageSpeed,
+      status: '',
+      isScrypt: false,
       );
   }
 }
