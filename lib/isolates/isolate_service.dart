@@ -9,6 +9,7 @@ import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
+import 'package:avalon_tool/models/device_model.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:hive/hive.dart';
@@ -91,7 +92,8 @@ Future<void> sendCommand(SendPort p) async{
 
       if(data.contains('ID=AVA1')) {
         try{
-          device = AvalonData.fromString(data, ip);
+         var _device = AvalonData.fromString(data, ip);
+          var device = DeviceModel.fromData(_device, ip);
           eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
@@ -103,7 +105,8 @@ Future<void> sendCommand(SendPort p) async{
       }
       else if (data.contains('ID=AV')){
         try {
-          device = RaspberryAva.fromString(data, ip);
+         var _device = RaspberryAva.fromString(data, ip);
+          var device = DeviceModel.fromData(_device, ip);
          eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
@@ -115,7 +118,8 @@ Future<void> sendCommand(SendPort p) async{
       else if(data.toLowerCase().contains('antminer')){
         try {
           String _data = data.replaceAll('"', '').replaceAll(':', '=');
-          device = AntMinerModel.fromString(_data, ip);
+          var _device = AntMinerModel.fromString(_data, ip);
+          var device = DeviceModel.fromData(_device, ip);
           eventModel = EventModel('device', device, ip, data);
         }
         catch(e){
