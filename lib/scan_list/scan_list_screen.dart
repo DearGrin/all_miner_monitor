@@ -1,4 +1,5 @@
 import 'package:avalon_tool/antminer/antminer_model.dart';
+import 'package:avalon_tool/debugger/debugger_screen.dart';
 import 'package:avalon_tool/utils/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
@@ -26,6 +27,12 @@ class ScanListScreen extends StatelessWidget{
                 content: const ErrorsDebugger(),
               );},
               child: Text('show errors', style: Theme.of(context).textTheme.bodyText1,)
+          ),
+          OutlinedButton(
+              onPressed: (){Get.dialog(
+                const DebuggerScreen()
+              );},
+              child: Text('command test', style: Theme.of(context).textTheme.bodyText1,)
           )
         ],
       ),
