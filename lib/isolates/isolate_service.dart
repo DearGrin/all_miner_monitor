@@ -10,6 +10,7 @@ import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/models/device_model.dart';
+import 'package:avalon_tool/pools_editor/device_pool.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:hive/hive.dart';
@@ -63,76 +64,112 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
   // Dispose the StreamQueue.
   await events.cancel();
 }
-Future<void> sendCommand(SendPort p) async{
-  final commandPort = ReceivePort();
-  p.send(commandPort.sendPort);
-
-  /*
-  handleCallback(SendPort p, EventModel eventModel){
-    p.send(eventModel);
+sendAnswer(SendPort p, EventModel eventModel){
+  p.send(eventModel);
+}
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device}) async{
+  dynamic data;
+  try {
+    switch(command){
+      case 'pools':
+        Socket socket = await Socket.connect(
+            ip, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          poolHandler(p, utf8.decode(event), device!, ip);
+          data = utf8.decode(event);
+          socket.close();
+        });
+        socket.add(utf8.encode(command));
+        break;
+      default:
+        Socket socket = await Socket.connect(
+            ip, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          handler(p, utf8.decode(event), command,  ip);
+          data = utf8.decode(event);
+          socket.close();
+        });
+        socket.add(utf8.encode(command));
+    }
   }
-
-   */
-  /*
-  handler2(SendPort p, String data, String ip, dynamic device, String prevRawData){
-    //Pool pool = Pool.fromString(data);
-    String actualRawData = 'prevRawData \n data';
-   //eventModel = EventModel('device', device, ip, actualRawData); //TODO
+  catch(err){
+    data = '$err';
+    EventModel eventModel = EventModel('error', '$err', ip, '$err');
+    sendAnswer(p, eventModel);
+    //p.send(eventModel);
   }
+}
+poolHandler(SendPort p, String data, DeviceModel device, String ip) async {
+  EventModel eventModel = EventModel('error', 'empty event in pool handler', 'fail', 'event was not initialised - pool handler');
+  Pools? _pools;
+  try{
+     _pools = Pools.fromString(data);
+  }
+  catch(e){
+    print(e);
+    eventModel = EventModel('error', data,ip, data);
+  }
+  if(_pools!=null){
+    device.pools = _pools;
+    eventModel = EventModel('device', device, ip, data);
+  }
+  else{
+    eventModel = EventModel('device', device, ip, data);
+  }
+sendAnswer(p, eventModel);
+}
+handler(SendPort p, String data, String command, String ip) async {
 
+  EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
+ // dynamic device;
+  DeviceModel? model;
+  if(command=='estats'||command=='stats|debug'||command=='stats'){
 
-   */
-  handler(SendPort p, String data, String command, String ip) async {
-
-    EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
-    dynamic device;
-
-
-    if(command=='estats'||command=='stats|debug'||command=='stats'){
-
-      if(data.contains('ID=AVA1')) {
-        try{
-         var _device = AvalonData.fromString(data, ip);
-          var device = DeviceModel.fromData(_device, ip);
-          eventModel = EventModel('device', device, ip, data);
-        }
-        catch(e){
-          eventModel = EventModel('error', e.toString(),ip, data);
-        }
-        //   AvalonData device = AvalonData.fromString(data, ip);
-        //data.pools = [Pool.fromString(_call2)];
-        //eventModel = EventModel('device', device, ip);
+    if(data.contains('ID=AVA1')) {
+      try{
+        var _device = AvalonData.fromString(data, ip);
+        var device = DeviceModel.fromData(_device, ip);
+        model = device;
+      //  eventModel = EventModel('device', device, ip, data);
       }
-      else if (data.contains('ID=AV')){
-        try {
-         var _device = RaspberryAva.fromString(data, ip);
-          var device = DeviceModel.fromData(_device, ip);
-         eventModel = EventModel('device', device, ip, data);
-        }
-        catch(e){
-          eventModel = EventModel('error', e.toString(),ip, data);
-        }
-        //data.pools = [Pool.fromString(_call2)];
-        //  eventModel = EventModel('device', data, ip);
+      catch(e){
+        eventModel = EventModel('error', e.toString(),ip, data);
+        sendAnswer(p, eventModel);
       }
-      else if(data.toLowerCase().contains('antminer')){
-        try {
-          String _data = data.replaceAll('"', '').replaceAll(':', '=');
-          var _device = AntMinerModel.fromString(_data, ip);
-          var device = DeviceModel.fromData(_device, ip);
-          eventModel = EventModel('device', device, ip, data);
-        }
-        catch(e){
-          eventModel = EventModel('error', e.toString(),ip, data);
-        }
+    }
+    else if (data.contains('ID=AV')){
+      try {
+        var _device = RaspberryAva.fromString(data, ip);
+        var device = DeviceModel.fromData(_device, ip);
+        model = device;
+      //  eventModel = EventModel('device', device, ip, data);
       }
-      else{
-        data = data;
-        eventModel = EventModel('error', data,ip, data); //TODO unknown device
+      catch(e){
+        eventModel = EventModel('error', e.toString(),ip, data);
+        sendAnswer(p, eventModel);
       }
-    //  RaspberryAva device = RaspberryAva.fromString(mockRasp, ip);
-
-      //eventModel = EventModel('device', device, ip);
+    }
+    else if(data.toLowerCase().contains('antminer')){
+      try {
+        String _data = data.replaceAll('"', '').replaceAll(':', '=');
+        var _device = AntMinerModel.fromString(_data, ip);
+        var device = DeviceModel.fromData(_device, ip);
+        model = device;
+      //  eventModel = EventModel('device', device, ip, data);
+      }
+      catch(e){
+        eventModel = EventModel('error', e.toString(),ip, data);
+        sendAnswer(p, eventModel);
+      }
+    }
+    else{
+      data = data;
+      eventModel = EventModel('error', data,ip, data); //TODO unknown device
+      sendAnswer(p, eventModel);
+    }
+    if(model!=null){
+      socketSendCommand(ip, 'pools', p, device: model);
+    }
 /*
       try {
         Socket socket = await Socket.connect(
@@ -159,33 +196,51 @@ Future<void> sendCommand(SendPort p) async{
 
 
  */
+  }
+  else{
+    if(data.contains('STATUS=')) {
+      eventModel = EventModel('update', data, ip, data);
     }
     else{
-      if(data.contains('STATUS=')) {
-        eventModel = EventModel('update', data, ip, data);
-      }
-      else{
-        eventModel = EventModel('error', data, ip, data);
-      }
+      eventModel = EventModel('error', data, ip, data);
     }
+    sendAnswer(p, eventModel);
+  }
+  //sendAnswer(p, eventModel);
+  //p.send(eventModel);
+}
+Future<void> sendCommand(SendPort p) async{
+  final commandPort = ReceivePort();
+  p.send(commandPort.sendPort);
+
+  /*
+  handleCallback(SendPort p, EventModel eventModel){
     p.send(eventModel);
   }
+
+   */
+  /*
+  handler2(SendPort p, String data, String ip, dynamic device, String prevRawData){
+    //Pool pool = Pool.fromString(data);
+    String actualRawData = 'prevRawData \n data';
+   //eventModel = EventModel('device', device, ip, actualRawData); //TODO
+  }
+
+
+   */
   await for (final message in commandPort) {
     if (message is Map<String,String>) {
       // TODO do the logic here
+      socketSendCommand(message.keys.first, message.values.first, p);
+      /*
       dynamic data;
       EventModel? eventModel;
       try {
         Socket socket = await Socket.connect(
             message.keys.first, 4028, timeout: const Duration(seconds: 5));
         socket.listen((dynamic event) {
-          //handleCallback(event.toString());
-         // handleCallback(p, EventModel('error', utf8.decode(event), message.keys.first));
           handler(p, utf8.decode(event), message.values.first,  message.keys.first);
           data = utf8.decode(event);
-         // eventModel = EventModel('error', data, message.keys.first);
-          //   eventStream.add(event.toString());
-         // data = event.toString();
           socket.close();
         });
         socket.add(utf8.encode(message.values.first));
@@ -193,10 +248,10 @@ Future<void> sendCommand(SendPort p) async{
       catch(err){
         data = '$err';
         eventModel = EventModel('error', '$err', message.keys.first, '$err');
-       // handler(p, '$err', message.values.first,  message.keys.first);
-        p.send(eventModel);
-        // callback = mockData;
+        sendAnswer(p, eventModel);
+        //p.send(eventModel);
       }
+      */
     //  eventModel = EventModel('error', data, message.keys.first);
       /*
       if(message.values.first=='estats'){
