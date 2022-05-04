@@ -60,7 +60,7 @@ class DeviceModel{
     ///net fail
     List<int?>?  _netFail = data.netFail;
     ///pools
-    Pools?  _pools = data.pools;
+    //Pools?  _pools = data.pools;
     ///status resolver
     String _status = '';
     return DeviceModel(
@@ -78,7 +78,7 @@ class DeviceModel{
       mm: _mm,
       fans: _fans,
       errors: _errors,
-      pools: _pools,
+      pools: null,
       data: data,
       status: _status,
       ps: _ps,
