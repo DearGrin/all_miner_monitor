@@ -73,17 +73,17 @@ class AvalonDataRow extends StatelessWidget {
           ContentContainer(11, data.errors,),
          ContentContainer(12, data.ps,),
             ContentContainer(13, data.netFail,),
-          ContentContainer(14, data.pools!=null? data.pools!.pools![0].addr:'',),
+          ContentContainer(14, isRasp==null? data.pools!=null? data.pools!.pools![0].url:'':'',),
           //pool1
-          ContentContainer(15, data.pools!=null? data.pools![0].worker:'',),
+          ContentContainer(15, isRasp==null? data.pools!=null? data.pools!.pools[0].worker:'':'',),
           //worker1
-          ContentContainer(16, data.pools!=null? data.pools!.pools.length>1? data.pools.pools![1].addr:'' :'',),
+          ContentContainer(16, isRasp==null? data.pools!=null? data.pools!.pools.length>1? data.pools.pools![1].url:'' :'':'',),
           //pool2
-          ContentContainer(17, data.pools!=null? data.pools!.pools.length>1? data.pools.pools![1].worker:'':'',),
+          ContentContainer(17, isRasp==null? data.pools!=null? data.pools!.pools.length>1? data.pools.pools![1].worker:'':'':'',),
           //worker2
-          ContentContainer(18, data.pools!=null? data.pools!.pools.length>2? data.pools.pools![2].addr:'':'',),
+          ContentContainer(18, isRasp==null? data.pools!=null? data.pools!.pools.length>2? data.pools.pools![2].url:'':'':'',),
           //pool3
-          ContentContainer(19, data.pools!=null? data.pools!.pools.length>2? data.pools.pools![2].worker:'':'',),
+          ContentContainer(19, isRasp==null?data.pools!=null? data.pools!.pools.length>2? data.pools.pools![2].worker:'':'':'',),
           //worker3
         ],
       ),

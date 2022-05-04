@@ -9,10 +9,13 @@ import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/ip_section/ip_range_model.dart';
 import 'package:avalon_tool/isolates/isolate_service.dart';
 import 'package:avalon_tool/models/device_model.dart';
+import 'package:avalon_tool/pools_editor/mock_pool.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+
+import '../pools_editor/device_pool.dart';
 
 class Scanner extends GetxController{
   final Api api = Api();
@@ -58,16 +61,19 @@ handleDevice(EventModel event){
       jobsDone++;
       double _progress = jobsDone/finalProgress;
       progressStream.add(_progress);
+      ///mock pools
+     // var _pool = Pools.fromString(mockPoolAva);
       ///mock L3
      // var _device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
       ///mock S9
-      //String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
+     // String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
       //var _device = AntMinerModel.fromString(_data, '10.10.10.10');
       ///mock Avalon 1066
       //var _device = AvalonData.fromString(mockData, '10.10.10.10');
       ///mock Avalon 9xx raspberry
       //var _device = RaspberryAva.fromString(mockRasp, '10.10.10.10');
-      //var device = DeviceModel.fromData(_device, '10.10.10.10');
+     // var device = DeviceModel.fromData(_device, '10.10.10.10');
+      //device.pools = _pool;
       //scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
 
       scanResult.add(event);
