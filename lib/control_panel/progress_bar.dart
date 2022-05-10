@@ -24,7 +24,7 @@ class ProgressBar extends StatelessWidget {
           Align(
             alignment: Alignment.center,
               child: Text(
-                'progress'.trParams({'value':(controller.progress.value*100).toString()})
+                'progress'.trParams({'value':(controller.progress.value*100).toStringAsFixed(2)})
               )
           ),
         ],
