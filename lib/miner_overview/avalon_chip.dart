@@ -1,4 +1,4 @@
-import 'package:avalon_tool/avalon_10xx/color_map.dart';
+import 'package:avalon_tool/analyzator/color_map.dart';
 import 'package:avalon_tool/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,13 +11,26 @@ class AvalonChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OverviewController controller = Get.put(OverviewController());
-    return Obx(()=>Container(
-            width: (MediaQuery.of(context).size.width*0.7/3-18)/6,
-            height: (MediaQuery.of(context).size.width*0.7/3-18)/6,
+    if(number!=-1 && number < controller.device[0].data.hashBoards?[board].chips.length) {
+      return Obx(() =>
+          Container(
+            width: (MediaQuery
+                .of(context)
+                .size
+                .width * 0.7 / 3 - 18) / 6,
+            height: (MediaQuery
+                .of(context)
+                .size
+                .width * 0.7 / 3 - 18) / 6,
             decoration: BoxDecoration(
               border: Border.all(),
-              color: controller.displayMode.value==0?
-              getChipColor(controller.device[0].data.hashBoards?[board].chips?[number].temp) : getChipColorWork(controller.device[0].data.hashBoards?[board].chips?[number].mw, controller.device[0].data.elapsed), // TODO get the data
+              color: controller.displayMode.value == 0 ?
+              getChipColor(
+                  controller.device[0].data.hashBoards?[board].chips?[number]
+                      .temp) : getChipColorWork(
+                  controller.device[0].data.hashBoards?[board].chips?[number]
+                      .mw,
+                  controller.device[0].data.elapsed),
             ),
             child: Obx(() {
               if (controller.displayMode.value == 0) {
@@ -25,7 +38,7 @@ class AvalonChip extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
-                      child: Text((number+1).toString(),
+                      child: Text((number + 1).toString(),
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip #
                     ),
@@ -96,7 +109,24 @@ class AvalonChip extends StatelessWidget {
 
             ),
           ),
-    );
+      );
+    }
+    else{
+      return Container(
+        width: (MediaQuery
+            .of(context)
+            .size
+            .width * 0.7 / 3 - 18) / 6,
+        height: (MediaQuery
+            .of(context)
+            .size
+            .width * 0.7 / 3 - 18) / 6,
+    decoration: BoxDecoration(
+    border: Border.all(),
+      color: Colors.grey
+    )
+      );
+    }
   }
   Color getChipColor(int? temp){
     return ColorMap().getColor(temp);

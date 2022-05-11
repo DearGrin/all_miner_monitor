@@ -1,4 +1,3 @@
-import 'package:avalon_tool/avalon_10xx/controller_avalon.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/miner_overview/overview_controller.dart';
 import 'package:avalon_tool/miner_overview/avalon_1xxx_hashboard.dart';
@@ -43,7 +42,6 @@ List<Widget> hashboards(int? hashBoardsCount, List<Hashboard>? _hashboards, Stri
       }
   }
   else{
-    print(_hashboards!.length);
     for(int i = 0; i < _hashboards!.length; i++){
       _tmp.add(
           Flexible(
