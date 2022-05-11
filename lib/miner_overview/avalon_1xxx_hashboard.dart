@@ -70,28 +70,37 @@ class Avalon1xxxHashboard extends StatelessWidget{
   }
   List<Widget> chips(OverviewController controller){
     List<Widget> _tmp = [];
-    if(controller.device[0].model.contains('1066'))
+    if(!controller.device[0].model.contains('1066'))
       {
-        int _rowCount = (controller.device[0].data.chipCount/6).floor() +2;
-        int _halfRow = (_rowCount/2).round();
-        for(int i = 0; i < _halfRow; i++){
+        int _rowCount = (controller.device[0].data.hashBoards[boardIndex].chips.length/6).floor() +1;
+        int _index = 0;
+        for(int i = 0; i < _rowCount; i++){
           List<Widget> _right = [];
           List<Widget> _left = [];
           if(i<2){
             _right.add(AvalonChip(board: boardIndex, number: -1));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-(i*3)-1));
             _right.add(AvalonChip(board: boardIndex, number: -1));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-(i*3)-2));
             _right.add(AvalonChip(board: boardIndex, number: -1));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-(i*3)-3));
           }
           else {
-            _right.add(AvalonChip(board: boardIndex, number: i * 3 + 0));
-            _right.add(AvalonChip(board: boardIndex, number: i * 3 + 1));
-            _right.add(AvalonChip(board: boardIndex, number: i * 3 + 2));
+            _right.add(AvalonChip(board: boardIndex, number: _index));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-7));
+            _index++;
+            _right.add(AvalonChip(board: boardIndex, number: _index));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-7));
+            _index++;
+            _right.add(AvalonChip(board: boardIndex, number: _index));
+            _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-7));
+            _index++;
           }
-          _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+0));
-          _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+1));
-          _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+2));
           if(i.isOdd){
             _right = _right.reversed.toList();
+
+          }
+          else{
             _left = _left.reversed.toList();
           }
           List<Widget> _chipRow = _left + _right;
@@ -99,19 +108,24 @@ class Avalon1xxxHashboard extends StatelessWidget{
         }
       }
     else{
-      int _rowCount = (controller.device[0].data.chipCount/6).round();
-      int _halfRow = (_rowCount/2).round();
-      for(int i = 0; i < _halfRow; i++){
+      int _rowCount = (controller.device[0].data.hashBoards[boardIndex].chips.length/6).floor();
+      int _index = 0;
+      for(int i = 0; i < _rowCount; i++){
         List<Widget> _right = [];
         List<Widget> _left = [];
-        _right.add(AvalonChip(board: boardIndex, number: i*3+0));
-        _right.add(AvalonChip(board: boardIndex, number: i*3+1));
-        _right.add(AvalonChip(board: boardIndex, number: i*3+2));
-        _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+0));
-        _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+1));
-        _left.add(AvalonChip(board: boardIndex, number: (controller.device[0].data.chipCount-i)*3+2));
+        _right.add(AvalonChip(board: boardIndex, number: _index));
+        _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-1));
+        _index++;
+        _right.add(AvalonChip(board: boardIndex, number: _index));
+       _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-1));
+        _index++;
+        _right.add(AvalonChip(board: boardIndex, number: _index));
+        _left.add(AvalonChip(board: boardIndex, number: controller.device[0].data.hashBoards[boardIndex].chips.length-_index-1));
+        _index++;
         if(i.isOdd){
           _right = _right.reversed.toList();
+        }
+        else{
           _left = _left.reversed.toList();
         }
         List<Widget> _chipRow = _left + _right;
