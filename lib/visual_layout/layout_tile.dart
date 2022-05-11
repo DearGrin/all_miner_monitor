@@ -72,7 +72,7 @@ class LayoutTile extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+             const SizedBox(
                 height: 10,
               ),
               Column(
@@ -84,19 +84,19 @@ class LayoutTile extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('SHA256'),
+                         const Text('SHA256'),
                           Obx(()=>Text('devices: ${controller.deviceCountSHA256}')),
-                          Obx(()=>Text('total: ${controller.speedSHA256}Th/s')),
-                          Obx(()=>Text('average: ${controller.speedAvgSHA256}Th/s')),
+                          Obx(()=>Text('total: ${(controller.speedSHA256)..toStringAsFixed(2)}Th/s')),
+                          Obx(()=>Text('average: ${(controller.speedAvgSHA256).toStringAsFixed(2)}Th/s')),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('SCRYPT'),
+                          const Text('SCRYPT'),
                           Obx(()=>Text('devices: ${controller.deviceCountSCRYPT}')),
-                          Obx(()=>Text('total: ${controller.speedSCRYPT}Gh/s')),
-                          Obx(()=>Text('average: ${controller.speedAvgSCRYPT}Gh/s')),
+                          Obx(()=>Text('total: ${(controller.speedSCRYPT/1000).toStringAsFixed(2)}Gh/s')),
+                          Obx(()=>Text('average: ${(controller.speedAvgSCRYPT/1000).toStringAsFixed(2)}Gh/s')),
                         ],
                       ),
                     ],
