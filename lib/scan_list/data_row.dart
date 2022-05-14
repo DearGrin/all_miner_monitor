@@ -1,4 +1,4 @@
-import 'package:avalon_tool/utils/analyse_resolver.dart';
+import 'package:avalon_tool/analyzator/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/content_container.dart';
 import 'package:avalon_tool/scan_list/rasp_controller.dart';

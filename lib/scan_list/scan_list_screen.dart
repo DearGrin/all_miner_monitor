@@ -1,6 +1,6 @@
 import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/debugger/debugger_screen.dart';
-import 'package:avalon_tool/utils/analyse_resolver.dart';
+import 'package:avalon_tool/analyzator/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/scan_list/data_row.dart';
 import 'package:avalon_tool/scan_list/errors_debugger.dart';
