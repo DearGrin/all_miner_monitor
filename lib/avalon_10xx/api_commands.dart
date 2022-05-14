@@ -1,7 +1,21 @@
 class CommandConstructor{
 
-  String setPools(String username, String password, String pooladdr, String worker, String workerpasswd){
-    String _ = 'ascset|0,setpool,$username,$password,$pooladdr,$worker,$workerpasswd';
+  String setPools(String username, String password,
+      String pooladdr1, String worker1, String workerpasswd1,
+      [
+        String? pooladdr2, String? worker2, String? workerpasswd2,
+      String? pooladdr3, String? worker3, String? workerpasswd3
+      ]
+      )
+  {
+    String _ = 'ascset|0,setpool,$username,$password,'
+        '$pooladdr1,$worker1,$workerpasswd1,'
+        '$pooladdr2,$worker2,$workerpasswd2,'
+        '$pooladdr3,$worker3,$workerpasswd3';
+    return _;
+  }
+  String aging(){
+    String _ = '[{"command":"ascset", "parameter":"0,aging-set,1"}]';
     return _;
   }
   String reboot(){

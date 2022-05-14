@@ -248,10 +248,23 @@ class ScanListController extends GetxController{
             _suffix += _octet[3];
           }
         }
+        if(devices[i].manufacture=='Antminer'){
+          Map<String,dynamic> _json = {
+            '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix??'', '_ant_pool1pw' : pools[0]?.passwd??'',
+            '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix??'', '_ant_pool2pw' : pools[1]?.passwd??'',
+            '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix??'', '_ant_pool3pw' : pools[2]?.passwd??''
+          };
+          commands.add(_json.toString());
+        }
+        else{
+          String _command = 'ascset|0,setpool'
+              ',${ pools[0]?.fullAdr??''}'',${pools[0]?.worker}'+_suffix+',${pools[0]?.passwd??''}'
+              ',${ pools[1]?.fullAdr??''}'',${pools[1]?.worker}'+_suffix+',${pools[1]?.passwd??''}'
+              ',${ pools[2]?.fullAdr??''}'',${pools[2]?.worker}'+_suffix+',${pools[2]?.passwd??''}';
+          commands.add(_command);
+        }
 
 
-        commands.add(commandConstructor.setPools('root', 'root',
-            pools[0]!.addr!+_suffix, pools[0]?.worker??'', pools[0]?.passwd??''));
     }
     List<String> _ips = [];
     for(var _ip in devices){

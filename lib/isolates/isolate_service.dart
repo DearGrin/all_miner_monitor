@@ -9,10 +9,12 @@ import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
 import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
+import 'package:avalon_tool/isolates/rest_api.dart';
 import 'package:avalon_tool/models/device_model.dart';
 import 'package:avalon_tool/pools_editor/device_pool.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/event_model.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
@@ -37,8 +39,9 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
   // used to communicate with the spawned isolate.
   SendPort sendPort = await events.next;
 
-  stopStream.stream.listen((event){
+  stopStream.stream.listen((event) async {
     toFinish = true;
+    sendPort.send(null);
   });
 
   for(int i = 0; i < ips.length; i++){
@@ -81,15 +84,63 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device}) 
         });
         socket.add(utf8.encode(command));
         break;
+      case 'setpool':
+        if(device!=null && device.manufacture?.toLowerCase()=='antminer')
+          {
+            RestApi().setPool(ip, command);
+          }
+        else{
+          Socket socket = await Socket.connect(
+              ip, 4028, timeout: const Duration(seconds: 5));
+          socket.listen((dynamic event) {
+            handler(p, utf8.decode(event), command,  ip);
+            data = utf8.decode(event);
+            socket.close();
+          });
+          socket.add(utf8.encode(command));
+        }
+        break;
+      case 'aging':
+        if(device!=null && device.manufacture?.toLowerCase()=='avalon' && device.model!.startsWith('1'))
+          {
+            Socket socket = await Socket.connect(
+                ip, 4028, timeout: const Duration(seconds: 5));
+            socket.listen((dynamic event) {
+              handler(p, utf8.decode(event), command,  ip);
+              data = utf8.decode(event);
+              socket.close();
+            });
+            socket.add(utf8.encode(command));
+          }
+        else{
+          EventModel eventModel = EventModel('update', 'skip', ip, 'skip');
+        }
+        break;
+      case 'reboot':
+        if(device!=null && device.manufacture?.toLowerCase()=='antminer')
+          {
+            RestApi().reboot(ip);
+          }
+        else
+        {
+          Socket socket = await Socket.connect(
+              ip, 4028, timeout: const Duration(seconds: 5));
+          socket.add(utf8.encode(command));
+          socket.close();
+        }
+        EventModel eventModel = EventModel('update', 'reboot', ip, 'reboot');
+        sendAnswer(p, eventModel);
+        break;
       default:
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
-        socket.listen((dynamic event) {
+        var sub = socket.listen((dynamic event) {
           handler(p, utf8.decode(event), command,  ip);
-          data = utf8.decode(event);
+         // data = utf8.decode(event);
           socket.close();
         });
         socket.add(utf8.encode(command));
+        await sub.asFuture<void>().timeout(const Duration(seconds: 10));
     }
   }
   catch(err){

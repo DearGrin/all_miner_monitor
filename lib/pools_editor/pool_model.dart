@@ -14,6 +14,8 @@ class Pool extends HiveObject{
   String? worker;
   Pool({this.addr, this.port,this.passwd='x', this.worker});
 
+  get fullAdr => addr!=null? port!=null? addr!+':'+port! : addr! :'';
+
   factory Pool.fromString(String data){
     return Pool(
       addr: regexp.pool.firstMatch(data)?.group(3)??'',
