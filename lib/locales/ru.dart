@@ -115,6 +115,7 @@ final Map<String, String> ru_RU = {
   'delete' : 'Удалить',
   'layout' : 'Раскладки',
   'speed_check_ant' : 'Анализ скорости Antminer',
+  'speed_check_avalon' : 'Анализ скорости Avalon',
   'vertical_direction' : 'Направление по вертикали:',
   'horizontal_direction' : 'Направление по горизонтали:',
   'from_top': 'сверху',
@@ -150,4 +151,9 @@ final Map<String, String> ru_RU = {
   'temp too high':'высокая температура',
   'fan is missing':'не хватает вентилятора',
   'errors on hash boards':'ошибки на платах',
+  'actions':'Действия',
+  'single_tap':'ЛКМ - всплывающее окно с доп информацией',
+  'double_tap':'двойной клик - перейти на экран детализации майнера',
+  'long_tap':'долгое нажатие - выбрать/отменить выбор',
+  'secondary_tap':'ПКМ - выбрать/отменить выбор',
 };

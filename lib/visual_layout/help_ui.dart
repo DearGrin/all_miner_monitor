@@ -8,7 +8,7 @@ class HelpUI extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('color_scheme'.tr, style: Get.textTheme.bodyText1,),
+        Text('color_scheme'.tr, style: Get.textTheme.bodyText2,),
         const SizedBox(height: 10.0,),
         Row(
           children: [
@@ -93,6 +93,33 @@ class HelpUI extends StatelessWidget {
             ),
             const SizedBox(width: 10.0,),
             Text('errors on hash boards'.tr, style: Theme.of(context).textTheme.bodyText1,)
+          ],
+        ),
+        const SizedBox(height: 10,),
+        Text('actions'.tr, style: Get.textTheme.bodyText2,),
+        const SizedBox(height: 10,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('single_tap'.tr, style: Get.textTheme.bodyText1,),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('double_tap'.tr, style: Get.textTheme.bodyText1,),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('long_tap'.tr, style: Get.textTheme.bodyText1,),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('secondary_tap'.tr, style: Get.textTheme.bodyText1,),
           ],
         ),
       ],

@@ -8,12 +8,14 @@ import 'package:avalon_tool/scan_list/event_model.dart';
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/scan_list/scanner.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
+import 'package:avalon_tool/visual_layout/command_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LayoutController extends GetxController{
   Rx<Layout> layout = Layout().obs;
   List<dynamic> devices = <dynamic>[];
+  List<dynamic> selectedDevices = <dynamic>[];
   Offset position = const Offset(0,0);
   dynamic currentDevice;
   //final ScanListController scanListController = Get.find();
@@ -135,6 +137,12 @@ class LayoutController extends GetxController{
   }
   zoomOut(){
     resizeStream.add('out');
+  }
+  onCommandClick(){
+    Get.defaultDialog(
+      title: '',
+      content: const CommandDialog(),
+    );
   }
   /*
   List<PlaceLayout> getPlacesInRow(int rigIndex, int rowIndex){

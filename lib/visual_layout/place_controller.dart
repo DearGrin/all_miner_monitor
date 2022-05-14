@@ -35,7 +35,12 @@ class PlaceController extends GetxController{
   Offset? offset;
   StreamSubscription? sub;
   StreamSubscription? resize;
+  RxBool isSelected = false.obs;
   //RxInt counter = 0.obs;
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+  }
   setData(Place _place, int _placeIndex) async {
     place = _place;
     placeIndex = _placeIndex;
@@ -197,5 +202,14 @@ class PlaceController extends GetxController{
   }
   onSingleTap(){
     controller.onSingleTap(offset, device);
+  }
+  onSecondaryTap(){
+    isSelected.value = !isSelected.value;
+    if(isSelected.value){
+      controller.selectedDevices.add(device);
+    }
+    else{
+      controller.selectedDevices.remove(device);
+    }
   }
 }

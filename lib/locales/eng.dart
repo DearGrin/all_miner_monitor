@@ -111,6 +111,7 @@ final Map<String, String> en_US = {
   'delete' : 'Delete',
   'layout' : 'Layouts',
   'speed_check_ant' : 'Speed check for Antminer',
+  'speed_check_avalon' : 'Speed check for Avalon',
   'vertical_direction' : 'Vertical direction:',
   'horizontal_direction' : 'Horizontal direction:',
   'from_top': 'from top',
@@ -146,4 +147,9 @@ final Map<String, String> en_US = {
   'temp too high':'temp too high',
   'fan is missing':'fan is missing',
   'errors on hash boards':'errors on hash boards',
+  'actions':'Actions',
+  'single_tap':'tap - popup with additional info',
+  'double_tap':'double tap - go to miner details screen',
+  'long_tap':'long press - select/deselect',
+  'secondary_tap':'right click - select/deselect',
 };

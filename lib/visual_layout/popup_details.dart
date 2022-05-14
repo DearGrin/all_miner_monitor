@@ -12,9 +12,7 @@ class PopupDetails extends StatelessWidget {
       return SizedBox(
         width: 500,
         child: Card(
-          color: Theme
-              .of(context)
-              .cardColor,
+          color: Get.theme.cardTheme.color,
           child: Padding(
             padding: const EdgeInsets.all(2.0),
             child: Stack(
@@ -58,56 +56,56 @@ class PopupDetails extends StatelessWidget {
                       children: [
                         Text('hashboards: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.hashCount : ''}')
+                            .currentDevice.data.hashCount : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('chips: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.chipPerChain : ''}')
+                            .currentDevice.data.chipPerChain : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('fans: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.fans : ''}')
+                            .currentDevice.data.fans : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('freq: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.freqs : ''}')
+                            .currentDevice.data.freqs : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('volt: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.volt : ''}')
+                            .currentDevice.data.volt : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('watt: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.watt : ''}')
+                            .currentDevice.data.watt : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('hw: '),
                         Text('${controller.currentDevice != null ? controller
-                            .currentDevice.hwPerChain : ''}')
+                            .currentDevice.data.hwPerChain : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
                         Text('chip status: '),
                         chainString(controller.currentDevice != null ? controller
-                            .currentDevice.chainString : null),
+                            .currentDevice.data.chainString : null),
                        // Text('${controller.currentDevice != null ? controller
                        //     .currentDevice.chainString : ''}')
                       ],
