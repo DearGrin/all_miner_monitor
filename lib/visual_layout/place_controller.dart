@@ -43,12 +43,17 @@ class PlaceController extends GetxController{
     resize?? controller.resizeStream.stream.listen((event) {resizeIt(event);});
     Box box = await Hive.openBox('settings');
    size.value = box.get('place_size')??50.0;
+   if(controller.maxRow*size.value+100>Get.height){
+     size.value = (Get.height-100)/controller.maxRow;
+   }
     analyseIt();
     update(['text']);
   }
   resizeIt(String event) async{
     if(event=='in'){
-      size.value +=5.0;
+      if(size.value*controller.maxRow<Get.height-100) {
+        size.value += 5.0;
+      }
     }
     else{
       if(size.value - 5.0 > 55) {
@@ -105,6 +110,7 @@ class PlaceController extends GetxController{
     catch(e){
       ip.value = 'no ip';
     }
+    print(device==null);
     if (device != null) {
       try {
         tempError.value = analyseResolver.hasErrors('temp_max', device.tMax);
@@ -118,29 +124,29 @@ class PlaceController extends GetxController{
         //TODO check acn_s
         if(device.manufacture=='Antminer') {
           dhError.value =
-              analyseResolver.hasErrors('acn_s', device.chainString);
+              analyseResolver.hasErrors('acn_s', device.data.chainString);
         }
         else{
-          dhError.value = analyseResolver.hasErrors('dh', device.dh);
+          dhError.value = analyseResolver.hasErrors('dh', device.data.dh);
         }
       }
       catch (e) {
         dhError.value = true;
       }
       try{
-        hashCount.value = analyseResolver.hasErrors('hash_count', device.hashCount, device.model);
+        hashCount.value = analyseResolver.hasErrors('hash_count', device.data.hashCount, device.model);
       }
       catch(e){
         hashCount.value = true;
       }
       try{
-        chipCount.value = analyseResolver.hasErrors('chip_count', device.chipPerChain, device.model);
+        chipCount.value = analyseResolver.hasErrors('chip_count', device.data.chipPerChain, device.model);
       }
       catch(e){
         chipCount.value = true;
       }
       try {
-        fanError.value = analyseResolver.hasErrors('null_list', device.fans);
+        fanError.value = analyseResolver.hasErrors('null_list', device.data.fans);
       }
       catch (e) {
         fanError.value = true;
@@ -155,7 +161,7 @@ class PlaceController extends GetxController{
       }
       try {
         if (device.isScrypt) {
-          speed.value = '${device.currentSpeed.toStringAsFixed(2)} Gh/s\n';
+          speed.value = '${device.currentSpeed.toStringAsFixed(2)} Mh/s\n';
         }
         else {
         speed.value = '${device.currentSpeed.toStringAsFixed(2)} Th/s\n';

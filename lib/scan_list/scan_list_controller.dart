@@ -37,7 +37,7 @@ class ScanListController extends GetxController{
  // Rx<General> generalInfo = General().obs;
  // Rx<Speed> speedInfo = Speed().obs;
   List<int> expandedRasp = [];
-
+  bool isActive = true;
   List<String> errors = <String>[].obs;
 
   @override
@@ -67,55 +67,54 @@ class ScanListController extends GetxController{
   handleEvent(EventModel event){
   //  RaspberryAva ava = event.data;
    // print(ava.devices?.length);
-    errors.add('${event.ip} ${event.type}');
-    errors.add(event.rawData.toString());
-    if(event.runtimeType==EventModel && event.type=='device')
-      {
+    if(isActive) {
+      errors.add('${event.ip} ${event.type}');
+      errors.add(event.rawData.toString());
+      if (event.runtimeType == EventModel && event.type == 'device') {
         devices.add(event.data);
-        if(event.data.isScrypt){
+        if (event.data.isScrypt) {
           summary.countSCRYPT ++;
-          if(event.data.currentSpeed!=null)
-          {
-            summary.totalHashSCRYPT +=event.data.currentSpeed!;
+          if (event.data.currentSpeed != null) {
+            summary.totalHashSCRYPT += event.data.currentSpeed!;
           }
-          if(event.data.averageSpeed!=null)
-          {
+          if (event.data.averageSpeed != null) {
             summary.averageHashSCRYPT += event.data.averageSpeed!;
           }
         }
-        else{
+        else {
           summary.countSHA256 ++;
-          if(event.data.currentSpeed!=null)
-          {
-            summary.totalHashSHA256 +=event.data.currentSpeed!;
+          if (event.data.currentSpeed != null) {
+            summary.totalHashSHA256 += event.data.currentSpeed!;
           }
-          if(event.data.averageSpeed!=null)
-          {
+          if (event.data.averageSpeed != null) {
             summary.averageHashSHA256 += event.data.averageSpeed!;
           }
-          if(event.data.tMax!=null && summary.maxTemp < event.data.tMax!)
-          {
+          if (event.data.tMax != null && summary.maxTemp < event.data.tMax!) {
             summary.maxTemp = event.data.tMax!;
           }
         }
 
         update(['list', 'summary']);
       }
-    else if(event.runtimeType==EventModel && event.type=='update'){
-      var _d =devices.where((element) => element.ip == event.ip);
-      for (var element in _d) {element.status = event.data;}
+      else if (event.runtimeType == EventModel && event.type == 'update') {
+        var _d = devices.where((element) => element.ip == event.ip);
+        for (var element in _d) {
+          element.status = event.data;
+        }
+      }
+      else if (event.runtimeType == EventModel && event.type == 'pool') {
+        var _d = devices.where((element) => element.ip == event.ip);
+        for (var element in _d) {
+          element.pools.add(event.data);
+        }
+      }
+      else if (event.runtimeType == EventModel && event.type == 'error') {
+        //   errors.add('received something');
+        //   errors.add(event.rawData.toString());
+        //  var _d =devices.where((element) => element.ip == event.ip);
+        //  for (var element in _d) {element.status = event.data;}
+      }
     }
-    else if(event.runtimeType==EventModel && event.type=='pool'){
-      var _d =devices.where((element) => element.ip == event.ip);
-      for (var element in _d) {element.pools.add(event.data);}
-    }
-    else  if(event.runtimeType==EventModel && event.type=='error'){
-   //   errors.add('received something');
-   //   errors.add(event.rawData.toString());
-    //  var _d =devices.where((element) => element.ip == event.ip);
-    //  for (var element in _d) {element.status = event.data;}
-    }
-
   }
   startScan() async {
     await scanner.newScan(scanList: ipManagementController.ips);
@@ -384,6 +383,10 @@ class ScanListController extends GetxController{
       expandedRasp.add(index);
     }
     update(['expand_$index']);
+  }
+  setActive(bool value){
+    isActive = value;
+    print('is active $value');
   }
   sendCommandToAll(String command){
     /*

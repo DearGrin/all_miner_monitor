@@ -1,5 +1,6 @@
 import 'package:avalon_tool/scan_list/scan_list_controller.dart';
 import 'package:avalon_tool/settings/settings_screen.dart';
+import 'package:avalon_tool/visual_layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,5 +30,9 @@ class ControlPanelController extends GetxController{
   }
   updateProgress(double value){
     progress.value = value;
+  }
+  goToLayout(){
+    scanListController.setActive(false);
+    Get.to(()=>const LayoutScreen());
   }
 }

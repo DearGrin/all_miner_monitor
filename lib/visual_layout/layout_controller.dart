@@ -16,12 +16,13 @@ class LayoutController extends GetxController{
   List<dynamic> devices = <dynamic>[];
   Offset position = const Offset(0,0);
   dynamic currentDevice;
-  final ScanListController scanListController = Get.put(ScanListController());
-  final Scanner scanner = Get.put(Scanner());
+  //final ScanListController scanListController = Get.find();
+  final Scanner scanner = Get.find();
   final StreamController<String> resizeStream = StreamController<String>.broadcast();
   StreamSubscription? sub;
   int finalProgress = 0;
   int jobsDone = 0;
+  int maxRow = 0;
   Rx<Offset> offset = Offset(0, 0).obs;
   StreamController scanProgressStream = StreamController<bool>.broadcast();
   StreamController scanInProgressStream = StreamController<bool>.broadcast();
@@ -35,6 +36,11 @@ class LayoutController extends GetxController{
   Future<void> onInit() async {
      //TODO get the tag
     layout.value = Get.arguments;
+    for(var r in layout.value.rigs!){
+     if(r.shelves!=null && r.shelves!.length>maxRow){
+       maxRow = r.shelves!.length;
+     }
+    }
    sub == null? sub = scanner.scanResult.stream.listen((event) {handleEvent(event);}):null;
 
     //TODO start scan - from where should get ip?
@@ -103,7 +109,7 @@ class LayoutController extends GetxController{
     finalProgress = layout.value.ips!.length;
     if(layout.value.ips!.isNotEmpty) {
       print('ip is not empty');
-      scanListController.clearQuery();
+  //    scanListController.clearQuery();
       scanner.newScan(ips: layout.value.ips);
     //  scanner.universalCreate(layout.value.ips, ['estats']);
       scanInProgressStream.add(true);

@@ -17,14 +17,14 @@ class MinerOverviewScreen extends StatelessWidget {
         title: Text(controller.device[0].ip),
         actions: controller.device[0].manufacture=='Antminer'?
          [
-          OutlinedButton(onPressed: (){controller.showTempMap();}, child: const Text('boards Temp')),
-          OutlinedButton(onPressed: (){controller.showLog();}, child: const Text('Log')),
+          OutlinedButton(onPressed: (){controller.showTempMap();}, child: const Text('errors by boards')).marginAll(10.0),
+          OutlinedButton(onPressed: (){controller.showLog();}, child: const Text('Log')).marginAll(10.0),
           ]
             :
         [
-          OutlinedButton(onPressed: (){controller.showTempMap();}, child: const Text('boards Temp')),
-          OutlinedButton(onPressed: (){controller.showWorkMap();}, child: const Text('boards Work')),
-          OutlinedButton(onPressed: (){controller.showLog();}, child: const Text('Log')),
+          OutlinedButton(onPressed: (){controller.showTempMap();}, child: const Text('boards Temp')).marginAll(10.0),
+          OutlinedButton(onPressed: (){controller.showWorkMap();}, child: const Text('boards Work')).marginAll(10.0),
+          OutlinedButton(onPressed: (){controller.showLog();}, child: const Text('Log')).marginAll(10.0),
         ],
       ),
       body: Row(
@@ -41,7 +41,7 @@ class MinerOverviewScreen extends StatelessWidget {
                   children: [
                     ///log screen index 0
                     Card(
-                      color: Theme.of(context).cardColor,
+                      color: Get.theme.cardTheme.color,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Wrap(

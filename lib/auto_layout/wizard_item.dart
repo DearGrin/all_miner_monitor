@@ -27,9 +27,9 @@ class WizardItem extends StatelessWidget {
                 },
                 style: Theme.of(context).textTheme.bodyText1,
                 decoration: InputDecoration(
-                    hintText: 'ip range',
-                    labelText: 'ip range',
-                    errorText: controller.ipError.value? 'invalid ip range':null,
+                    hintText: 'ip_range'.tr,
+                    labelText: 'ip_range'.tr,
+                    errorText: controller.ipError.value? 'invalid_ip_range'.tr :null,
                 ),
               ),
             ),
@@ -55,8 +55,8 @@ class WizardItem extends StatelessWidget {
                       onChanged: (value){controller.editShelfCount(value, id);},
                       style: Theme.of(context).textTheme.bodyText1,
                       decoration: InputDecoration(
-                          hintText: 'shelf count',
-                          labelText: 'shelf count'
+                          hintText: 'shelf_count'.tr,
+                          labelText: 'shelf_count'.tr
                       ),
                     ),
                   )
@@ -93,8 +93,8 @@ class WizardItem extends StatelessWidget {
                       onChanged: (value){controller.editPlaceCount(value, id);},
                       style: Theme.of(context).textTheme.bodyText1,
                       decoration: InputDecoration(
-                          hintText: 'place count',
-                          labelText: 'place count'
+                          hintText: 'place_count'.tr,
+                          labelText: 'place_count'.tr
                       ),
                     ),
                   )
@@ -131,8 +131,8 @@ class WizardItem extends StatelessWidget {
                     onChanged: (value){controller.editGapCount(value, id);},
                     style: Theme.of(context).textTheme.bodyText1,
                     decoration: InputDecoration(
-                        hintText: 'gap',
-                        labelText: 'gap'
+                        hintText: 'gap'.tr,
+                        labelText: 'gap'.tr
                     ),
                   ),
                   )
@@ -141,8 +141,8 @@ class WizardItem extends StatelessWidget {
                 flex: 3,
                 child: Column(
                   children: [
-                    OutlinedButton(onPressed: (){controller.placePlus(id);}, child: const Text('+')),
-                    OutlinedButton(onPressed: (){controller.placeMinus(id);}, child: const Text('-'))
+                    OutlinedButton(onPressed: (){controller.gapPlus(id);}, child: const Text('+')),
+                    OutlinedButton(onPressed: (){controller.gapMinus(id);}, child: const Text('-'))
                   ],
                 ),
               )

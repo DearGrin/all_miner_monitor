@@ -43,7 +43,7 @@ class Summary extends GetView<ScanListController> {
                         Text('SCRYPT'),
                         Text('devicesGH'.trParams({'value':controller.summary.countSCRYPT.toString()})),
                         Text('totalGH'.trParams({'value':(controller.summary.totalHashSCRYPT/1000).toStringAsFixed(2)})),
-                        Text('averageGH'.trParams({'value':((controller.summary.averageHashSCRYPT/(controller.summary.countSCRYPT==0?1:controller.summary.countSCRYPT))/1000).toStringAsFixed(2)})),
+                        Text('averageGH'.trParams({'value':((controller.summary.averageHashSCRYPT/(controller.summary.countSCRYPT==0?1:controller.summary.countSCRYPT))).toStringAsFixed(2)})),
                       ],
                     );
                   },

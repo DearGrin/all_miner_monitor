@@ -24,7 +24,7 @@ class RigUI extends StatelessWidget {
   }
   List<Widget> rows(LayoutController  controller){
     List<Widget> _tmp = [
-      Text('Rig #${rigIndex+1}'),
+      Text('rig'.trParams({'value':'${rigIndex+1}'})),
     ];
     if(controller.layout.value.rigs![rigIndex].shelves!=null) {
       for (int i = 0; i <

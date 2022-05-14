@@ -153,6 +153,7 @@ class AnalyseResolver extends GetxController{
           break;
 
         case 'min_speed':
+          print('min speed and model is $model');
           switch(model){
             case 'L3':
               _ = value>minSpeedL3? null : Colors.red;

@@ -11,7 +11,7 @@ class SaveResult extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(message, style: Theme.of(context).textTheme.bodyText1,),
-        SizedBox(height: 20,),
+        const SizedBox(height: 20,),
         OutlinedButton(
             onPressed: (){Get.back();},
             child: Text('Ok', style: Theme.of(context).textTheme.bodyText1,))

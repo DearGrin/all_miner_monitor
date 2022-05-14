@@ -21,7 +21,7 @@ class AvalonInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                 color: Theme.of(context).cardTheme.color,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -110,7 +110,7 @@ class AvalonInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardTheme.color,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -209,7 +209,7 @@ class AvalonInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardTheme.color,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -266,7 +266,7 @@ class AvalonInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardTheme.color,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -340,7 +340,7 @@ class AvalonInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardTheme.color,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [

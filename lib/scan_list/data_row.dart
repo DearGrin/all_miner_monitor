@@ -63,9 +63,8 @@ class AvalonDataRow extends StatelessWidget {
           ContentContainer(3, data.model,),
           ContentContainer(4, data.elapsedString,),
           //TODO do like normal format
-          ContentContainer(
-              5, data.currentSpeed, 'min_speed'),
-          ContentContainer(6, data.averageSpeed, 'min_speed'),
+          ContentContainer(5, data.currentSpeed, 'min_speed', data.model),
+          ContentContainer(6, data.averageSpeed, 'min_speed', data.model),
           ContentContainer(7, data.tInput, 'temp_input'),
           ContentContainer(8, data.tMax, 'temp_max'),
           ContentContainer(9, data.fans,'null_list'),

@@ -8,13 +8,18 @@ class AntminerHashboards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OverviewController controller = Get.put(OverviewController());
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-         children: hashes(controller.device[0].data.chainString, context)
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        color: Get.theme.cardTheme.color,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+           mainAxisSize: MainAxisSize.min,
+           children: hashes(controller.device[0].data.chainString, context)
+          ),
         ),
       ),
     );

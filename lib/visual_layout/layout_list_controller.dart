@@ -1,4 +1,6 @@
 import 'package:avalon_tool/auto_layout/wizard_ui.dart';
+import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:avalon_tool/ui/desktop_scan_screen.dart';
 import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/edit_tag_dialog.dart';
@@ -97,5 +99,10 @@ class LayoutListController extends GetxController{
     catch(e){
       print(e);
     }
+  }
+  goToScanList(){
+    ScanListController _c = Get.find();
+    _c.setActive(true);
+    Get.to(()=>const DesktopScanScreen());
   }
 }

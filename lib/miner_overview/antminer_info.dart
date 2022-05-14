@@ -19,7 +19,7 @@ class AntminerInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -79,7 +79,7 @@ class AntminerInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -171,7 +171,7 @@ class AntminerInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [
@@ -217,7 +217,7 @@ class AntminerInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Get.theme.cardTheme.color,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Stack(
                     children: [

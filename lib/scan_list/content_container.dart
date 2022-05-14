@@ -7,7 +7,8 @@ class ContentContainer extends StatelessWidget {
   final int index;
   final dynamic value;
   final String? type;
-  const ContentContainer(this.index, this.value, [this.type,Key? key]) : super(key: key);
+  final String? model;
+  const ContentContainer(this.index, this.value, [this.type, this.model, Key? key]) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class ContentContainer extends StatelessWidget {
                   child: Text(
                     value==null? '' :value==-100? '' : value==-100.0? '' : value.runtimeType.toString()=='double'? value.toStringAsFixed(2) : value.toString(),
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: analyseResolver.getColor(type, value)),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: analyseResolver.getColor(type, value, model)),
                   ),
                 ),
             );

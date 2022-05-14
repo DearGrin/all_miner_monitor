@@ -7,7 +7,7 @@ OutlinedButtonThemeData outlinedButtonThemeDataLight = OutlinedButtonThemeData(
   style: ButtonStyle(
     textStyle: MaterialStateProperty.all<TextStyle?>(textThemeLight.bodyText1),
     foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey[200]!),
     overlayColor: MaterialStateProperty.all<Color>(Colors.blueGrey),
     padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(8.0)),
     side: MaterialStateProperty.all<BorderSide>(const BorderSide(color: Colors.black)),

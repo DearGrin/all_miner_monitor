@@ -30,7 +30,6 @@ class WizardItemController extends GetxController{
   editShelfCount(String value, int rigId) {
     int oldValue = shelfCount.value;
     if (value == '') {
-      print('empty');
       shelfCount.value = -1;
       shelfCount.value = 0;
     }

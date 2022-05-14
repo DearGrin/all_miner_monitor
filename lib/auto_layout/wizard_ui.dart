@@ -12,11 +12,12 @@ class AutoWizard extends StatelessWidget {
     final WizardController controller = Get.put(WizardController());
     final LayoutListController layoutListController = Get.put(LayoutListController());
     final TextEditingController tagController = TextEditingController();
+    final ScrollController scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: (){Get.back();layoutListController.updateList();},
-          icon: Icon(Icons.arrow_back_ios_outlined),
+          icon: const Icon(Icons.arrow_back_ios_outlined),
         ),
 
         centerTitle: true,
@@ -28,15 +29,15 @@ class AutoWizard extends StatelessWidget {
               onChanged: (value){controller.onEditTag(value);},
               style: Theme.of(context).textTheme.bodyText1,
               decoration: InputDecoration(
-                  hintText: 'tag',
-                  labelText: 'tag',
-                  errorText: controller.tagError.value? 'invalid tag' : null,
+                  hintText: 'tag'.tr,
+                  labelText: 'tag'.tr,
+                  errorText: controller.tagError.value? 'invalid_tag'.tr : null,
               ),
             ),
           ),
         ),
         actions: [
-          OutlinedButton(onPressed: (){controller.onSaveClick();}, child: Text('Save'))
+          OutlinedButton(onPressed: (){controller.onSaveClick();}, child: Text('save'.tr)).marginAll(10.0)
         ],
       ),
       body: Card(
@@ -50,187 +51,67 @@ class AutoWizard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Vertical direction: '),
-                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(0);}, child: Text('from top'),
+                    Text('vertical_direction'.tr),
+                    const SizedBox(width: 5),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(0);}, child: Text('from_top'.tr),
                         style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 controller.vert[0]? Colors.blueGrey: Colors.transparent)),
                     ),
                     ),
-                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(1);}, child: Text('from bottom'),
+                    const SizedBox(width: 5),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionVertChange(1);}, child: Text('from_bottom'.tr),
                       style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               controller.vert[1]? Colors.blueGrey: Colors.transparent)),
                     ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Text('Horizontal direction: '),
-                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(0);}, child: Text('from left'),
+                    const SizedBox(width: 20),
+                    Text('horizontal_direction'.tr),
+                    const SizedBox(width: 5),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(0);}, child: Text('from_left'.tr),
                       style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               controller.hor[0]? Colors.blueGrey: Colors.transparent)),
                     ),
                     ),
-                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(1);}, child: Text('from right'),
+                    const SizedBox(width: 5),
+                    Obx(()=> OutlinedButton(onPressed: (){controller.onDirectionHorChange(1);}, child: Text('from_right'.tr),
                       style: Theme.of(context).outlinedButtonTheme.style?.copyWith(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               controller.hor[1]? Colors.blueGrey: Colors.transparent)),
                     ),
                     ),
-
+                  const SizedBox(width: 5),
+                  IconButton(onPressed: (){controller.addItem();}, icon: const Icon(Icons.add)),
                   ],
                 ),
               ),
             ),
 
             Padding(
-              padding: const EdgeInsets.only(bottom: 50.0, top: 50.0),
+              padding: const EdgeInsets.only(top: 50.0),
               child: GetBuilder<WizardController>(
                 id: 'rig_wizard',
                   builder: (_){
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _.model.rigs!.length,
-                      itemBuilder: (BuildContext context, int index){
-                        return WizardItem(_.model.rigs![index].id!);
-                      }
+                  return Scrollbar(
+                    controller: scrollController,
+                    isAlwaysShown: true,
+                    child: ListView.builder(
+                        controller: scrollController,
+                        shrinkWrap: true,
+                        itemCount: _.model.rigs!.length,
+                        itemBuilder: (BuildContext context, int index){
+                          return WizardItem(_.model.rigs![index].id!);
+                        }
+                    ),
                   );
                   }
               ),
             ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: IconButton(onPressed: (){controller.addItem();}, icon: Icon(Icons.add))),
-
           ],
         ),
       ),
-    );
-  }
-  Widget item(BuildContext context, int index){
-    return Row(
-      children: [
-        SizedBox(
-          width: 300,
-          height: 60,
-          child: TextField(
-            controller: TextEditingController(),
-            onChanged: (value){
-            },
-            style: Theme.of(context).textTheme.bodyText1,
-            decoration: InputDecoration(
-                hintText: 'ip range',
-                labelText: 'ip range'
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        SizedBox(
-          width: 100,
-          height: 60,
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 7,
-                  child: TextField(
-                    controller: TextEditingController(),
-                    onChanged: (value){},
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: InputDecoration(
-                        hintText: 'rig count',
-                        labelText: 'rig count'
-                    ),
-                  )
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  children: [
-                    OutlinedButton(onPressed: (){}, child: const Text('+')),
-                    OutlinedButton(onPressed: (){}, child: const Text('-'))
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        SizedBox(
-          width: 100,
-          height: 60,
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 7,
-                  child: TextField(
-                    controller: TextEditingController(),
-                    onChanged: (value){},
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: InputDecoration(
-                        hintText: 'shelf count',
-                        labelText: 'shelf count'
-                    ),
-                  )
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  children: [
-                    OutlinedButton(onPressed: (){}, child: const Text('+')),
-                    OutlinedButton(onPressed: (){}, child: const Text('-'))
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        SizedBox(
-          width: 100,
-          height: 60,
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 7,
-                  child: TextField(
-                    controller: TextEditingController(),
-                    onChanged: (value){},
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: InputDecoration(
-                        hintText: 'place count',
-                        labelText: 'place count'
-                    ),
-                  )
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  children: [
-                    OutlinedButton(onPressed: (){}, child: const Text('+')),
-                    OutlinedButton(onPressed: (){}, child: const Text('-'))
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-         SizedBox(
-          width: 50,
-          height: 60,
-          child: IconButton(onPressed: (){print('del');}, icon: const Icon(Icons.delete)),
-        ),
-      ],
     );
   }
 }

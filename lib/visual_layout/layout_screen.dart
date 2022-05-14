@@ -12,15 +12,19 @@ class LayoutScreen extends StatelessWidget {
     final LayoutListController controller = Get.put(LayoutListController());
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+                onPressed: (){controller.goToScanList();},
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
         actions: [
           OutlinedButton(
               onPressed: (){controller.newLayout();},
               child: Text('add'.tr)
-          ),
+          ).marginAll(10.0),
           OutlinedButton(
               onPressed: (){controller.newAuto();},
               child: Text('auto_add'.tr)
-          )
+          ).marginAll(10.0)
         ],
       ),
       body: GetBuilder<LayoutListController>(

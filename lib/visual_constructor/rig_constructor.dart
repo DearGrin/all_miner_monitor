@@ -14,23 +14,14 @@ class RigConstructor extends StatelessWidget {
     return GetBuilder<ConstructorController>(
       id: 'rig_${rig.id}',
         builder: (_){
-          return Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 50.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                    controller: ScrollController(),
-                    itemCount: _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?.length??0,
-                    itemBuilder: (BuildContext context, int index){
-                      return ShelfConstructor(rig.id, _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?[index].id??0);
-                    }
-                ),
-              ),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: IconButton(onPressed: (){controller.addShelf(rig.id);}, icon: const Icon(Icons.add)))
-            ],
+          return ListView.builder(
+            padding: const EdgeInsets.only(right: 10.0),
+            shrinkWrap: true,
+              controller: ScrollController(),
+              itemCount: _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?.length??0,
+              itemBuilder: (BuildContext context, int index){
+                return ShelfConstructor(rig.id, _.layout.value.rigs?.firstWhere((element) => element.id==rig.id).shelves?[index].id??0, (index+1));
+              }
           );
        /*
         return  Column(
@@ -42,13 +33,5 @@ class RigConstructor extends StatelessWidget {
         */
         }
     );
-  }
-  List<Widget> shelves(ConstructorController controller){
-    List<Widget> _tmp = [];
-    for(int i = 0; i <rig.shelves!.length; i++)
-      {
-        _tmp.add(ShelfConstructor(rig.id, rig.shelves![i].id));
-      }
-    return _tmp;
   }
 }

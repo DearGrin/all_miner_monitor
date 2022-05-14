@@ -13,10 +13,8 @@ class WizardController extends GetxController{
   List<bool> vert = [true, false].obs;
   List<bool> hor = [true, false].obs;
   onEditTag(String value){
-    print('tag is $value');
     tag = value;
     final RegExp validate = RegExp('[A-Za-z0-9_:-]+');
-    print(validate.hasMatch(value));
     if(value!=''&&validate.hasMatch(value)){
       tagError.value = false;
     }
@@ -52,19 +50,18 @@ class WizardController extends GetxController{
     WizardRig? rig = model.rigs?.firstWhere((element) => element.id==rigId);
     rig?.gap = value;
   }
-  validateData(){}
   onSaveClick() async {
     Layout _model = generateLayout();
     if(_model.tag ==null || _model.rigs!.isEmpty){
       Get.defaultDialog(
           title: '',
-          content: const WizardWarning('Layout is empty or no tag provided')
+          content: WizardWarning('Layout is empty or no tag provided'.tr)
       );
     }
     else if(_model.tag=='Ip range does not match rig parameters'){
       Get.defaultDialog(
           title: '',
-          content: const WizardWarning('Ip range does not match rig parameters')
+          content: WizardWarning('Ip range does not match rig parameters'.tr)
       );
     }
     else{
@@ -73,7 +70,7 @@ class WizardController extends GetxController{
       if(_overwrite){
         Get.defaultDialog(
             title: '',
-            content: const WizardWarning('This tag already exists')
+            content:  WizardWarning('This tag already exists'.tr)
         );
       }
       else{
@@ -83,7 +80,7 @@ class WizardController extends GetxController{
          // box.close();
           Get.defaultDialog(
               title: '',
-              content: const WizardWarning('Save complete')
+              content:  WizardWarning('save_complete'.tr)
           );
         }
         catch(e){
@@ -96,12 +93,11 @@ class WizardController extends GetxController{
     }
   }
   generateLayout(){
-    Layout _model= Layout(tag: null, rigs: []);
+    Layout _model= Layout(tag: null, rigs: [], ips: []);
     bool matchError = false;
     try {
       _model.tag = tag;
       for (var rig in model.rigs!) {
-        //TODO add ip check
         List<String> _ips = getIpList([IpRangeModel.fromString(rig.ip!, '')],rig.gap);
         List<Shelf> _shelves = [];
         /* //check for match ip and places
@@ -127,12 +123,13 @@ class WizardController extends GetxController{
           for (int p = 0; p < rig.placePerShelf!; p++) {
             String _ip = '';
             try {
-              _ip = _ipOnShelf[p]; //TODO get correct id
+              _ip = _ipOnShelf[p];
             }
             catch (e) {
               print(e);
             }
             _places.add(Place(generateId(), 'miner', ip: _ip));
+            _model.ips!.add(_ip);
           }
           _shelves.add(Shelf(generateId(), places: _places));
         }
@@ -149,12 +146,11 @@ class WizardController extends GetxController{
       print(e);
       Get.defaultDialog(
         title: '',
-        content: const WizardWarning('Failed to generate layout')
+        content: WizardWarning('Failed to generate layout'.tr)
       );
     }
   }
   List<String> getIpList(List<IpRangeModel>? scanList, int? gap) {
-    print('gap is $gap');
     List<String> _tmp = [];
     if (scanList != null) {
       for (int i = 0; i < scanList.length; i++) {

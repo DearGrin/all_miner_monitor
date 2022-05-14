@@ -10,7 +10,7 @@ class IpUI extends StatelessWidget{
     final IpManagementController controller = Get.put(IpManagementController());
     final ScrollController scrollController = ScrollController();
     return Card(
-      color: Theme.of(context).cardTheme.color,
+     // color: Theme.of(context).cardTheme.color,
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
@@ -42,13 +42,16 @@ class IpUI extends StatelessWidget{
                 isAlwaysShown: true,
                 controller: scrollController,
                 child: ListView.separated(
+                  padding: const EdgeInsets.only(right: 10.0),
                   controller: scrollController,
                   itemBuilder: (context, index){
                     return Container(
-                      margin: const EdgeInsets.only(right: 16.0),
+                     // margin: const EdgeInsets.only(right: 16.0),
                       padding: const EdgeInsets.all(4.0),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
+                        border: Border.all(
+                           color: Get.theme.primaryColor
+                        ),
                       ),
                       child: InkWell(
                         onDoubleTap: (){controller.onEditIp(index, context);},
@@ -84,7 +87,9 @@ class IpUI extends StatelessWidget{
                        */
                     );
                   },
-                  separatorBuilder: (context, index)=> const Divider(),
+                  separatorBuilder: (context, index)=>  Divider(
+                    color: Get.theme.primaryColor,
+                  ),
                   itemCount: controller.ips.length,
                 ),
               ),),

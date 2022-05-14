@@ -3,13 +3,34 @@ import 'package:avalon_tool/visual_layout/layout_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LayoutTile extends StatelessWidget {
+class LayoutTile extends StatefulWidget {
   final Layout layout;
   const LayoutTile(this.layout, {Key? key}) : super(key: key);
 
   @override
+  State<LayoutTile> createState() => _LayoutTileState();
+}
+
+class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
+  late LayoutTileController controller;
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  )..repeat(reverse: false);
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.linear,
+  );
+  @override
+  void initState() {
+    controller = Get.put(LayoutTileController(widget.layout), tag: widget.layout.tag);
+    //controller.scanInProgressStream.stream.listen((event) {event.isEven? _controller.repeat():_controller.stop();});
+    _controller.stop();
+    controller.isActive.listen((event) {event? _controller.repeat():_controller.stop();});
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    final LayoutTileController controller = Get.put(LayoutTileController(layout), tag: layout.tag);
     return SizedBox(
       width: 350,
       child: Card(
@@ -25,10 +46,14 @@ class LayoutTile extends StatelessWidget {
                   children: [
                     Align(
                         alignment: Alignment.center,
-                        child: Text('${layout.tag}', style: Theme.of(context).textTheme.bodyText2,)),
+                        child: Text('${widget.layout.tag}', style: Theme.of(context).textTheme.bodyText2,)),
                     Positioned(
                       left: -5,
                       top: -10,
+                      child:  RotationTransition(
+                          turns: _animation,
+                          child: IconButton(onPressed: (){controller.scan();}, icon: const Icon(Icons.refresh))),
+                      /*
                       child: IconButton(
                           padding: const EdgeInsets.all(0),
                           iconSize: 20,
@@ -36,6 +61,7 @@ class LayoutTile extends StatelessWidget {
                           onPressed: (){controller.scan();},
                           icon: const Icon(Icons.refresh,)
                       ),
+                      */
                     ),
                     Positioned(
                       right: -5,
@@ -85,18 +111,18 @@ class LayoutTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                          const Text('SHA256'),
-                          Obx(()=>Text('devices: ${controller.deviceCountSHA256}')),
-                          Obx(()=>Text('total: ${(controller.speedSHA256)..toStringAsFixed(2)}Th/s')),
-                          Obx(()=>Text('average: ${(controller.speedAvgSHA256).toStringAsFixed(2)}Th/s')),
+                          Obx(()=>Text('devices'.trParams({'value':'${controller.deviceCountSHA256}'})),),
+                          Obx(()=>Text('total'.trParams({'value':(controller.speedSHA256).toStringAsFixed(2)}))),
+                          Obx(()=>Text('average'.trParams({'value':(controller.speedAvgSHA256).toStringAsFixed(2)}))),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text('SCRYPT'),
-                          Obx(()=>Text('devices: ${controller.deviceCountSCRYPT}')),
-                          Obx(()=>Text('total: ${(controller.speedSCRYPT/1000).toStringAsFixed(2)}Gh/s')),
-                          Obx(()=>Text('average: ${(controller.speedAvgSCRYPT/1000).toStringAsFixed(2)}Gh/s')),
+                          Obx(()=>Text('devicesGH'.trParams({'value':'${controller.deviceCountSCRYPT}'})),),
+                          Obx(()=>Text('totalGH'.trParams({'value':(controller.speedSCRYPT/1000).toStringAsFixed(2)}))),
+                          Obx(()=>Text('averageGH'.trParams({'value':(controller.speedAvgSCRYPT).toStringAsFixed(2)}))),
                         ],
                       ),
                     ],
@@ -116,8 +142,6 @@ class LayoutTile extends StatelessWidget {
               ),
               Obx(()=> LinearProgressIndicator(
                   value: controller.progress.value,
-                  color: Colors.blue,
-                  backgroundColor: Colors.grey,
                 ),
               ),
             ],

@@ -13,7 +13,7 @@ class RowUI extends StatelessWidget {
   Widget build(BuildContext context) {
     final LayoutController  controller = Get.put(LayoutController());
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border.symmetric(horizontal: BorderSide()),
       ),
       child: Row(

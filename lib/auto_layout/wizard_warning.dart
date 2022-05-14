@@ -10,7 +10,7 @@ class WizardWarning extends StatelessWidget {
     return Column(
       children: [
         Text(message, style: Theme.of(context).textTheme.bodyText1,),
-        SizedBox(height: 20,),
+        const SizedBox(height: 20,),
         OutlinedButton(onPressed: (){Get.back();}, child: const Text('Ok')),
       ],
     );

@@ -26,6 +26,9 @@ class LayoutTileController extends GetxController{
   RxInt deviceCountSCRYPT = 0.obs;
   RxInt deviceCountSHA256 = 0.obs;
   StreamSubscription? scanResultSub;
+  int _counter = 0;
+  StreamController scanInProgressStream = StreamController<int>();
+  RxBool isActive = false.obs;
   @override
   void onInit() async{
     ///watch for layout changes
@@ -40,10 +43,10 @@ class LayoutTileController extends GetxController{
   }
   handleScanResult(EventModel event){
     if(event.tag!=null && event.tag==layout.tag) {
-      jobsDone++;
-      progress.value = jobsDone / layout.ips!.length;
       if (event.type == 'device') {
         devices.add(event.data);
+        jobsDone++;
+        progress.value = jobsDone / layout.ips!.length;
         if (event.data.isScrypt == true) {
           deviceCountSCRYPT.value++;
           speedSCRYPT.value += event.data.currentSpeed;
@@ -55,14 +58,31 @@ class LayoutTileController extends GetxController{
           speedAvgSHA256.value = speedSHA256.value / deviceCountSHA256.value;
         }
       }
+      else if(event.type=='abort'){
+        scanInProgressStream.add(_counter);
+        _counter++;
+        isActive.value = false;
+      }
+      else{
+        jobsDone++;
+        progress.value = jobsDone / layout.ips!.length;
+      }
+    }
+    if(progress>=1){
+      scanInProgressStream.add(_counter);
+      _counter++;
+      isActive.value = false;
     }
   }
-  scan(){
+  scan() async {
     clearSummary();
+    scanInProgressStream.add(_counter);
+    _counter++;
     if(layout.ips!.isNotEmpty){
      // scanlistController.clearQuery();
-      scanner.newScan(ips: layout.ips, tg: layout.tag);
+     await scanner.newScan(ips: layout.ips, tg: layout.tag);
     }
+    isActive.value = true;
   }
   clearSummary(){
     jobsDone = 0;

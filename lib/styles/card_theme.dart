@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const CardTheme cardThemeLight = CardTheme(
-  color: Colors.grey,
+ CardTheme cardThemeLight = CardTheme(
+  color: Colors.grey[200],
 );
  CardTheme cardThemeDark = CardTheme(
   color: Colors.grey.shade900,

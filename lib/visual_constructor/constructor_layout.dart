@@ -16,7 +16,8 @@ class ConstructorLayout extends StatelessWidget {
     controller.setData(tag);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){layoutListController.onBack();}, icon: Icon(Icons.arrow_back_ios_outlined),),
+        leading: IconButton(onPressed: (){layoutListController.onBack();},
+          icon: const Icon(Icons.arrow_back_ios_outlined),),
         centerTitle: true,
         title: SizedBox(
           width: 300,
@@ -25,21 +26,21 @@ class ConstructorLayout extends StatelessWidget {
             onChanged: (value){controller.editTag(value);},
             style: Theme.of(context).textTheme.bodyText1,
             decoration: InputDecoration(
-                hintText: 'Tag',
-              labelText: 'Tag',
+                hintText: 'tag'.tr,
+              labelText: 'tag'.tr,
             ),
           ),
         ),
         actions: [
           OutlinedButton(
               onPressed: (){controller.onSaveClick();},
-              child: Text('Save'),
-          ),
+              child: Text('save'.tr),
+          ).marginAll(10.0),
         ],
       ),
       body: Column(
         children: [
-          ContRigRowControls(),
+          const ContRigRowControls(),
           Flexible(
             fit: FlexFit.loose,
             child: GetBuilder<ConstructorController>(

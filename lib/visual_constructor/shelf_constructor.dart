@@ -6,23 +6,25 @@ import 'package:get/get.dart';
 class ShelfConstructor extends StatelessWidget {
   final int rigId;
   final int shelfId;
-  const ShelfConstructor(this.rigId, this.shelfId, {Key? key}) : super(key: key);
+  final int index;
+  const ShelfConstructor(this.rigId, this.shelfId, this.index,{Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final ConstructorController controller = Get.put(ConstructorController());
     return SizedBox(
-      height: 100,
+      height: 120,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(top: 8.0, left: 10.0, right: 10.0),
         child: Card(
-          color: Theme.of(context).cardColor,
+          color: Get.theme.cardTheme.color,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text('Shelf $shelfId:'),
+                  Text('shelf'.trParams({'value':'$index'})),
                   IconButton(onPressed: (){controller.deleteShelf(rigId, shelfId);},
                       icon: const Icon(Icons.delete))
                 ],
@@ -36,12 +38,12 @@ class ShelfConstructor extends StatelessWidget {
                   OutlinedButton(
                       style: Theme.of(context).outlinedButtonTheme.style?.copyWith(backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey)),
                       onPressed: (){controller.addMiner(rigId, shelfId);},
-                      child: Text('add miner')
+                      child: Text('add_miner'.tr)
                   ),
                   OutlinedButton(
                     style: Theme.of(context).outlinedButtonTheme.style?.copyWith(backgroundColor: MaterialStateProperty.all<Color>(Colors.grey)),
                       onPressed: (){controller.addAuc(rigId, shelfId);},
-                      child: Text('add auc'),
+                      child: Text('add_auc'.tr),
                   ),
                 ],
               ),
@@ -58,6 +60,7 @@ class ShelfConstructor extends StatelessWidget {
                      controller: scrollController,
                      isAlwaysShown: true,
                      child: ReorderableListView.builder(
+                       padding: const EdgeInsets.only(bottom: 10.0),
                        scrollController: scrollController,
                          scrollDirection: Axis.horizontal,
                          itemBuilder: (BuildContext context, int index){

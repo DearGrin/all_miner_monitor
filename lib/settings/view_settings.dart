@@ -27,6 +27,7 @@ class ViewSettings extends StatelessWidget {
                     isAlwaysShown: true,
                     controller: _scrollController,
                     child: ListView.separated(
+                      padding: const EdgeInsets.only(right: 10.0),
                       controller: _scrollController,
                       itemCount: _.headers.length,
                         separatorBuilder: (BuildContext context, int index) => const Divider(),

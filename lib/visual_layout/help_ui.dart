@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HelpUI extends StatelessWidget {
   const HelpUI({Key? key}) : super(key: key);
@@ -7,7 +8,8 @@ class HelpUI extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Color Scheme', style: Theme.of(context).textTheme.bodyText1,),
+        Text('color_scheme'.tr, style: Get.textTheme.bodyText1,),
+        const SizedBox(height: 10.0,),
         Row(
           children: [
             Container(
@@ -15,7 +17,8 @@ class HelpUI extends StatelessWidget {
               height: 40,
               color: Colors.grey,
             ),
-            Text('no data', style: Theme.of(context).textTheme.bodyText1,),
+            const SizedBox(width: 10.0,),
+            Text('no_data'.tr, style: Get.textTheme.bodyText1,),
           ],
         ),
         Row(
@@ -25,7 +28,8 @@ class HelpUI extends StatelessWidget {
               height: 40,
               color: Colors.blueGrey,
             ),
-            Text('speed low', style: Theme.of(context).textTheme.bodyText1,),
+            const SizedBox(width: 10.0,),
+            Text('speed_low'.tr, style: Theme.of(context).textTheme.bodyText1,),
           ],
         ),
         Row(
@@ -35,17 +39,20 @@ class HelpUI extends StatelessWidget {
               height: 40,
               color: Colors.green,
             ),
-            Text('speed ok', style: Theme.of(context).textTheme.bodyText1,),
+            const SizedBox(width: 10.0,),
+            Text('speed_ok'.tr, style: Theme.of(context).textTheme.bodyText1,),
           ],
         ),
-        Text('Icons', style: Theme.of(context).textTheme.bodyText2,),
+        Text('icons'.tr, style: Theme.of(context).textTheme.bodyText2,),
+        const SizedBox(height: 10.0,),
         Row(
           children: [
             const Icon(
               Icons.details, size: 15,
               color: Colors.red,
             ),
-            Text('chip or hashboard is missing', style: Theme.of(context).textTheme.bodyText1,)
+            const SizedBox(width: 10.0,),
+            Text('chip or hashboard is missing'.tr, style: Theme.of(context).textTheme.bodyText1,)
           ],
         ),
         Row(
@@ -54,7 +61,8 @@ class HelpUI extends StatelessWidget {
               Icons.book_rounded, size: 15,
               color: Colors.red,
             ),
-            Text('hashboard is missing', style: Theme.of(context).textTheme.bodyText1,)
+            const SizedBox(width: 10.0,),
+            Text('hashboard is missing'.tr, style: Theme.of(context).textTheme.bodyText1,)
           ],
         ),
         Row(
@@ -63,7 +71,8 @@ class HelpUI extends StatelessWidget {
               Icons.ac_unit_outlined, size: 15,
               color: Colors.red,
             ),
-            Text('temp too high', style: Theme.of(context).textTheme.bodyText1,)
+            const SizedBox(width: 10.0,),
+            Text('temp too high'.tr, style: Theme.of(context).textTheme.bodyText1,)
           ],
         ),
         Row(
@@ -72,7 +81,8 @@ class HelpUI extends StatelessWidget {
               Icons.flip_camera_android_outlined, size: 15,
               color: Colors.red,
             ),
-            Text('fan is missing', style: Theme.of(context).textTheme.bodyText1,)
+            const SizedBox(width: 10.0,),
+            Text('fan is missing'.tr, style: Theme.of(context).textTheme.bodyText1,)
           ],
         ),
         Row(
@@ -81,7 +91,8 @@ class HelpUI extends StatelessWidget {
               Icons.error_outline, size: 15,
               color: Colors.red,
             ),
-            Text('errors on hash boards', style: Theme.of(context).textTheme.bodyText1,)
+            const SizedBox(width: 10.0,),
+            Text('errors on hash boards'.tr, style: Theme.of(context).textTheme.bodyText1,)
           ],
         ),
       ],

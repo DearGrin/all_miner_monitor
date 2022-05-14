@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(
                             controller.currentIndex.value==0?
-                            Colors.blue: Colors.white)
+                            Colors.blue: Get.theme.primaryColor)
                       ),
                     ),
                     OutlinedButton(
@@ -38,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
                               controller.currentIndex.value==1?
-                              Colors.blue: Colors.white)
+                              Colors.blue: Get.theme.primaryColor)
                       ),
                     ),
                     OutlinedButton(
@@ -47,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
                               controller.currentIndex.value==2?
-                              Colors.blue: Colors.white)
+                              Colors.blue: Get.theme.primaryColor)
                       ),
                     ),
                     OutlinedButton(
@@ -56,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
                               controller.currentIndex.value==3?
-                              Colors.blue: Colors.white)
+                              Colors.blue: Get.theme.primaryColor)
                       ),
                     ),
                     OutlinedButton(
@@ -65,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
                               controller.currentIndex.value==4?
-                              Colors.blue: Colors.white)
+                              Colors.blue: Get.theme.primaryColor)
                       ),
                     ),
                   ],

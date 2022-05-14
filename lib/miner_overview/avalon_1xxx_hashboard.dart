@@ -70,7 +70,7 @@ class Avalon1xxxHashboard extends StatelessWidget{
   }
   List<Widget> chips(OverviewController controller){
     List<Widget> _tmp = [];
-    if(!controller.device[0].model.contains('1066'))
+    if(controller.device[0].model.contains('1066'))
       {
         int _rowCount = (controller.device[0].data.hashBoards[boardIndex].chips.length/6).floor() +1;
         int _index = 0;

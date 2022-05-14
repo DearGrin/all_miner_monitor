@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class ConstructorController extends GetxController{
-  List<int> settings = [10, 7, 5].obs;
+  List<int> settings = [1, 1, 6].obs;
   RxInt selectedItem = 0.obs; //TODO change type and track
   Rig? selectedRig;
   final layout = Layout(tag: null, rigs: []).obs;
@@ -16,7 +16,7 @@ class ConstructorController extends GetxController{
   setData(String? tag)async{
     if(tag!=null && tag!='a very new layout'){
       Box box = await Hive.openBox('layouts');
-      layout.value = box.get('$tag');
+      layout.value = box.get(tag);
       counter = layout.value.counter??0;
       initialTag = tag;
     }
@@ -154,10 +154,11 @@ class ConstructorController extends GetxController{
     _shelf.places = _places;
     update(['$rigId/$shelfId']);
   }
-  addShelf(int rigId){
-    Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
-    _rig.shelves?.add(Shelf(generateId()));
-    update(['rig_$rigId']);
+  addShelf(){
+    selectedRig?.shelves?.add(Shelf(generateId()));
+    //Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
+    //_rig.shelves?.add(Shelf(generateId()));
+    update(['rig_${selectedRig?.id}']);
   }
   deleteShelf(int rigId, int shelfId){
     Rig _rig =  layout.value.rigs!.firstWhere((element) => element.id==rigId);
@@ -202,7 +203,7 @@ class ConstructorController extends GetxController{
     else{
       Get.defaultDialog(
         title: '',
-        content: const SaveResult('Tag is empty'),
+        content:  SaveResult('Layout is empty or no tag provided'.tr),
       );
     }
   }
@@ -211,7 +212,7 @@ class ConstructorController extends GetxController{
     Box box = await Hive.openBox('layouts');
     try {
       box.put('${layout.value.tag}', layout.value);
-      Get.defaultDialog(title: '', content: const SaveResult('Save complete'));
+      Get.defaultDialog(title: '', content: SaveResult('save_complete'.tr));
     }
     catch(e){
       Get.defaultDialog(title: '', content: SaveResult('$e'));

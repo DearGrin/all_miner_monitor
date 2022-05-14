@@ -11,24 +11,22 @@ class ConfirmOverwrite extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('This tag already exists. Are you sure want to overwrite layout data?',
+        Text('confirm_tag_overwrite'.tr,
         style: Theme.of(context).textTheme.bodyText1,
         ),
-        SizedBox(
-          height: 30,
-        ),
+        const SizedBox(height: 30,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             OutlinedButton(
                 onPressed: (){Get.back();},
-                child: Text('Cancel')
+                child: Text('cancel'.tr)
             ),
             OutlinedButton(
                 onPressed: (){controller.save();
                   Get.back();
                   },
-                child: Text('Overwrite')
+                child: Text('overwrite'.tr)
             ),
           ],
         ),

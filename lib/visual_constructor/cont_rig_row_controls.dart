@@ -15,7 +15,7 @@ class ContRigRowControls extends StatelessWidget {
         children: [
           Expanded(
               flex: 1,
-              child: Text('Rigs:', style: Theme.of(context).textTheme.bodyText2,)),
+              child: Text('rigs'.tr, style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,)),
           Expanded(
             flex: 8,
             child: Scrollbar(
@@ -25,6 +25,7 @@ class ContRigRowControls extends StatelessWidget {
                 id: 'rigs',
                 builder: (_){
                  return ReorderableListView.builder(
+                   padding: const EdgeInsets.only(bottom: 10.0, top: 5.0),
                       scrollController: scrollController,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (BuildContext context, int index){
@@ -39,7 +40,7 @@ class ContRigRowControls extends StatelessWidget {
                                     style: Theme.of(context).outlinedButtonTheme.style?.
                                     copyWith(backgroundColor: MaterialStateProperty.all<Color>(
                                         controller.selectedRig!=null?
-                                        controller.selectedRig!.id==controller. layout.value.rigs![index].id ?Colors.blueGrey:Colors.grey
+                                        controller.selectedRig!.id==controller. layout.value.rigs![index].id ?Colors.blueGrey:Get.theme.cardTheme.color!
                                             :Colors.grey)
                                     ),
                                     onPressed: (){controller.rigSelect(index);},
@@ -49,7 +50,7 @@ class ContRigRowControls extends StatelessWidget {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text('Rig ${controller. layout.value.rigs![index].id}',overflow: TextOverflow.clip,),
+                                            Text('rig'.trParams({'value':'${(index+1)}'}),overflow: TextOverflow.clip,),
                                             IconButton(
                                               onPressed: (){controller.deleteRig(index);},
                                               icon: const Icon(Icons.delete,),
@@ -62,18 +63,6 @@ class ContRigRowControls extends StatelessWidget {
                                           ],
                                         )));
                               },)
-
-
-                          /*
-                        child: ListTile(
-                          //key: Key('$index'),
-                          leading: Text('Item ${controller.items[index]}'),
-                          tileColor: controller.items[index].isOdd ? Colors.red : Colors.green,
-                          //title: Text('Item ${controller.items[index]}'),
-                        ),
-
-
-                         */
                         );
                       },
                       itemCount: controller. layout.value.rigs!.length,
@@ -85,24 +74,22 @@ class ContRigRowControls extends StatelessWidget {
               ),
               ),
             ),
-
-          Expanded(
-            flex: 1,
-            child: IconButton(
-                onPressed: (){controller.addRig();},
-                icon: Icon(Icons.add)
-            ),
-          ),
-          /*
+          const SizedBox(width: 10.0,),
           Expanded(
             flex: 1,
             child: OutlinedButton(
-                onPressed: (){controller.save();},
-                child: Text('Save'),
+                onPressed: (){controller.addRig();},
+                child: Text('add_rig'.tr,)
             ),
           ),
-
-           */
+          const SizedBox(width: 5.0,),
+          Expanded(
+            flex: 1,
+            child: OutlinedButton(
+                onPressed: (){controller.addShelf();},
+                child: Text('add_shelf'.tr,)
+            ),
+          ),
         ],
       ),
     );

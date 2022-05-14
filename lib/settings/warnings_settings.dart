@@ -75,12 +75,12 @@ class WarningsSettings extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text('Speed check for Antminer', style: Theme.of(context).textTheme.bodyText2,),
+                Text('speed_check_ant'.tr, style: Theme.of(context).textTheme.bodyText2,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'L3 (Gh/s)'.tr,
+                      'L3 (Mh/s)'.tr,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Obx(()=> SizedBox(

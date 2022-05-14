@@ -17,8 +17,8 @@ class ProgressBar extends StatelessWidget {
             height: 20,
             child: LinearProgressIndicator(
                 value: controller.progress.value,
-                backgroundColor: Colors.grey,
-                color: Colors.blue,
+               // backgroundColor: Get.theme.cardColor,
+             //   color: Colors.blue,
               ),
           ),
           Align(
