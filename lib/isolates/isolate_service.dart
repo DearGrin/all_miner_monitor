@@ -18,14 +18,14 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
-    StreamController eventStream, StreamController stopStream) async{
+    StreamController eventStream, StreamController stopStream, [List<String>? addCommand]) async{
 
-  await for (final result in _sendAndReceive(f, commands, stopStream)) {
+  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand)) {
     eventStream.add(result);
   }
 }
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
-    StreamController stopStream) async* {
+    StreamController stopStream, [List<String>? addCommand]) async* {
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -50,10 +50,22 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
       break;
     }
     if(commands.length>1) {
-      sendPort.send({'${ips[i]}': '${commands[i]}'});
+     // sendPort.send({'${ips[i]}': '${commands[i]}'});
+      sendPort.send({
+        'ip':'${ips[i]}',
+        'command':commands[i],
+        'addCommand':addCommand?[i]
+      }
+      );
     }
     else{
-      sendPort.send({'${ips[i]}': '${commands[0]}'});
+      //sendPort.send({'${ips[i]}': '${commands[0]}'});
+      sendPort.send({
+        'ip':'${ips[i]}',
+        'command':commands[0],
+        'addCommand':addCommand?[i]
+      }
+      );
     }
     // Receive the parsed JSON
     EventModel message = await events.next;
@@ -70,7 +82,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
 sendAnswer(SendPort p, EventModel eventModel){
   p.send(eventModel);
 }
-socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device}) async{
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, String? addCommands}) async{
   dynamic data;
   try {
     switch(command){
@@ -85,9 +97,9 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device}) 
         socket.add(utf8.encode(command));
         break;
       case 'setpool':
-        if(device!=null && device.manufacture?.toLowerCase()=='antminer')
+        if(addCommands!.contains('_ant_pool'))
           {
-            RestApi().setPool(ip, command);
+            RestApi().setPool(ip, addCommands);
           }
         else{
           Socket socket = await Socket.connect(
@@ -97,7 +109,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device}) 
             data = utf8.decode(event);
             socket.close();
           });
-          socket.add(utf8.encode(command));
+          socket.add(utf8.encode(addCommands));
         }
         break;
       case 'aging':
@@ -282,7 +294,7 @@ Future<void> sendCommand(SendPort p) async{
   await for (final message in commandPort) {
     if (message is Map<String,String>) {
       // TODO do the logic here
-      socketSendCommand(message.keys.first, message.values.first, p);
+      socketSendCommand(message['ip']??'', message['command']??'', p, addCommands: message['addCommands']);
       /*
       dynamic data;
       EventModel? eventModel;
