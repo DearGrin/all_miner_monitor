@@ -72,11 +72,11 @@ handleDevice(EventModel event){
      // var _device = AvalonData.fromString(mockData, '10.10.10.10');
       ///mock Avalon 9xx raspberry
       //var _device = RaspberryAva.fromString(mockRasp, '10.10.10.10');
-      var device = DeviceModel.fromData(_device, '10.10.10.10');
+     // var device = DeviceModel.fromData(_device, '10.10.10.10');
       //device.pools = _pool;
-      scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
+      //scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
 
-    //  scanResult.add(event);
+    scanResult.add(event);
 
 }
   universalCreate(List<String?>? ips, List<String> commands, [List<String>? addCommands]) async {

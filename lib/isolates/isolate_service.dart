@@ -19,11 +19,11 @@ import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
     StreamController eventStream, StreamController stopStream, [List<String>? addCommand]) async{
-
   await for (final result in _sendAndReceive(f, commands, stopStream, addCommand)) {
     eventStream.add(result);
   }
 }
+
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
     StreamController stopStream, [List<String>? addCommand]) async* {
 
@@ -54,7 +54,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[i],
-        'addCommand':addCommand?[i]
+        'addCommand': '${addCommand!=null? addCommand[i]:null}'
       }
       );
     }
@@ -63,7 +63,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[0],
-        'addCommand':addCommand?[i]
+        'addCommand': '${addCommand!=null? addCommand[i]:null}'
       }
       );
     }
@@ -293,8 +293,11 @@ Future<void> sendCommand(SendPort p) async{
    */
   await for (final message in commandPort) {
     if (message is Map<String,String>) {
+      print(message);
       // TODO do the logic here
-      socketSendCommand(message['ip']??'', message['command']??'', p, addCommands: message['addCommands']);
+      socketSendCommand(message['ip']??'', message['command']??'', p,
+          addCommands: message['addCommands']
+      );
       /*
       dynamic data;
       EventModel? eventModel;
