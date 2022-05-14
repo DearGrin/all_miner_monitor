@@ -14,6 +14,12 @@ class AnalyseResolver extends GetxController{
   double minSpeedS9 = 15;
   double minSpeedS19 = 100;
   double minSpeedT9 = 12;
+  double minSpeed1047 = 36;
+  double minSpeed1066 = 50;
+  double minSpeed11xx = 70;
+  double minSpeed12xx = 82;
+  double minSpeed9xx = 18;
+  double minSpeed8xx = 14;
 
   /// fixed values
   int hashCountL3 = 4;
@@ -65,6 +71,24 @@ class AnalyseResolver extends GetxController{
         case 'min_hash_T9':
           minSpeedT9 = event.value;
           break;
+        case 'min_hash_1047':
+          minSpeed1047 = event.value;
+          break;
+        case 'min_hash_1066':
+          minSpeed1066 = event.value;
+          break;
+        case 'min_hash_11xx':
+          minSpeed11xx = event.value;
+          break;
+        case 'min_hash_12xx':
+          minSpeed12xx = event.value;
+          break;
+        case 'min_hash_9xx':
+          minSpeed9xx = event.value;
+          break;
+        case 'min_hash_8xx':
+          minSpeed8xx = event.value;
+          break;
         default:
       }
     }
@@ -83,6 +107,12 @@ class AnalyseResolver extends GetxController{
     minSpeedS9 = box.get('min_hash_S9')??15;
     minSpeedS19 = box.get('min_hash_S19')??100;
     minSpeedT9 = box.get('min_hash_T9')??12;
+    minSpeed1047 = box.get('min_hash_1047')??36;
+    minSpeed1066 = box.get('min_hash_1066')??50;
+    minSpeed11xx = box.get('min_hash_11xx')??70;
+    minSpeed12xx = box.get('min_hash_12xx')??82;
+    minSpeed9xx = box.get('min_hash_9xx')??18;
+    minSpeed8xx = box.get('min_hash_8xx')??14;
   }
 
   Color? getColor(String? type, dynamic value, [String? model]){
@@ -153,8 +183,28 @@ class AnalyseResolver extends GetxController{
           break;
 
         case 'min_speed':
-          print('min speed and model is $model');
-          switch(model){
+          String? _model = model;
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+            if(model!.startsWith('9')){
+              _model = '9xx';
+            }
+            else if(model.startsWith('8')){
+              _model = '8xx';
+            }
+            else if(model.startsWith('11')){
+              _model = '11xx';
+            }
+            else if(model.startsWith('12')){
+              _model = '12xx';
+            }
+            else if(model.startsWith('1066')){
+              _model = '1066';
+            }
+            else{
+              _model = '1047';
+            }
+          }
+          switch(_model){
             case 'L3':
               _ = value>minSpeedL3? null : Colors.red;
               break;
@@ -166,6 +216,24 @@ class AnalyseResolver extends GetxController{
               break;
             case 'T9':
               _ = value>minSpeedT9? null : Colors.red;
+              break;
+            case '1047':
+              _ = value>minSpeed1047? null : Colors.red;
+              break;
+            case '1066':
+              _ = value>minSpeed1066? null : Colors.red;
+              break;
+            case '11xx':
+              _ = value>minSpeed11xx? null : Colors.red;
+              break;
+            case '12xx':
+              _ = value>minSpeed12xx? null : Colors.red;
+              break;
+            case '9xx':
+              _ = value>minSpeed9xx? null : Colors.red;
+              break;
+            case '8xx':
+              _ = value>minSpeed8xx? null : Colors.red;
               break;
             default:
               _ = value>minSpeedDefault? null : Colors.red;
@@ -203,7 +271,28 @@ class AnalyseResolver extends GetxController{
           _ = value < dh;
           break;
         case 'min_speed':
-          switch(model){
+          String? _model = model;
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+            if(model!.startsWith('9')){
+              _model = '9xx';
+            }
+            else if(model.startsWith('8')){
+              _model = '8xx';
+            }
+            else if(model.startsWith('11')){
+              _model = '11xx';
+            }
+            else if(model.startsWith('12')){
+              _model = '12xx';
+            }
+            else if(model.startsWith('1066')){
+              _model = '1066';
+            }
+            else{
+              _model = '1047';
+            }
+          }
+          switch(_model){
             case 'L3':
               _ = value<minSpeedL3;
               break;
@@ -215,6 +304,24 @@ class AnalyseResolver extends GetxController{
               break;
             case 'T9':
               _ = value<minSpeedT9;
+              break;
+            case '1047':
+              _ = value<minSpeed1047;
+              break;
+            case '1066':
+              _ = value<minSpeed1066;
+              break;
+            case '11xx':
+              _ = value<minSpeed11xx;
+              break;
+            case '12xx':
+              _ = value<minSpeed12xx;
+              break;
+            case '9xx':
+              _ = value<minSpeed9xx;
+              break;
+            case '8xx':
+              _ = value<minSpeed8xx;
               break;
             default:
               _ = value<minSpeedDefault;

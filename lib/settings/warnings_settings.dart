@@ -75,82 +75,243 @@ class WarningsSettings extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text('speed_check_ant'.tr, style: Theme.of(context).textTheme.bodyText2,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'L3 (Mh/s)'.tr,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Obx(()=> SizedBox(
-                      width: 60,
-                      child: TextField(
-                        keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                        controller: TextEditingController(text: controller.minHashL3.value.toString()),
-                        onChanged: (value){controller.setMinHash(value, 'L3');},
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
-                    ),
-                  ],
+                const SizedBox(height: 10.0,),
+                InkWell(
+                  onTap: (){controller.showAntSettings();},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('speed_check_ant'.tr, style: Theme.of(context).textTheme.bodyText2,),
+                      Obx(()=>Icon(controller.isAntVisible.value?
+                        Icons.arrow_drop_up_outlined :
+                        Icons.arrow_drop_down_outlined)
+                      )
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'S9'.tr,
-                      style: Theme.of(context).textTheme.bodyText1,
+                const SizedBox(height: 10.0,),
+                Obx(()=> Visibility(
+                    visible: controller.isAntVisible.value,
+                    replacement: Container(),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'L3 (Mh/s)'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashL3.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'L3');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'S9'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashS9.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'S9');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'S19'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashS19.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'S19');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'T9'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashT9.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'T9');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Obx(()=> SizedBox(
-                      width: 60,
-                      child: TextField(
-                        keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                        controller: TextEditingController(text: controller.minHashS9.value.toString()),
-                        onChanged: (value){controller.setMinHash(value, 'S9');},
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
-                    ),
-                  ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'S19'.tr,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Obx(()=> SizedBox(
-                      width: 60,
-                      child: TextField(
-                        keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                        controller: TextEditingController(text: controller.minHashS19.value.toString()),
-                        onChanged: (value){controller.setMinHash(value, 'S19');},
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
-                    ),
-                  ],
+                const SizedBox(height: 10.0,),
+                InkWell(
+                  onTap: (){controller.showAvalonSettings();},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('speed_check_avalon'.tr, style: Theme.of(context).textTheme.bodyText2,),
+                      Obx(()=>Icon(controller.isAvalonVisible.value?
+                      Icons.arrow_drop_up_outlined :
+                      Icons.arrow_drop_down_outlined)
+                      )
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'T9'.tr,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Obx(()=> SizedBox(
-                      width: 60,
-                      child: TextField(
-                        keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                        controller: TextEditingController(text: controller.minHashT9.value.toString()),
-                        onChanged: (value){controller.setMinHash(value, 'T9');},
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
-                    ),
-                  ],
+                const SizedBox(height: 10.0,),
+                Obx(()=> Visibility(
+                      visible: controller.isAvalonVisible.value,
+                      replacement: Container(),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '1047',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash1047.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '1047');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '1066',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash1066.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '1066');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '11xx',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash11xx.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '11xx');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '12xx',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash12xx.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '12xx');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '9xx',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash9xx.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '9xx');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '8xx',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Obx(()=> SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                  controller: TextEditingController(text: controller.minHash8xx.value.toString()),
+                                  onChanged: (value){controller.setMinHash(value, '8xx');},
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

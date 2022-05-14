@@ -22,10 +22,17 @@ class SettingsController extends GetxController{
   RxDouble minHashS9 = 15.0.obs;
   RxDouble minHashS19 = 100.0.obs;
   RxDouble minHashT9 = 12.0.obs;
+  RxDouble minHash1047 = 36.0.obs;
+  RxDouble minHash1066 = 50.0.obs;
+  RxDouble minHash11xx = 70.0.obs;
+  RxDouble minHash12xx = 82.0.obs;
+  RxDouble minHash9xx = 18.0.obs;
+  RxDouble minHash8xx = 14.0.obs;
   RxInt volReq = 1200.obs;
   RxDouble maxDh = 7.5.obs;
   RxDouble kWork = 10.0.obs;
-
+  RxBool isAntVisible = false.obs;
+  RxBool isAvalonVisible = false.obs;
   late Box box;
   //final ScanListController scanListController = Get.put(ScanListController());
   final ResizeController resizeController = Get.put(ResizeController());
@@ -121,6 +128,48 @@ class SettingsController extends GetxController{
     }
     else{
       minHashT9.value = _minHashT9;
+    }
+    double? _minHash1047 = box.get('min_hash_1047');
+    if(_minHash1047==null){
+      box.put('min_hash_1047', 36.0);
+    }
+    else{
+      minHash1047.value = _minHash1047;
+    }
+    double? _minHash1066 = box.get('min_hash_1066');
+    if(_minHash1066==null){
+      box.put('min_hash_1066', 50.0);
+    }
+    else{
+      minHash1066.value = _minHash1066;
+    }
+    double? _minHash11xx = box.get('min_hash_11xx');
+    if(_minHash11xx==null){
+      box.put('min_hash_11xx', 70.0);
+    }
+    else{
+      minHash11xx.value = _minHash11xx;
+    }
+    double? _minHash12xx = box.get('min_hash_12xx');
+    if(_minHash12xx==null){
+      box.put('min_hash_12xx', 82.0);
+    }
+    else{
+      minHash12xx.value = _minHash12xx;
+    }
+    double? _minHash9xx = box.get('min_hash_9xx');
+    if(_minHash9xx==null){
+      box.put('min_hash_9xx', 18.0);
+    }
+    else{
+      minHash9xx.value = _minHash9xx;
+    }
+    double? _minHash8xx = box.get('min_hash_8xx');
+    if(_minHash8xx==null){
+      box.put('min_hash_8xx', 14.0);
+    }
+    else{
+      minHash8xx.value = _minHash8xx;
     }
     int? _volReq = box.get('min_vol');
     if(_volReq==null){
@@ -218,5 +267,11 @@ class SettingsController extends GetxController{
       kWork.value = _;
       box.put('k_work', _);
     }
+  }
+  showAntSettings(){
+    isAntVisible.value = !isAntVisible.value;
+  }
+  showAvalonSettings(){
+    isAvalonVisible.value = !isAvalonVisible.value;
   }
 }
