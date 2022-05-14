@@ -4,6 +4,7 @@ import 'package:avalon_tool/locales/messages.dart';
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:avalon_tool/scan_list/header_defaults.dart';
 import 'package:avalon_tool/scan_list/table_header_model.dart';
+import 'package:avalon_tool/service_record/record_model.dart';
 import 'package:avalon_tool/settings/header_list_model.dart';
 import 'package:avalon_tool/styles/d_l_theme.dart';
 import 'package:avalon_tool/ui/desktop_scan_screen.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
   Hive.registerAdapter(RigAdapter());
   Hive.registerAdapter(ShelfAdapter());
   Hive.registerAdapter(PlaceAdapter());
+  Hive.registerAdapter(RecordModelAdapter());
   checkSettings();
   //TODO check all adapters
   runApp(const MyApp());

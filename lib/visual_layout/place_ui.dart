@@ -23,6 +23,7 @@ class PlaceUI extends StatelessWidget {
             onTap: (){controller.onSingleTap();},
             onSecondaryTap: (){controller.onSecondaryTap();},
             onLongPress: (){controller.onSecondaryTap();},
+            onSecondaryLongPress: (){controller.onSecondaryLongPress();},
             child: Stack(
               children: [
                 Obx(()=>Container(

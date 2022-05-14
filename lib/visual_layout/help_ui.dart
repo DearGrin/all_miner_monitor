@@ -122,6 +122,12 @@ class HelpUI extends StatelessWidget {
             Text('secondary_tap'.tr, style: Get.textTheme.bodyText1,),
           ],
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('secondary_long_press'.tr, style: Get.textTheme.bodyText1,),
+          ],
+        ),
       ],
     );
   }

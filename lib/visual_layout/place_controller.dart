@@ -7,6 +7,8 @@ import 'package:avalon_tool/avalon_10xx/mock_data.dart';
 import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart';
 import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
+import 'package:avalon_tool/service_record/service_controller.dart';
+import 'package:avalon_tool/service_record/service_screen.dart';
 import 'package:avalon_tool/utils/bindings.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/layout_controller.dart';
@@ -210,6 +212,12 @@ class PlaceController extends GetxController{
     }
     else{
       controller.selectedDevices.remove(device);
+    }
+  }
+  onSecondaryLongPress(){
+    if(place!=null && place!.ip!=null) {
+      Get.put(ServiceController(place!.ip!));
+      Get.dialog(const ServiceScreen());
     }
   }
 }
