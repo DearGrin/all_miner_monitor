@@ -238,7 +238,7 @@ class AvalonInfo extends StatelessWidget {
                                 Text('current_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText(controller.device[0].data.currentSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].currentSpeed))
+                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].currentSpeed, controller.device[0].model))
                                 ),
                               ],
                             ),
@@ -248,7 +248,7 @@ class AvalonInfo extends StatelessWidget {
                                 Text('average_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText(controller.device[0].data.averageSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.averageSpeed))
+                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.averageSpeed,controller.device[0].model))
                                 ),
                               ],
                             ),

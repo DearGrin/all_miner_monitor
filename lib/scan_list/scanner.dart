@@ -64,7 +64,7 @@ handleDevice(EventModel event){
       ///mock pools
      // var _pool = Pools.fromString(mockPoolAva);
       ///mock L3
-      var _device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
+     // var _device = AntMinerModel.fromString(mockAntL3, '10.10.10.10');
       ///mock S9
      // String _data = mockAntS9.replaceAll('"', '').replaceAll(':', '=');
       //var _device = AntMinerModel.fromString(_data, '10.10.10.10');
@@ -72,9 +72,9 @@ handleDevice(EventModel event){
      // var _device = AvalonData.fromString(mockData, '10.10.10.10');
       ///mock Avalon 9xx raspberry
       //var _device = RaspberryAva.fromString(mockRasp, '10.10.10.10');
-     // var device = DeviceModel.fromData(_device, '10.10.10.10');
+    //  var device = DeviceModel.fromData(_device, '10.10.10.10');
       //device.pools = _pool;
-      //scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
+    //  scanResult.add(EventModel('device', device, '10.10.10.10', mockData, tag: tag));
 
     scanResult.add(event);
 
