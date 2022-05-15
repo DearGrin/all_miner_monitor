@@ -143,6 +143,7 @@ class ScanListController extends GetxController{
   onScanClick(){
     devices.clear();
     summary.clear();
+    selectedIps.clear();
     update(['list', 'summary']);
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
     scanner.newScan(scanList: ipsToScan);
@@ -361,7 +362,14 @@ class ScanListController extends GetxController{
     for(var _ip in devices){
       _ips.add(_ip.ip);
     }
-    scanner.universalCreate(_ips, [commandConstructor.reboot()]);
+    List<String> _commands = [];
+    List<String> _manufac = [];
+    for(var i in devices){
+      _commands.add(commandConstructor.reboot());
+      String manufacture = devices[i].manufacture;
+      _manufac.add(manufacture);
+    }
+    scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
     /*
     apiToDo.clear();
     for(int i =0; i < devices.length; i++)
@@ -375,7 +383,17 @@ class ScanListController extends GetxController{
     //Get.back();
   }
   rebootSelected(){
-    scanner.universalCreate(selectedIps, [commandConstructor.reboot()]);
+    //scanner.universalCreate(selectedIps, [commandConstructor.reboot()]);
+    List<String> _commands = [];
+    List<String> _manufac = [];
+    for(var i in selectedIps){
+      _commands.add(commandConstructor.reboot());
+      dynamic _device = devices.firstWhere((element) => element.ip==i);
+      String manufacture = _device.manufacture;
+      _manufac.add(manufacture);
+    }
+
+    scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
     /*
     apiToDo.clear();
     for(int i =0; i < selectedIps.length; i++)
