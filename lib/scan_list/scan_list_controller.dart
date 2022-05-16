@@ -232,14 +232,18 @@ class ScanListController extends GetxController{
    // apiToDo.clear();
     Box box = await Hive.openBox('settings');
     int? _octetCount = box.get('octet_count');
-    List<String> commands = [];
+    List<String> _commands = [];
+    List<String> _manufac = [];
     for(int i =0; i < devices.length; i++)
     {
       String _suffix = '';
       if(suffixMode[0]==1) {
         _suffix = pools[0]!.addr!.contains('.')? '':'.'; //TODO nul check?
         List<String> _octet = devices[i].ip.split('.');
-        if(_octetCount==3) {
+        if(_octetCount == 4){
+          _suffix +=  _octet[0] +'x' + _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
+        }
+        else if(_octetCount==3) {
             _suffix += _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
         }
           else if (_octetCount==2){
@@ -249,20 +253,21 @@ class ScanListController extends GetxController{
             _suffix += _octet[3];
           }
         }
+      _manufac.add(devices[i].manufacture);
         if(devices[i].manufacture=='Antminer'){
           Map<String,dynamic> _json = {
             '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix??'', '_ant_pool1pw' : pools[0]?.passwd??'',
             '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix??'', '_ant_pool2pw' : pools[1]?.passwd??'',
             '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix??'', '_ant_pool3pw' : pools[2]?.passwd??''
           };
-          commands.add(_json.toString());
+          _commands.add(_json.toString());
         }
         else{
           String _command = 'ascset|0,setpool'
               ',${ pools[0]?.fullAdr??''}'',${pools[0]?.worker}'+_suffix+',${pools[0]?.passwd??''}'
               ',${ pools[1]?.fullAdr??''}'',${pools[1]?.worker}'+_suffix+',${pools[1]?.passwd??''}'
               ',${ pools[2]?.fullAdr??''}'',${pools[2]?.worker}'+_suffix+',${pools[2]?.passwd??''}';
-          commands.add(_command);
+          _commands.add(_command);
         }
 
 
@@ -271,14 +276,16 @@ class ScanListController extends GetxController{
     for(var _ip in devices){
       _ips.add(_ip.ip);
     }
-    scanner.universalCreate(_ips, ['setpool'], commands);
+    scanner.universalCreate(_ips, ['setpool'], _commands, _manufac);
+    Get.snackbar('set_pool'.tr, '');
    // scanner.startToChangePools(ips, _pools);
    // create();
   }
   submitPoolsSelected(List<Pool> pools, List<int> suffixMode) async {
     Box box = await Hive.openBox('settings');
     int? _octetCount = box.get('octet_count');
-    List<String> commands = [];
+    List<dynamic> _commands = [];
+    List<String> _manufac = [];
     for(int i =0; i < selectedIps.length; i++)
     {
       String _suffix = '';
@@ -287,7 +294,10 @@ class ScanListController extends GetxController{
        // List<String> _octet = devices[i].ip.split('.');
        var _ = devices.firstWhere((element) => element.ip==selectedIps[i]);
         List<String> _octet = _.ip.split('.');
-        if(_octetCount==3) {
+        if(_octetCount == 4){
+          _suffix +=  _octet[0] +'x' + _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
+        }
+        else if(_octetCount==3) {
           _suffix += _octet[1] + 'x' + _octet[2] + 'x' + _octet[3];
         }
         else if (_octetCount==2){
@@ -297,27 +307,49 @@ class ScanListController extends GetxController{
           _suffix += _octet[3];
         }
       }
-      if(devices[i].manufacture=='Antminer'){
+
+      dynamic _device = devices.firstWhere((element) => element.ip==selectedIps[i]);
+      String manufacture = _device.manufacture;
+      _manufac.add(manufacture);
+      if(manufacture=='Antminer'){
+
         Map<String,dynamic> _json = {
           '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix??'', '_ant_pool1pw' : pools[0]?.passwd??'',
           '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix??'', '_ant_pool2pw' : pools[1]?.passwd??'',
           '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix??'', '_ant_pool3pw' : pools[2]?.passwd??''
         };
-        commands.add(_json.toString());
+
+        String _ = '${pools[0]?.fullAdr??''} ${pools[0]?.worker??'' + _suffix} ${pools[0]?.passwd??''} '
+            '${pools[1]?.fullAdr??''} ${pools[1]?.worker??'' + _suffix} ${pools[1]?.passwd??''} '
+            '${pools[2]?.fullAdr??''} ${pools[2]?.worker??'' + _suffix} ${pools[2]?.passwd??''}   '
+            '${_device.data.frequency??''}';
+
+        String _tmp = pools[0]?.fullAdr??'' +' ' + '${pools[0]?.worker}'+_suffix??'' +' ' + '${pools[0]?.passwd}'??''
+              + ' '+ pools[1]?.fullAdr??'' +' ' '${pools[2]?.worker}'+_suffix??'' +' ' '${pools[3]?.passwd}'??''
+            + ' '+ pools[2]?.fullAdr??'' +' ' '${pools[3]?.worker}'+_suffix??'' +' ' '${pools[4]?.passwd}'??'';
+       print(_);
+        _commands.add(_);
       }
       else{
         String _command = 'ascset|0,setpool'
             ',${ pools[0]?.fullAdr??''}'',${pools[0]?.worker}'+_suffix+',${pools[0]?.passwd??''}'
             ',${ pools[1]?.fullAdr??''}'',${pools[1]?.worker}'+_suffix+',${pools[1]?.passwd??''}'
             ',${ pools[2]?.fullAdr??''}'',${pools[2]?.worker}'+_suffix+',${pools[2]?.passwd??''}';
-        commands.add(_command);
+        _commands.add(_command);
       }
     }
     List<String> _ips = [];
     for(var _ip in selectedIps){
       _ips.add(_ip);
     }
-    scanner.universalCreate(_ips, ['setpool'], commands);
+    scanner.universalCreate(_ips, ['setpool'], _commands, _manufac);
+    Get.snackbar('set_pool'.tr, '');
+
+   // scanner.universalCreate(_ips, ['setpool'], commands);
+
+
+
+
     /*
     apiToDo.clear();
     for(int i =0; i < selectedIps.length; i++)
@@ -366,10 +398,11 @@ class ScanListController extends GetxController{
     List<String> _manufac = [];
     for(var i in devices){
       _commands.add(commandConstructor.reboot());
-      String manufacture = devices[i].manufacture;
+      String manufacture = i.manufacture;
       _manufac.add(manufacture);
     }
     scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
+    Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
     for(int i =0; i < devices.length; i++)
@@ -384,6 +417,7 @@ class ScanListController extends GetxController{
   }
   rebootSelected(){
     //scanner.universalCreate(selectedIps, [commandConstructor.reboot()]);
+    print('reboot sel and $selectedIps');
     List<String> _commands = [];
     List<String> _manufac = [];
     for(var i in selectedIps){
@@ -394,6 +428,7 @@ class ScanListController extends GetxController{
     }
 
     scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
+    Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
     for(int i =0; i < selectedIps.length; i++)

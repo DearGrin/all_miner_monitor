@@ -48,12 +48,12 @@ class AntMinerModel{
   List<int?>? errors;
   List<Pool>? pools;
   String? rawData;
-  List<int?>? ps;
+  List<dynamic>? ps;
   List<int?>? netFail;
   ///manufacture specific data
   int? frequency;
   List<int?>? freqs;
-  List<int?>? volt;
+  List<dynamic>? volt;
   List<int?>? watt;
   int? hashCount;
   int? fanNum;
@@ -118,10 +118,17 @@ class AntMinerModel{
     catch(e){
       print(e);
     }
-    List<int?>? _volt;
+    List<dynamic>? _volt = [];
     try {
-      _volt = regexp.volt.allMatches(data).map((e) =>
-          int.tryParse(nullCheck(e.group(2)))).toList();
+      var _ = regexp.volt.allMatches(data);
+      for(var m in _){
+        if(m.group(2)=='lowest'){
+          _volt.add('lowest');
+        }
+        else{
+          _volt.add(int.tryParse(nullCheck(m.group(2))));
+        }
+      }
     }
     catch(e){
       print(e);

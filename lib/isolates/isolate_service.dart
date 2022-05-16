@@ -18,14 +18,14 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
-    StreamController eventStream, StreamController stopStream, [List<String>? addCommand, List<String>? company]) async{
+    StreamController eventStream, StreamController stopStream, [List<dynamic>? addCommand, List<String>? company]) async{
   await for (final result in _sendAndReceive(f, commands, stopStream, addCommand, company)) {
     eventStream.add(result);
   }
 }
 
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
-    StreamController stopStream, [List<String>? addCommand, List<String>? company]) async* {
+    StreamController stopStream, [List<dynamic>? addCommand, List<String>? company]) async* {
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -49,25 +49,37 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
     if(toFinish){
       break;
     }
+  //print(addCommand![0].runtimeType);
+    Map<String,dynamic> _ = {
+      'ip':'${ips[i]}',
+      'command':commands[i],
+      'addCommand': addCommand!=null? addCommand[i]:null,
+      'company': '${company!=null? company[i]:null}'
+    };
+    print(_);
+
     if(commands.length>1) {
      // sendPort.send({'${ips[i]}': '${commands[i]}'});
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[i],
-        'addCommand': '${addCommand!=null? addCommand[i]:null}',
+        'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}'
       }
       );
     }
     else{
       //sendPort.send({'${ips[i]}': '${commands[0]}'});
+      sendPort.send(_);
+      /*
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[0],
-        'addCommand': '${addCommand!=null? addCommand[i]:null}',
+        'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}'
       }
       );
+      */
     }
     // Receive the parsed JSON
     EventModel message = await events.next;
@@ -84,8 +96,9 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
 sendAnswer(SendPort p, EventModel eventModel){
   p.send(eventModel);
 }
-socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, String? addCommands, String? company}) async{
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company}) async{
   dynamic data;
+  print(addCommands);
   try {
     switch(command){
       case 'pools':
@@ -99,9 +112,18 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, S
         socket.add(utf8.encode(command));
         break;
       case 'setpool':
-        if(company!.contains('_ant_pool'))
+        print('case set pool and $company');
+        EventModel? eventModel;
+        if(company!.contains('Antminer'))
           {
-            RestApi().setPool(ip, addCommands!);
+            print('contains ant');
+           // RestApi _api = RestApi();
+            print(ip);
+            print(addCommands);
+          //  _api.test(ip, addCommands!);
+           await RestApi().test(ip, addCommands!);
+      //    var c = await  RestApi().setPool(ip, addCommands!);
+            eventModel = EventModel('update', 'c', ip, 'c');
           }
         else{
           Socket socket = await Socket.connect(
@@ -112,7 +134,9 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, S
             socket.close();
           });
           socket.add(utf8.encode(addCommands!));
+          eventModel = EventModel('update', 'set pool', ip, 'set pool');
         }
+        sendAnswer(p, eventModel);
         break;
       case 'aging':
         if(device!=null && device.manufacture?.toLowerCase()=='avalon' && device.model!.startsWith('1'))
@@ -159,7 +183,8 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, S
           socket.close();
         });
         socket.add(utf8.encode(command));
-        await sub.asFuture<void>().timeout(const Duration(seconds: 10));
+        await Future.delayed(const Duration(milliseconds: 300));
+        await sub.asFuture<void>().timeout(const Duration(seconds: 7), onTimeout: () async {print('timeout');throw 'timrout';});
     }
   }
   catch(err){
@@ -189,7 +214,6 @@ poolHandler(SendPort p, String data, DeviceModel device, String ip) async {
 sendAnswer(p, eventModel);
 }
 handler(SendPort p, String data, String command, String ip) async {
-
   EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
  // dynamic device;
   DeviceModel? model;
@@ -299,11 +323,12 @@ Future<void> sendCommand(SendPort p) async{
 
    */
   await for (final message in commandPort) {
-    if (message is Map<String,String>) {
+    if (message is Map<String,dynamic>) {
       print(message);
+      print(message['addCommand']);
       // TODO do the logic here
       socketSendCommand(message['ip']??'', message['command']??'', p,
-          addCommands: message['addCommands'], company: message['company']
+          addCommands: message['addCommand'], company: message['company']
       );
       /*
       dynamic data;

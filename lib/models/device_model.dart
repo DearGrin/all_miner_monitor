@@ -18,7 +18,7 @@ class DeviceModel{
   List<int?>? fans;
   List<int?>? errors;
   Pools? pools;
-  List<int?>? ps;
+  List<dynamic>? ps;
   List<int?>? netFail;
   dynamic data;
   DeviceModel({this.status, this.ip, this.ipInt, this.manufacture, this.model, this.isScrypt,
@@ -56,7 +56,8 @@ class DeviceModel{
     ///errors
     List<int?>?  _errors = data.errors;
     ///power supply
-    List<int?>? _ps=data.ps;
+    List<dynamic>? _ps=data.ps;
+    print(_ps);
     ///net fail
     List<int?>?  _netFail = data.netFail;
     ///pools

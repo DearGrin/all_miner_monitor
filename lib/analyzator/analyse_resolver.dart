@@ -184,7 +184,7 @@ class AnalyseResolver extends GetxController{
 
         case 'min_speed':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+          if(model!='L3'&&model!='S9'&&model!='S19'&&model!='T9'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }

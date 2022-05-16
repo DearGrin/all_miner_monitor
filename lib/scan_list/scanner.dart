@@ -79,7 +79,7 @@ handleDevice(EventModel event){
     scanResult.add(event);
 
 }
-  universalCreate(List<String?>? ips, List<String> commands, [List<String>? addCommands, List<String>? manufactures]) async {
+  universalCreate(List<String?>? ips, List<String> commands, [List<dynamic>? addCommands, List<String>? manufactures]) async {
     if(ips!=null) {
       finalProgress = ips.length;
       jobsDone = 0;
@@ -88,7 +88,7 @@ handleDevice(EventModel event){
       int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
       List<List<String>> commandsByThread = [];
-      List<List<String>> addCommandsByThread = [];
+      List<List<dynamic>> addCommandsByThread = [];
       List<List<String>> manufacturesByThread = [];
       for (int i = 0; i < _threads; i++) {
         List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
@@ -100,7 +100,7 @@ handleDevice(EventModel event){
           commandsByThread.add(commands);
         }
         if(addCommands!=null){
-          List<String> _ac = addCommands.skip(i * maxTasks).take(maxTasks).toList();
+          List<dynamic> _ac = addCommands.skip(i * maxTasks).take(maxTasks).toList();
           addCommandsByThread.add(_ac);
         }
         if(manufactures!=null){

@@ -29,7 +29,8 @@ class AvalonDataRow extends StatelessWidget {
               color: Theme.of(context).cardTheme.color,
             ),
 
-            child:isRasp==null? Obx(() =>
+            child:isRasp==null?
+            Obx(() =>
                 Checkbox(
                     value: controller.selectedIps.contains(data.ip),
                     onChanged: (value) {

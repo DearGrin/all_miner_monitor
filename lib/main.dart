@@ -38,6 +38,10 @@ checkSettings() async {
       debugPrint('headers are null');
       box.put('headers', headersDefault);
     }
+  int? _octet = box.get('octet_count');
+  if(_octet == null){
+    box.put('octet_count', 2);
+  }
  // box.close();
   //TODO add warnings params
   bool _isDarkMode = box.get('dark_mode')??true;
