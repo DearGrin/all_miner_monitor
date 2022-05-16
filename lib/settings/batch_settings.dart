@@ -1,13 +1,15 @@
+import 'dart:math';
+
 import 'package:avalon_tool/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BatchSettings extends StatelessWidget {
+class BatchSettings extends GetView<SettingsController> {
   const BatchSettings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController controller = Get.put(SettingsController());
+    //final SettingsController controller = Get.put(SettingsController());
     return Column(
       children: [
         Obx(()=> Row(
@@ -56,6 +58,91 @@ class BatchSettings extends StatelessWidget {
             ),
             ),
           ],
+        ),
+        const SizedBox(height: 10.0,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('passwords'.tr, style: Get.textTheme.bodyText2, textAlign: TextAlign.center,),
+            const SizedBox(width: 10.0,),
+            Obx(()=>
+                IconButton(
+                  splashRadius: 1.0,
+                  onPressed: (){controller.showPasswords();},
+                  icon: Icon(controller.isObscured.value? Icons.visibility_outlined : Icons.visibility_off_outlined)
+              ),
+            ),
+            const SizedBox(width: 10.0,),
+            IconButton(
+                splashRadius: 1.0,
+                onPressed: (){controller.addField('antminer');},
+                icon: const Icon(Icons.add))
+          ],
+        ),
+        const SizedBox(height: 10.0,),
+        Expanded(
+          child: Obx(()=>ListView.separated(
+           shrinkWrap: true,
+            padding: const EdgeInsets.only(right: 10.0),
+            itemBuilder: (BuildContext context, int index){
+              final TextEditingController login = TextEditingController();
+              final TextEditingController password = TextEditingController();
+              return SizedBox(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Obx(()=>TextField(
+                            //controller: TextEditingController(text: controller.antPasswords[index].keys.first),
+                            controller: login..text = controller.antPasswords[index].keys.first..selection=TextSelection.fromPosition
+                              (TextPosition(offset: controller.antPasswords[index].keys.first.length,
+                                affinity: TextAffinity.upstream)
+                            ),
+                            onChanged: (value){controller.editLogin(value, index, 'antminer');},
+                            //obscureText: controller.isObscured.value,
+                            style: Get.textTheme.bodyText1,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'login',
+                              hintText: 'login'
+                            ),
+                          ),
+                        )
+                    ),
+                    const SizedBox(width: 5.0,),
+                    Expanded(
+                        child: Obx(()=>TextField(
+                            controller: password..text = controller.antPasswords[index].values.first..selection=TextSelection.fromPosition
+              (TextPosition(offset: controller.antPasswords[index].values.first.length,
+              affinity: TextAffinity.upstream)
+              ),
+                            onChanged: (value){controller.editPassword(value, index, 'antminer');},
+                            style: Get.textTheme.bodyText1,
+                            obscureText: controller.isObscured.value,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'password',
+                              hintText: 'password'
+                            ),
+                          ),
+                        )
+                    ),
+                    const SizedBox(width: 5.0,),
+                    IconButton(
+                        splashRadius: 1.0,
+                        onPressed: (){controller.deleteField(index, 'antminer');},
+                       icon: const Icon(Icons.delete)
+                    )
+                  ],
+                ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index){
+              return const Divider();
+            },
+            itemCount: controller.antPasswords.length,
+          )
+          ),
         ),
       ],
     );

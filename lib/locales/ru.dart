@@ -174,4 +174,5 @@ final Map<String, String> ru_RU = {
   'tune up':'тюн вверх',
   'tune down':'тюн вниз',
   'upgrade':'обновление',
+  'passwords':'Учетные данные',
 };

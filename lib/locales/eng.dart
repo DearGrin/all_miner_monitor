@@ -170,4 +170,5 @@ final Map<String, String> en_US = {
   'tune up':'tune up',
   'tune down':'tune down',
   'upgrade':'upgrade',
+  'passwords':'Login credentials',
 };

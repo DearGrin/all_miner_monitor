@@ -33,6 +33,9 @@ class SettingsController extends GetxController{
   RxDouble kWork = 10.0.obs;
   RxBool isAntVisible = false.obs;
   RxBool isAvalonVisible = false.obs;
+  RxList<Map<String, String>> antPasswords = <Map<String, String>>[].obs;
+  RxList<Map<String, String>> avalonPasswords = <Map<String, String>>[].obs;
+  RxBool isObscured = true.obs;
   late Box box;
   //final ScanListController scanListController = Get.put(ScanListController());
   final ResizeController resizeController = Get.put(ResizeController());
@@ -192,6 +195,35 @@ class SettingsController extends GetxController{
     else{
       kWork.value = _kWork;
     }
+  //  box.put('ant_passwords', [{'root':'root'},]);
+   // print(box.get('ant_passwords'));
+  //  box.delete('ant_passwords');
+    List<Map<String, String>>? _antPasswords = box.get('ant_passwords');
+    if(_antPasswords==null || _antPasswords.isEmpty)
+      {
+      box.put('ant_passwords', [{'root':'root'},]);
+      antPasswords.add({'root':'root'});
+      }
+    else{
+     // box.delete('ant_passwords');
+      antPasswords.value = _antPasswords;
+    }
+
+
+
+   /*
+    List<Map<String, String>>? _avalonPasswords = box.get('avalon_passwords');
+    if(_avalonPasswords==null || _avalonPasswords.isEmpty)
+    {
+      box.put('avalon_passwords', {['root':'root'}]);
+      avalonPasswords.add({'root':'root'});
+    }
+    else{
+      avalonPasswords.value = _avalonPasswords;
+    }
+
+
+    */
     super.onInit();
   }
   onClick(int index){
@@ -273,5 +305,51 @@ class SettingsController extends GetxController{
   }
   showAvalonSettings(){
     isAvalonVisible.value = !isAvalonVisible.value;
+  }
+  addField(String type){
+    switch(type){
+      case 'antminer':
+        Map<String,String>_ ={'':''};
+        antPasswords.add(_);
+        box.put('ant_passwords', antPasswords);
+        break;
+      case 'avalon':
+        Map<String,String>_ ={'':''};
+        avalonPasswords.add(_);
+        box.put('avalon_passwords', avalonPasswords);
+        break;
+    }
+  }
+  deleteField(int index, String type){
+    switch(type){
+      case 'antminer':
+        antPasswords.removeAt(index);
+        box.put('ant_passwords', antPasswords);
+        break;
+    }
+  }
+  editLogin(String value, int index, String type){
+    switch(type){
+      case 'antminer':
+        Map<String,String> _ = {'$value':antPasswords[index].entries.first.value};
+        antPasswords.replaceRange(index, index+1, [_]);
+        box.delete('ant_passwords');
+        box.put('ant_passwords', antPasswords);
+        break;
+    }
+  }
+  editPassword(String value, int index, String type){
+    switch(type){
+      case 'antminer':
+        antPasswords[index].values.toList()[0] = value;
+        Map<String,String> _ = {antPasswords[index].entries.first.key:'$value'};
+        antPasswords.replaceRange(index, index+1, [_]);
+        box.delete('ant_passwords');
+        box.put('ant_passwords', antPasswords);
+        break;
+    }
+  }
+  showPasswords(){
+    isObscured.value = !isObscured.value;
   }
 }
