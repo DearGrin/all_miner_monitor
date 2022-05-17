@@ -171,4 +171,5 @@ final Map<String, String> en_US = {
   'tune down':'tune down',
   'upgrade':'upgrade',
   'passwords':'Login credentials',
+  'open_browser': 'open in browser',
 };

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:avalon_tool/antminer/antminer_model.dart';
 import 'package:avalon_tool/avalon_10xx/api.dart';
 import 'package:avalon_tool/avalon_10xx/api_commands.dart';
@@ -39,7 +39,8 @@ class ScanListController extends GetxController{
   List<int> expandedRasp = [];
   bool isActive = true;
   List<String> errors = <String>[].obs;
-
+  RxInt isPopupVisible = (-1).obs;
+  RxDouble mousePosition = 0.0.obs;
   @override
   Future<void> onInit() async {
     ipManagementController = Get.put(IpManagementController());
@@ -117,6 +118,8 @@ class ScanListController extends GetxController{
     }
   }
   startScan() async {
+    print('sart scan ${ipManagementController.ips.length.toString()}');
+    Get.snackbar('Scan', ipManagementController.ips.length.toString());
     await scanner.newScan(scanList: ipManagementController.ips);
   }
   selectIp(String ip, bool value){
@@ -127,6 +130,7 @@ class ScanListController extends GetxController{
     else{
       selectedIps.remove(ip);
     }
+    update(['ips']);
   }
   selectAll(bool value){
     selectedIps = [];
@@ -138,20 +142,21 @@ class ScanListController extends GetxController{
           }
       }
     isSelected = value;
-    update(['list', 'header']);
+    update(['list', 'header','ips']);
   }
   onScanClick(){
-    devices.clear();
-    summary.clear();
-    selectedIps.clear();
-    update(['list', 'summary']);
+    clearQuery();
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
+    print('start scan ${ipsToScan.length}');
+    Get.snackbar('Scan', '${ipsToScan.length}');
     scanner.newScan(scanList: ipsToScan);
   }
   clearQuery(){
     devices.clear();
     summary.clear();
-    update(['list', 'summary']);
+    selectedIps.clear();
+    isSelected = false;
+    update(['list', 'summary', 'ips', 'header']);
   }
   sort(String type, bool reverse){
     switch(type){
@@ -281,6 +286,14 @@ class ScanListController extends GetxController{
    // scanner.startToChangePools(ips, _pools);
    // create();
   }
+  openInBrowser(int index)async{
+    String _ip = devices[index].ip;
+    final Uri _url = Uri.parse('http://$_ip');
+    if (!await launchUrl(_url)) throw 'Could not launch $_ip';
+  }
+  saveOffset(PointerEvent event){
+    mousePosition.value = event.position.dx;
+  }
   submitPoolsSelected(List<Pool> pools, List<int> suffixMode) async {
     Box box = await Hive.openBox('settings');
     int? _octetCount = box.get('octet_count');
@@ -401,7 +414,10 @@ class ScanListController extends GetxController{
       String manufacture = i.manufacture;
       _manufac.add(manufacture);
     }
-    scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
+    print(_ips);
+    print(_commands);
+    print(_manufac);
+    scanner.universalCreate(_ips, ['reboot'], _commands, _manufac);
     Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
@@ -449,6 +465,10 @@ class ScanListController extends GetxController{
   }
   onModeSwitch(int value){
     displayMode.value = value;
+  }
+  showPopup(int index){
+    isPopupVisible.value = index;
+    update(['popup','mouse']);
   }
   showLog(){
     Get.defaultDialog(
