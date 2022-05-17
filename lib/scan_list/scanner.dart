@@ -90,6 +90,14 @@ handleDevice(EventModel event){
       List<List<String>> commandsByThread = [];
       List<List<dynamic>> addCommandsByThread = [];
       List<List<String>> manufacturesByThread = [];
+      List<Map<dynamic,dynamic>> credentials = [{'root':'root'}];
+      List<dynamic> _t = box.get('ant_passwords');
+      List<Map<dynamic, dynamic>>? _antPasswords;
+      _antPasswords = _t.cast<Map>();
+      if(_antPasswords!=null && _antPasswords.isNotEmpty){
+        credentials = _antPasswords;
+      }
+
       for (int i = 0; i < _threads; i++) {
         List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
         if (commands.length > 1) {
@@ -116,7 +124,8 @@ handleDevice(EventModel event){
         startCompute(
             tasksByThread[i], commandsByThread[i], isolateStream, stopStream,
             addCommands!=null?addCommandsByThread[i]:null,
-            manufactures!=null?manufacturesByThread[i]:null
+            manufactures!=null?manufacturesByThread[i]:null,
+            credentials
         );
       }
     }

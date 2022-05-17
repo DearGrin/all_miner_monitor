@@ -18,14 +18,14 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
-    StreamController eventStream, StreamController stopStream, [List<dynamic>? addCommand, List<String>? company]) async{
-  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand, company)) {
+    StreamController eventStream, StreamController stopStream, [List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials]) async{
+  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand, company, credentials)) {
     eventStream.add(result);
   }
 }
 
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
-    StreamController stopStream, [List<dynamic>? addCommand, List<String>? company]) async* {
+    StreamController stopStream, [List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials]) async* {
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -50,36 +50,27 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
       break;
     }
   //print(addCommand![0].runtimeType);
-    Map<String,dynamic> _ = {
-      'ip':'${ips[i]}',
-      'command':commands[i],
-      'addCommand': addCommand!=null? addCommand[i]:null,
-      'company': '${company!=null? company[i]:null}'
-    };
-    print(_);
+
 
     if(commands.length>1) {
-     // sendPort.send({'${ips[i]}': '${commands[i]}'});
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[i],
         'addCommand': addCommand!=null? addCommand[i]:null,
-        'company': '${company!=null? company[i]:null}'
+        'company': '${company!=null? company[i]:null}',
+        'credentials': credentials!=null? credentials:null
       }
       );
     }
     else{
-      //sendPort.send({'${ips[i]}': '${commands[0]}'});
-      sendPort.send(_);
-      /*
       sendPort.send({
         'ip':'${ips[i]}',
         'command':commands[0],
         'addCommand': addCommand!=null? addCommand[i]:null,
-        'company': '${company!=null? company[i]:null}'
+        'company': '${company!=null? company[i]:null}',
+        'credentials': credentials!=null? credentials:null
       }
       );
-      */
     }
     // Receive the parsed JSON
     EventModel message = await events.next;
@@ -96,7 +87,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
 sendAnswer(SendPort p, EventModel eventModel){
   p.send(eventModel);
 }
-socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company}) async{
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials}) async{
   dynamic data;
   print(addCommands);
   try {
@@ -121,9 +112,9 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
             print(ip);
             print(addCommands);
           //  _api.test(ip, addCommands!);
-           await RestApi().test(ip, addCommands!);
+          var callback = await RestApi().test(ip, addCommands!,credentials);
       //    var c = await  RestApi().setPool(ip, addCommands!);
-            eventModel = EventModel('update', 'c', ip, 'c');
+            eventModel = EventModel('update', '$callback', ip, callback);
           }
         else{
           Socket socket = await Socket.connect(
@@ -160,7 +151,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
         if(company!.contains('Antminer'))
           {
             print('case ant');
-           var c = await RestApi().reboot(ip);
+           var c = await RestApi().reboot(ip, credentials);
            eventModel = EventModel('update', c, ip, c);
           }
         else
@@ -323,12 +314,13 @@ Future<void> sendCommand(SendPort p) async{
 
    */
   await for (final message in commandPort) {
-    if (message is Map<String,dynamic>) {
+    if (message is Map<dynamic,dynamic>) {
       print(message);
       print(message['addCommand']);
       // TODO do the logic here
       socketSendCommand(message['ip']??'', message['command']??'', p,
-          addCommands: message['addCommand'], company: message['company']
+          addCommands: message['addCommand'], company: message['company'],
+        credentials: message['credentials']
       );
       /*
       dynamic data;

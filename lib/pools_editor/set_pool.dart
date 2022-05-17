@@ -69,7 +69,7 @@ class SetPool extends StatelessWidget{
           Expanded(
             flex: 5,
               child: TextField(
-                controller: TextEditingController(text: controller.pools[index]?.addr??''),
+                controller: TextEditingController(text: controller.pools[index].addr??''),
                 onChanged: (value){changePoolAddr(value, index);},
                 decoration: const InputDecoration(
                   hintText: 'pool',
@@ -80,9 +80,9 @@ class SetPool extends StatelessWidget{
           ),
           const SizedBox(width: 5,),
           Expanded(
-              flex: 2,
+              flex: 1,
               child: TextField(
-                controller: TextEditingController(text: controller.pools[index]?.port??''),
+                controller: TextEditingController(text: controller.pools[index].port??''),
                 onChanged: (value){changePoolPort(value, index);},
                 decoration: const InputDecoration(
                   hintText: 'port',
@@ -95,7 +95,7 @@ class SetPool extends StatelessWidget{
           Expanded(
             flex: 3,
             child: TextField(
-              controller: TextEditingController(text: controller.pools[index]?.worker??''),
+              controller: TextEditingController(text: controller.pools[index].worker??''),
               onChanged: (value){changeWorker(value, index);},
               decoration: const InputDecoration(
                 hintText: 'worker',
@@ -106,9 +106,9 @@ class SetPool extends StatelessWidget{
           ),
           const SizedBox(width: 5,),
           Expanded(
-            flex: 2,
+            flex: 1,
               child: TextField(
-                controller: TextEditingController(text: controller.pools[index]?.passwd??''),
+                controller: TextEditingController(text: controller.pools[index].passwd??''),
                 onChanged: (value){changePoolPasswd(value, index);},
                 decoration: const InputDecoration(
                   hintText: 'password',
@@ -122,10 +122,10 @@ class SetPool extends StatelessWidget{
             child: Obx(() => Row(
                 children: [
                   const SizedBox(width: 5,),
-                  Text('empty'.tr),
+                  Flexible(child: Text('empty'.tr)),
                   Radio<int>(value: 0, groupValue: controller.suffixMode[index],
                  onChanged: (int? value){controller.suffixSelect(index, value);}),
-                  Text('add_ip'.tr),
+                  Flexible(child: Text('add_ip'.tr, overflow: TextOverflow.clip,)),
                   Radio<int>(value: 1, groupValue: controller.suffixMode[index],
                       onChanged: (int? value){controller.suffixSelect(index, value);}),
                 ],

@@ -51,7 +51,10 @@ class BatchSettings extends GetView<SettingsController> {
               width: 50,
               child: TextField(
                   keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                  controller: TextEditingController(text: controller.threadsCount.value.toString()),
+                  controller: TextEditingController(text: controller.threadsCount.value.toString())..selection=TextSelection.fromPosition
+    (TextPosition(offset: controller.threadsCount.value.toString().length,
+    affinity: TextAffinity.upstream)
+    ),
                   onChanged: (value){controller.setThreadsCount(value);},
                 style: Theme.of(context).textTheme.bodyText1,
                 ),
@@ -94,7 +97,7 @@ class BatchSettings extends GetView<SettingsController> {
                     Expanded(
                         child: Obx(()=>TextField(
                             //controller: TextEditingController(text: controller.antPasswords[index].keys.first),
-                            controller: login..text = controller.antPasswords[index].keys.first..selection=TextSelection.fromPosition
+                            controller: login..text = controller.antPasswords[index].keys.first.toString()..selection=TextSelection.fromPosition
                               (TextPosition(offset: controller.antPasswords[index].keys.first.length,
                                 affinity: TextAffinity.upstream)
                             ),
@@ -112,7 +115,7 @@ class BatchSettings extends GetView<SettingsController> {
                     const SizedBox(width: 5.0,),
                     Expanded(
                         child: Obx(()=>TextField(
-                            controller: password..text = controller.antPasswords[index].values.first..selection=TextSelection.fromPosition
+                            controller: password..text = controller.antPasswords[index].values.first.toString()..selection=TextSelection.fromPosition
               (TextPosition(offset: controller.antPasswords[index].values.first.length,
               affinity: TextAffinity.upstream)
               ),

@@ -16,7 +16,7 @@ class AutoWizard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){Get.back();layoutListController.updateList();},
+          onPressed: (){layoutListController.updateList();Get.back();},
           icon: const Icon(Icons.arrow_back_ios_outlined),
         ),
 

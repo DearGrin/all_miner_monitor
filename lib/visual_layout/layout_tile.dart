@@ -138,7 +138,7 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                 ],
               ),
               const SizedBox(
-                height: 10,
+                height: 5,
               ),
               Obx(()=> LinearProgressIndicator(
                   value: controller.progress.value,

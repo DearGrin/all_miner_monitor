@@ -13,11 +13,12 @@ class ControlPanelController extends GetxController{
     scanListController.progress.stream.listen((event) {updateProgress(event);});
     super.onInit();
   }
-  onClick(int index, [BuildContext? context]){
+  onClick(int index, [BuildContext? context]) async {
     index!=4? currentIndex.value = index : null;
     if(index == 0)
       {
-        scanListController.onScanClick();
+       print('on scan click');
+       await scanListController.onScanClick();
       }
     else if(index == 4)
       {

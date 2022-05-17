@@ -33,7 +33,7 @@ class SettingsController extends GetxController{
   RxDouble kWork = 10.0.obs;
   RxBool isAntVisible = false.obs;
   RxBool isAvalonVisible = false.obs;
-  RxList<Map<String, String>> antPasswords = <Map<String, String>>[].obs;
+  RxList<Map<dynamic, dynamic>> antPasswords = <Map<dynamic, dynamic>>[].obs;
   RxList<Map<String, String>> avalonPasswords = <Map<String, String>>[].obs;
   RxBool isObscured = true.obs;
   late Box box;
@@ -196,9 +196,12 @@ class SettingsController extends GetxController{
       kWork.value = _kWork;
     }
   //  box.put('ant_passwords', [{'root':'root'},]);
-   // print(box.get('ant_passwords'));
+    print(box.get('ant_passwords'));
   //  box.delete('ant_passwords');
-    List<Map<String, String>>? _antPasswords = box.get('ant_passwords');
+    List<dynamic> _t = box.get('ant_passwords');
+    List<Map<dynamic, dynamic>>? _antPasswords;
+    //= box.get('ant_passwords');
+    _antPasswords = _t.cast<Map>();
     if(_antPasswords==null || _antPasswords.isEmpty)
       {
       box.put('ant_passwords', [{'root':'root'},]);
@@ -208,9 +211,6 @@ class SettingsController extends GetxController{
      // box.delete('ant_passwords');
       antPasswords.value = _antPasswords;
     }
-
-
-
    /*
     List<Map<String, String>>? _avalonPasswords = box.get('avalon_passwords');
     if(_avalonPasswords==null || _avalonPasswords.isEmpty)
