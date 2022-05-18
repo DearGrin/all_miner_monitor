@@ -1,9 +1,11 @@
+import 'package:avalon_tool/analyzator/analyse_resolver.dart';
 import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
 import 'package:avalon_tool/avalon_10xx/chip_model.dart';
 import 'package:avalon_tool/avalon_10xx/error_handler.dart';
 import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
 import 'package:avalon_tool/pools_editor/pool_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart'; // TODO remove
 
 String nullCheck(String? data){return data ?? '-';}
@@ -78,6 +80,13 @@ class AvalonData{
   int? led;
   List<Pool>? pools;
   bool isScrypt = false;
+
+  bool? speedError;
+  bool? fanError;
+  bool? tempError;
+  bool? chipCountError;
+  bool? chipSError;
+  bool? hashCountError;
   AvalonData({this.rawData, this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
     this.tInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
     this.tAvg, this.tMax, this.tMaxByHashBoard, this.ECMM, this.ECHU, this.hw, this.dh,
@@ -85,7 +94,7 @@ class AvalonData{
     this.voltageOutput, this.powerHashBoards, this.requiredVoltage, this.consumption,
     this.psCommunication, this.hashBoards, this.maxHashBoards, this.ip,
     this.model, this.mm, this.manufacture, this.aging, this.status='', this.aucN,
-    this.ipInt, this.led, this.pools, this.errors});
+    this.ipInt, this.led, this.pools, this.errors, this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
   factory AvalonData.fromString(String data, String ip, [int? _aucN]){
     String _company = 'Unknown';
     try {
@@ -231,6 +240,39 @@ class AvalonData{
     catch(e){
       print(e);
     }
+    int? _tMax;
+    try{
+     _tMax =  getInt(regexp.tMax.firstMatch(data)?.group(2));
+    }
+    catch(e){
+      print(e);
+    }
+    double? _currentSpeed;
+    try{
+      _currentSpeed =getDouble(regexp.currentSpeed.firstMatch(data)?.group(2))!/1000;
+    }
+    catch(e){
+      print(e);
+    }
+    AnalyseResolver analyseResolver = Get.find();
+    bool _speedError = analyseResolver.hasErrors('min_speed', _currentSpeed, _model);
+    bool _tempError =  analyseResolver.hasErrors('temp_max', _tMax, _model);
+    bool _fanError = analyseResolver.hasErrors('null_list', _fans, _model);
+    List<int> _chipCountList = [];
+    for(Hashboard board in _hashBoards){
+      int _ = 0;
+      _chipCountList.add(board.chips!.length); /// first value in avalon is max chip possible
+      for(ChipModel chip in board.chips!){
+        if(chip.voltage!=null && chip.voltage!>0)
+          {
+            _++;
+          }
+      }
+      _chipCountList.add(_);
+    }
+    bool _chipCountError = analyseResolver.hasErrors('chip_count', _chipCountList, _model);
+    bool _chipSError = false;
+    bool _hashCountError = analyseResolver.hasErrors('hash_count', _maxHashBoards, _model);
     return AvalonData(
       version: regexp.version.firstMatch(data)?.group(2) ?? '-',
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
@@ -244,14 +286,14 @@ class AvalonData{
       hashBoardCount: getInt(regexp.hashBoardCount.firstMatch(data)?.group(2))??_hashBoards.length,
       chipCount: _chipCount,
       tAvg: getInt(regexp.tAvg.firstMatch(data)?.group(2))??getInt(regexp.tAverage.firstMatch(data)?.group(2)),
-      tMax: getInt(regexp.tMax.firstMatch(data)?.group(2)),
+      tMax: _tMax,
       tMaxByHashBoard: _tMaxByBoard,
       ECMM: _ecmm,
       ECHU: _echu,
       hw: getInt(regexp.hw.firstMatch(data)?.group(2)),
       dh: getDouble(regexp.dh.firstMatch(data)?.group(2)),
       freq: getDouble(regexp.freq.firstMatch(data)?.group(2)),
-     currentSpeed: getDouble(regexp.currentSpeed.firstMatch(data)?.group(2))!/1000,
+     currentSpeed: _currentSpeed,
      averageSpeed: getDouble(regexp.averageSpeed.firstMatch(data)?.group(2))!=null?  getDouble(regexp.averageSpeed.firstMatch(data)?.group(2))!/1000: null,
       ps: _ps,
       psErrors: ErrorHandler().getPSErrors(_ps?[0]),
@@ -274,6 +316,12 @@ class AvalonData{
       pools: [],
       rawData: data,
       errors: _errors,
+      chipCountError: _chipCountError,
+      fanError: _fanError,
+      hashCountError: _hashCountError,
+      speedError: _speedError,
+      tempError: _tempError,
+      chipSError: _chipSError,
     );
   }
 

@@ -27,15 +27,19 @@ class LayoutTileController extends GetxController{
   RxInt deviceCountSHA256 = 0.obs;
   StreamSubscription? scanResultSub;
   int _counter = 0;
+  RxInt scannedDevices = 0.obs;
+  RxInt withProblems = 0.obs;
   StreamController scanInProgressStream = StreamController<int>();
   RxBool isActive = false.obs;
   @override
   void onInit() async{
+
     ///watch for layout changes
     Box box = await Hive.openBox('layouts');
     box.watch(key: layout.tag).listen((event) {handleLayoutChange(event);});
     ///listen to scan results with tag
     scanResultSub==null? scanResultSub = scanner.scanResult.stream.listen((event) {handleScanResult(event);}) : null;
+    print(layout.ips?.length);
     super.onInit();
   }
   handleLayoutChange(BoxEvent event){
@@ -45,6 +49,7 @@ class LayoutTileController extends GetxController{
     if(event.tag!=null && event.tag==layout.tag) {
       if (event.type == 'device') {
         devices.add(event.data);
+        scannedDevices.value++;
         jobsDone++;
         progress.value = jobsDone / layout.ips!.length;
         if (event.data.isScrypt == true) {

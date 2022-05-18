@@ -20,11 +20,17 @@ class DeviceModel{
   Pools? pools;
   List<dynamic>? ps;
   List<int?>? netFail;
+  bool? speedError;
+  bool? fanError;
+  bool? tempError;
+  bool? chipCountError;
+  bool? chipSError;
+  bool? hashCountError;
   dynamic data;
   DeviceModel({this.status, this.ip, this.ipInt, this.manufacture, this.model, this.isScrypt,
     this.elapsed, this.elapsedString, this.currentSpeed, this.averageSpeed,
     this.tMax, this.tInput, this.mm, this.fans, this.errors, this.pools, this.ps, this.netFail,
-    this.data,});
+    this.data, this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
 
   factory DeviceModel.fromData(dynamic data, String _ip){
     /// string ip to int ip for correct sort by ip
@@ -64,6 +70,12 @@ class DeviceModel{
     //Pools?  _pools = data.pools;
     ///status resolver
     String _status = '';
+    bool? _speedError = data.speedError;
+    bool? _fanError = data.fanError;
+    bool? _tempError = data.tempError;
+    bool? _chipCountError = data.ChipCountError;
+    bool? _chipSError = data.chipsEError;
+    bool? _hashCountError = data.HashCountError;
     return DeviceModel(
       ip: _ip,
       ipInt: _ipInt,
@@ -84,6 +96,12 @@ class DeviceModel{
       status: _status,
       ps: _ps,
       netFail: _netFail,
+      speedError: _speedError,
+      fanError: _fanError,
+      tempError: _tempError,
+      chipCountError: _chipCountError,
+      chipSError: _chipSError,
+      hashCountError: _hashCountError,
     );
   }
 }

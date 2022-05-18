@@ -35,7 +35,7 @@ class LayoutScreen extends StatelessWidget {
               itemCount: _.tags.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: 2,
+                childAspectRatio: 1.7,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),

@@ -30,6 +30,10 @@ class AnalyseResolver extends GetxController{
   int chipCountS9 = 63;
   int chipCountS19 = 96;
   int chipCountT9 = 54;
+  int hashCount8xx = 4;
+  int hashCount9xx = 6;
+  int hashCount1047 = 2;
+  int hashCountAvalon = 3;
   @override
   onInit() async {
     box = await Hive.openBox('settings');
@@ -146,7 +150,28 @@ class AnalyseResolver extends GetxController{
           _ = _v > minSpeedDefault ? null : Colors.red; //TODO get rid of
           break;
         case 'hash_count':
-          switch(model){
+          String? _model = model;
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+            if(model!.startsWith('9')){
+              _model = '9xx';
+            }
+            else if(model.startsWith('8')){
+              _model = '8xx';
+            }
+            else if(model.startsWith('11')){
+              _model = '11xx';
+            }
+            else if(model.startsWith('12')){
+              _model = '12xx';
+            }
+            else if(model.startsWith('1066')){
+              _model = '1066';
+            }
+            else{
+              _model = '1047';
+            }
+          }
+          switch(_model){
             case 'L3':
              _ = value<hashCountL3? Colors.red:null;
               break;
@@ -328,7 +353,28 @@ class AnalyseResolver extends GetxController{
           }
           break;
         case 'hash_count':
-          switch(model){
+          String? _model = model;
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+            if(model!.startsWith('9')){
+              _model = '9xx';
+            }
+            else if(model.startsWith('8')){
+              _model = '8xx';
+            }
+            else if(model.startsWith('11')){
+              _model = '11xx';
+            }
+            else if(model.startsWith('12')){
+              _model = '12xx';
+            }
+            else if(model.startsWith('1066')){
+              _model = '1066';
+            }
+            else{
+              _model = '1047';
+            }
+          }
+          switch(_model){
             case 'L3':
               _ = value<hashCountL3;
               break;
@@ -340,6 +386,24 @@ class AnalyseResolver extends GetxController{
               break;
             case 'T9':
               _ = value<hashCountT9;
+              break;
+            case '1047':
+              _ = value<hashCount1047;
+              break;
+            case '1066':
+              _ = value<hashCountAvalon;
+              break;
+            case  '11xx':
+              _ = value<hashCountAvalon;
+              break;
+            case '12xx':
+              _ = value<hashCountAvalon;
+              break;
+            case '9xx':
+              _ = value<hashCount9xx;
+              break;
+            case '8xx':
+              _ = value<hashCount8xx;
               break;
             default:
               _ = true;
@@ -369,7 +433,17 @@ class AnalyseResolver extends GetxController{
               _ = _minChip<chipCountT9;
               break;
             default:
-              _ = true;
+              try {
+                int _maxChip = 0;
+                if (chipPerChain != null && chipPerChain.length > 1) {
+                  _maxChip = chipPerChain[0] ?? 0;
+                }
+                _ = _minChip < _maxChip;
+              }
+              catch(e){
+                _ = true;
+              }
+              break;
           }
           break;
         default:

@@ -110,7 +110,9 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                         const Text('SHA256'),
+                          Obx(()=> Text('scan_res'.trParams({'value':'${controller.scannedDevices.value}/${controller.layout.ips?.length}'}))),
+                          const Divider(),
+                          const Text('SHA256'),
                           Obx(()=>Text('devices'.trParams({'value':'${controller.deviceCountSHA256}'})),),
                           Obx(()=>Text('total'.trParams({'value':(controller.speedSHA256).toStringAsFixed(2)}))),
                           Obx(()=>Text('average'.trParams({'value':(controller.speedAvgSHA256).toStringAsFixed(2)}))),
@@ -119,6 +121,8 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Obx(()=>Text('with_problems'.trParams({'value':'${controller.withProblems.value}'})),),
+                         const Divider(),
                           const Text('SCRYPT'),
                           Obx(()=>Text('devicesGH'.trParams({'value':'${controller.deviceCountSCRYPT}'})),),
                           Obx(()=>Text('totalGH'.trParams({'value':(controller.speedSCRYPT/1000).toStringAsFixed(2)}))),

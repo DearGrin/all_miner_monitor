@@ -1,5 +1,7 @@
+import 'package:avalon_tool/analyzator/analyse_resolver.dart';
 import 'package:avalon_tool/antminer/antminer_regexp.dart' as regexp;
 import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 String nullCheck(String? data){return data ?? '-';}
@@ -66,12 +68,21 @@ class AntMinerModel{
   List<String?>? chainString;
   List<int?>? hwPerChain;
   List<double?>? ratePerChain;
+
+  bool? speedError;
+  bool? fanError;
+  bool? tempError;
+  bool? chipCountError;
+  bool? chipSError;
+  bool? hashCountError;
+
   AntMinerModel({this.rawData, this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
     this.freqs, this.fans, this.tMax, this.tChipO, this.tChipI, this.tPcbO, this.tPcbI,
     this.hashCount, this.volt, this.watt, this.chipPerChain, this.chainString,
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
     this.ipInt, this.manufacture, this.status='', this.mm, this.elapsedString,
-    this.pools, this.isScrypt, this.tInput, this.errors, this.ps, this.netFail});
+    this.pools, this.isScrypt, this.tInput, this.errors, this.ps, this.netFail,
+    this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
 
   factory AntMinerModel.fromString(String data, String _ip){
     List<String> _octet = _ip.split('.');
@@ -239,7 +250,27 @@ class AntMinerModel{
     catch(e){
       print(e);
     }
+    double? _currentSpeed;
+    try{
+      _currentSpeed = _model=='L3'? getDouble(regexp.currentSpeed.firstMatch(data)?.group(2)): getDouble(regexp.currentSpeed.firstMatch(data)?.group(2))!/1000;
+    }
+    catch(e){
+      print(e);
+    }
+    AnalyseResolver analyseResolver = Get.find();
+    bool _speedError = analyseResolver.hasErrors('min_speed', _currentSpeed, _model);
+    bool _tempError =  analyseResolver.hasErrors('temp_max', _tMax, _model);
+    bool _fanError = analyseResolver.hasErrors('null_list', _fans, _model);
+    bool _chipCountError = analyseResolver.hasErrors('chip_count', _chips, _model);
+    bool _chipSError = analyseResolver.hasErrors('acn_s', _chipString, _model);
+    bool _hashCountError = analyseResolver.hasErrors('hash_count', null, _model);
     return AntMinerModel(
+      speedError: _speedError,
+      fanError: _fanError,
+      tempError: _tempError,
+      chipCountError: _chipCountError,
+      chipSError: _chipSError,
+      hashCountError: _hashCountError,
       ip: _ip,
       ipInt: _ipInt,
       manufacture: 'Antminer',
@@ -247,7 +278,7 @@ class AntMinerModel{
       mm: _mm,
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
       elapsedString: intToDate(getInt(regexp.elapsed.firstMatch(data)?.group(2))),
-      currentSpeed: _model=='L3'? getDouble(regexp.currentSpeed.firstMatch(data)?.group(2)): getDouble(regexp.currentSpeed.firstMatch(data)?.group(2))!/1000,
+      currentSpeed: _currentSpeed,
       averageSpeed: _model=='L3'? getDouble(regexp.averageSpeed.firstMatch(data)?.group(2)): getDouble(regexp.averageSpeed.firstMatch(data)?.group(2))!/1000,
       frequency: getInt(regexp.frequency.firstMatch(data)?.group(2)),
       freqs: _freqs,

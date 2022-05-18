@@ -176,4 +176,6 @@ final Map<String, String> ru_RU = {
   'upgrade':'обновление',
   'passwords':'Учетные данные',
   'open_browser': 'открыть в браузере',
+  'scan_res':'Скан: @value',
+  'with_problems':'С проблемами: @value',
 };

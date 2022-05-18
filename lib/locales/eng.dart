@@ -172,4 +172,6 @@ final Map<String, String> en_US = {
   'upgrade':'upgrade',
   'passwords':'Login credentials',
   'open_browser': 'open in browser',
+  'scan_res':'Scanned: @value',
+  'with_problems':'With problems: @value',
 };
