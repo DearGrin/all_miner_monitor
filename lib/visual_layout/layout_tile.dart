@@ -64,6 +64,18 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                       */
                     ),
                     Positioned(
+                      right: 30,
+                      top: -10,
+                      child: Obx(()=>IconButton(
+                            padding: const EdgeInsets.all(0),
+                            iconSize: 20,
+                            splashRadius: 1.0,
+                            onPressed: (){controller.switchMode();},
+                            icon:  Icon(controller.viewMode.value==0? Icons.list_alt_outlined : Icons.settings_overscan_outlined)
+                        ),
+                      ),
+                    ),
+                    Positioned(
                       right: -5,
                       top: -10,
                       child: IconButton(
@@ -101,37 +113,74 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
              const SizedBox(
                 height: 10,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(()=> Text('scan_res'.trParams({'value':'${controller.scannedDevices.value}/${controller.layout.ips?.length}'}))),
-                          const Divider(),
-                          const Text('SHA256'),
-                          Obx(()=>Text('devices'.trParams({'value':'${controller.deviceCountSHA256}'})),),
-                          Obx(()=>Text('total'.trParams({'value':(controller.speedSHA256).toStringAsFixed(2)}))),
-                          Obx(()=>Text('average'.trParams({'value':(controller.speedAvgSHA256).toStringAsFixed(2)}))),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(()=>Text('with_problems'.trParams({'value':'${controller.withProblems.value}'})),),
-                         const Divider(),
-                          const Text('SCRYPT'),
-                          Obx(()=>Text('devicesGH'.trParams({'value':'${controller.deviceCountSCRYPT}'})),),
-                          Obx(()=>Text('totalGH'.trParams({'value':(controller.speedSCRYPT/1000).toStringAsFixed(2)}))),
-                          Obx(()=>Text('averageGH'.trParams({'value':(controller.speedAvgSCRYPT).toStringAsFixed(2)}))),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+              Obx(()=>IndexedStack(
+                  index: controller.viewMode.value,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(()=> Text('scan_res'.trParams({'value':'${controller.scannedDevices.value}/${controller.layout.ips?.length}'}))),
+                                const Divider(),
+                                const Text('SHA256'),
+                                Obx(()=>Text('devices'.trParams({'value':'${controller.deviceCountSHA256}'})),),
+                                Obx(()=>Text('total'.trParams({'value':(controller.speedSHA256).toStringAsFixed(2)}))),
+                                Obx(()=>Text('average'.trParams({'value':(controller.speedAvgSHA256).toStringAsFixed(2)}))),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(()=>Text('with_problems'.trParams({'value':'${controller.totalErrors.length}'})),),
+                               const Divider(),
+                                const Text('SCRYPT'),
+                                Obx(()=>Text('devicesGH'.trParams({'value':'${controller.deviceCountSCRYPT}'})),),
+                                Obx(()=>Text('totalGH'.trParams({'value':(controller.speedSCRYPT/1000).toStringAsFixed(2)}))),
+                                Obx(()=>Text('averageGH'.trParams({'value':(controller.speedAvgSCRYPT).toStringAsFixed(2)}))),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(()=>Text('speed_error'.trParams({'value':'${controller.speedErrors.length}'})),),
+                                Obx(()=>Text('temp_error'.trParams({'value':'${controller.tempErrors.length}'}))),
+                                Obx(()=>Text('fan_error'.trParams({'value':'${controller.fanErrors.length}'})),),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(()=>Text('hash_count_error'.trParams({'value':'${controller.hashCountErrors.length}'})),),
+                                Obx(()=>Text('chip_count_error'.trParams({'value':'${controller.chipCountErrors.length}'}))),
+                                Obx(()=>Text('chip_s_error'.trParams({'value':'${controller.chipsSErrors.length}'})),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5.0,),
+                        OutlinedButton(
+                            onPressed: (){controller.showMore();},
+                            child: Text('more'.tr)
+                        ).marginAll(10.0)
+                      ],
+                    ),
+                  ],
+                ),
               ),
              const  SizedBox(
                 height: 10,

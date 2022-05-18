@@ -7,6 +7,7 @@ import 'package:avalon_tool/visual_constructor/constructor_layout.dart';
 import 'package:avalon_tool/visual_constructor/constructor_model.dart';
 import 'package:avalon_tool/visual_layout/container_layout.dart';
 import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
+import 'package:avalon_tool/visual_layout/more_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -31,6 +32,14 @@ class LayoutTileController extends GetxController{
   RxInt withProblems = 0.obs;
   StreamController scanInProgressStream = StreamController<int>();
   RxBool isActive = false.obs;
+  RxList<String> totalErrors = <String>[].obs;
+  RxList<String> speedErrors = <String>[].obs;
+  RxList<String> fanErrors = <String>[].obs;
+  RxList<String> tempErrors = <String>[].obs;
+  RxList<String> chipCountErrors = <String>[].obs;
+  RxList<String> hashCountErrors = <String>[].obs;
+  RxList<String> chipsSErrors = <String>[].obs;
+  RxInt viewMode = 0.obs;
   @override
   void onInit() async{
 
@@ -52,6 +61,32 @@ class LayoutTileController extends GetxController{
         scannedDevices.value++;
         jobsDone++;
         progress.value = jobsDone / layout.ips!.length;
+        ///count errors
+        if(event.data.speedError){
+          speedErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        if(event.data.fanError){
+          fanErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        if(event.data.tempError){
+          tempErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        if( event.data.chipCountError){
+          chipCountErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        if(event.data.hashCountError){
+          hashCountErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        if( event.data.chipsSError){
+          chipsSErrors.add(event.data.ip);
+          !totalErrors.contains(event.data.ip)? totalErrors.add(event.data.ip) : null;
+        }
+        ///
         if (event.data.isScrypt == true) {
           deviceCountSCRYPT.value++;
           speedSCRYPT.value += event.data.currentSpeed;
@@ -99,6 +134,33 @@ class LayoutTileController extends GetxController{
     speedSHA256.value = 0;
     deviceCountSCRYPT.value = 0;
     deviceCountSHA256.value = 0;
+    totalErrors.clear();
+    speedErrors.clear();
+    fanErrors.clear();
+    tempErrors.clear();
+    hashCountErrors.clear();
+    chipCountErrors.clear();
+    chipsSErrors.clear();
+  }
+  switchMode(){
+    viewMode.value==0? viewMode.value = 1 : viewMode.value = 0;
+  }
+  showMore(){
+    List<List<String>> _tmp =[
+      tempErrors,
+      fanErrors,
+      speedErrors,
+      hashCountErrors,
+      chipCountErrors,
+      chipsSErrors
+    ];
+    for(String e in _tmp[5]){
+      print(e);
+    }
+    Get.defaultDialog(
+      title: 'ip_list'.tr,
+      content: MoreDialog(_tmp),
+    );
   }
   onEditTagClick(){
     controller.onEditTagClick(layout.tag);
@@ -110,7 +172,7 @@ class LayoutTileController extends GetxController{
     controller.deleteLayout(layout.tag);
   }
   openLayout(){
-    Get.to(()=> ContainerLayout(), binding: LayoutBinding(), arguments: layout); //TODO adn pass result if ready
+    Get.to(()=> const ContainerLayout(), binding: LayoutBinding(), arguments: layout); //TODO adn pass result if ready
   }
   openMenu(){
     isMenuOpen.value=true;

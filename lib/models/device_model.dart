@@ -24,13 +24,13 @@ class DeviceModel{
   bool? fanError;
   bool? tempError;
   bool? chipCountError;
-  bool? chipSError;
+  bool? chipsSError;
   bool? hashCountError;
   dynamic data;
   DeviceModel({this.status, this.ip, this.ipInt, this.manufacture, this.model, this.isScrypt,
     this.elapsed, this.elapsedString, this.currentSpeed, this.averageSpeed,
     this.tMax, this.tInput, this.mm, this.fans, this.errors, this.pools, this.ps, this.netFail,
-    this.data, this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
+    this.data, this.speedError, this.chipCountError, this.chipsSError, this.fanError, this.hashCountError, this.tempError});
 
   factory DeviceModel.fromData(dynamic data, String _ip){
     /// string ip to int ip for correct sort by ip
@@ -73,9 +73,9 @@ class DeviceModel{
     bool? _speedError = data.speedError;
     bool? _fanError = data.fanError;
     bool? _tempError = data.tempError;
-    bool? _chipCountError = data.ChipCountError;
-    bool? _chipSError = data.chipsEError;
-    bool? _hashCountError = data.HashCountError;
+    bool? _chipCountError = data.chipCountError;
+    bool? _chipSError = data.chipsSError;
+    bool? _hashCountError = data.hashCountError;
     return DeviceModel(
       ip: _ip,
       ipInt: _ipInt,
@@ -100,7 +100,7 @@ class DeviceModel{
       fanError: _fanError,
       tempError: _tempError,
       chipCountError: _chipCountError,
-      chipSError: _chipSError,
+      chipsSError: _chipSError,
       hashCountError: _hashCountError,
     );
   }

@@ -73,7 +73,7 @@ class AntMinerModel{
   bool? fanError;
   bool? tempError;
   bool? chipCountError;
-  bool? chipSError;
+  bool? chipsSError;
   bool? hashCountError;
 
   AntMinerModel({this.rawData, this.model, this.elapsed, this.currentSpeed, this.averageSpeed, this.frequency,
@@ -82,7 +82,7 @@ class AntMinerModel{
     this.fanNum, this.hwPerChain, this.ratePerChain, this.tempCount, this.ip,
     this.ipInt, this.manufacture, this.status='', this.mm, this.elapsedString,
     this.pools, this.isScrypt, this.tInput, this.errors, this.ps, this.netFail,
-    this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
+    this.speedError, this.chipCountError, this.chipsSError, this.fanError, this.hashCountError, this.tempError});
 
   factory AntMinerModel.fromString(String data, String _ip){
     List<String> _octet = _ip.split('.');
@@ -262,14 +262,14 @@ class AntMinerModel{
     bool _tempError =  analyseResolver.hasErrors('temp_max', _tMax, _model);
     bool _fanError = analyseResolver.hasErrors('null_list', _fans, _model);
     bool _chipCountError = analyseResolver.hasErrors('chip_count', _chips, _model);
-    bool _chipSError = analyseResolver.hasErrors('acn_s', _chipString, _model);
+    bool chipsSError = analyseResolver.hasErrors('acn_s', _chipString, _model);
     bool _hashCountError = analyseResolver.hasErrors('hash_count', null, _model);
     return AntMinerModel(
       speedError: _speedError,
       fanError: _fanError,
       tempError: _tempError,
       chipCountError: _chipCountError,
-      chipSError: _chipSError,
+      chipsSError: chipsSError,
       hashCountError: _hashCountError,
       ip: _ip,
       ipInt: _ipInt,

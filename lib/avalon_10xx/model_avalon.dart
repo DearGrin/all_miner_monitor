@@ -85,7 +85,7 @@ class AvalonData{
   bool? fanError;
   bool? tempError;
   bool? chipCountError;
-  bool? chipSError;
+  bool? chipsSError;
   bool? hashCountError;
   AvalonData({this.rawData, this.version, this.elapsed, this.elapsedString, this.dna, this.workMode, this.netFail,
     this.tInput, this.fans, this.fanR, this.hashBoardCount, this.chipCount,
@@ -94,7 +94,7 @@ class AvalonData{
     this.voltageOutput, this.powerHashBoards, this.requiredVoltage, this.consumption,
     this.psCommunication, this.hashBoards, this.maxHashBoards, this.ip,
     this.model, this.mm, this.manufacture, this.aging, this.status='', this.aucN,
-    this.ipInt, this.led, this.pools, this.errors, this.speedError, this.chipCountError, this.chipSError, this.fanError, this.hashCountError, this.tempError});
+    this.ipInt, this.led, this.pools, this.errors, this.speedError, this.chipCountError, this.chipsSError, this.fanError, this.hashCountError, this.tempError});
   factory AvalonData.fromString(String data, String ip, [int? _aucN]){
     String _company = 'Unknown';
     try {
@@ -321,7 +321,7 @@ class AvalonData{
       hashCountError: _hashCountError,
       speedError: _speedError,
       tempError: _tempError,
-      chipSError: _chipSError,
+      chipsSError: _chipSError,
     );
   }
 
