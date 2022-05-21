@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.avalon_tool">
    <application
-        android:label="avalon_tool"
+        android:label="All Miner Monitor"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

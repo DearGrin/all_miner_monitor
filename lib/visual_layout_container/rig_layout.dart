@@ -1,5 +1,5 @@
-import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/row_ui.dart';
+import 'package:AllMinerMonitor/visual_layout_container/layout_controller.dart';
+import 'package:AllMinerMonitor/visual_layout_container/row_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

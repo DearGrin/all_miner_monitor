@@ -1,9 +1,9 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/scan_list/content_container.dart';
-import 'package:avalon_tool/scan_list/rasp_controller.dart';
-import 'package:avalon_tool/scan_list/resize_controller.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/scan_list/content_container.dart';
+import 'package:AllMinerMonitor/scan_list/rasp_controller.dart';
+import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -53,15 +53,15 @@ class AvalonDataRow extends StatelessWidget {
                         id: 'rasp_$index',
                         builder: (_){
                           return IndexedStack(
-                            index: _.device.devices![index].led,
+                            index: _.device.devices![index].data.led,
                             children: [
                               IconButton(
                                   onPressed: (){},
-                                  icon: Icon(Icons.lightbulb_outline, size: 15,)
+                                  icon: const Icon(Icons.lightbulb_outline, size: 15,)
                               ),
                               IconButton(
                                   onPressed: (){},
-                                  icon: Icon(Icons.lightbulb, size: 15,)
+                                  icon: const Icon(Icons.lightbulb, size: 15,)
                               ),
                             ],
                           );

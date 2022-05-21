@@ -1,4 +1,4 @@
-import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
+import 'package:AllMinerMonitor/avalon_10xx/avalon_error_codes.dart';
 
 class ErrorHandler{
   final List<AvalonError> errorCodes = ErrorCodes().errorCodes;

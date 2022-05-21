@@ -1,8 +1,10 @@
-import 'package:avalon_tool/visual_layout/container_layout.dart';
-import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
-import 'package:avalon_tool/visual_layout/layout_tile.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_list_controller.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_tile.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../visual_layout_container/container_layout.dart';
 
 class LayoutScreen extends StatelessWidget {
   const LayoutScreen({Key? key}) : super(key: key);
@@ -17,6 +19,22 @@ class LayoutScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         actions: [
+          Row(
+            children: [
+              Text('auto_scan'.tr, textAlign: TextAlign.center,),
+              Obx(()=>DropdownButton<String>(
+                    value: controller.autoValue.value,
+                    focusColor: Colors.transparent,
+                    items: ['never', '1', '5', '10', '15', '30', '60'].map((e) => DropdownMenuItem(value: e, child: Text(e.tr, style: Get.textTheme.bodyText1,),)).toList(),
+                    onChanged: (value){controller.autoSelect(value!);}
+                ).marginAll(10.0),
+              ),
+            ],
+          ),
+          OutlinedButton(
+              onPressed: (){controller.startScan();},
+              child: Text('scan_all'.tr)
+          ).marginAll(10.0),
           OutlinedButton(
               onPressed: (){controller.newLayout();},
               child: Text('add'.tr)
@@ -27,7 +45,24 @@ class LayoutScreen extends StatelessWidget {
           ).marginAll(10.0)
         ],
       ),
-      body: GetBuilder<LayoutListController>(
+      body: Obx(()=>
+          GridView.builder(
+              shrinkWrap: true,
+              itemCount: controller.layouts.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1.5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (BuildContext context, int index){
+                //  return layoutTile(context, _.tags[index], controller);
+                return LayoutTile(controller.layouts[index], Get.put(LayoutTileController(controller.layouts[index]), tag:controller.layouts[index].tag ));
+              }
+          ),
+      ),
+      /*
+      GetBuilder<LayoutListController>(
         id: 'layout_list',
         builder: (_){
           return GridView.builder(
@@ -50,6 +85,10 @@ class LayoutScreen extends StatelessWidget {
           );
         },
       ),
+
+
+       */
+
     );
   }
   /*

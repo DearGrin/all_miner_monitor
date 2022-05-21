@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:http_auth/http_auth.dart';
 class RestApi extends GetConnect{
 

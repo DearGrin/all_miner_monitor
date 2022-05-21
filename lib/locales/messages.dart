@@ -1,5 +1,5 @@
-import 'package:avalon_tool/locales/eng.dart';
-import 'package:avalon_tool/locales/ru.dart';
+import 'package:AllMinerMonitor/locales/eng.dart';
+import 'package:AllMinerMonitor/locales/ru.dart';
 import 'package:get/get.dart';
 
 class Messages extends Translations {

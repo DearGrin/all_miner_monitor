@@ -1,10 +1,10 @@
-import 'package:avalon_tool/command_panel/command_panel_ui.dart';
-import 'package:avalon_tool/control_panel/control_panel_controller.dart';
-import 'package:avalon_tool/control_panel/progress_bar.dart';
-import 'package:avalon_tool/pools_editor/set_pool.dart';
-import 'package:avalon_tool/control_panel/reboot_ui.dart';
-import 'package:avalon_tool/control_panel/scan_list_controls.dart';
-import 'package:avalon_tool/control_panel/summary.dart';
+import 'package:AllMinerMonitor/command_panel/command_panel_ui.dart';
+import 'package:AllMinerMonitor/control_panel/control_panel_controller.dart';
+import 'package:AllMinerMonitor/control_panel/progress_bar.dart';
+import 'package:AllMinerMonitor/control_panel/reboot_ui.dart';
+import 'package:AllMinerMonitor/control_panel/scan_list_controls.dart';
+import 'package:AllMinerMonitor/control_panel/summary.dart';
+import 'package:AllMinerMonitor/pools_editor/set_pool.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

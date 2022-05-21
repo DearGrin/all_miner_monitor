@@ -1,6 +1,6 @@
-import 'package:avalon_tool/command_panel/command_list.dart';
-import 'package:avalon_tool/command_panel/command_panel_controller.dart';
-import 'package:avalon_tool/command_panel/set_freq_dialog.dart';
+import 'package:AllMinerMonitor/command_panel/command_list.dart';
+import 'package:AllMinerMonitor/command_panel/command_panel_controller.dart';
+import 'package:AllMinerMonitor/command_panel/set_freq_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';

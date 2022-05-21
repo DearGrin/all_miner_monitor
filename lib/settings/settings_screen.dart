@@ -1,9 +1,9 @@
-import 'package:avalon_tool/settings/batch_settings.dart';
-import 'package:avalon_tool/settings/info_settings.dart';
-import 'package:avalon_tool/settings/other_settings.dart';
-import 'package:avalon_tool/settings/settings_controller.dart';
-import 'package:avalon_tool/settings/view_settings.dart';
-import 'package:avalon_tool/settings/warnings_settings.dart';
+import 'package:AllMinerMonitor/settings/batch_settings.dart';
+import 'package:AllMinerMonitor/settings/info_settings.dart';
+import 'package:AllMinerMonitor/settings/other_settings.dart';
+import 'package:AllMinerMonitor/settings/settings_controller.dart';
+import 'package:AllMinerMonitor/settings/view_settings.dart';
+import 'package:AllMinerMonitor/settings/warnings_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
     final SettingsController controller = Get.put(SettingsController());
     return SizedBox(
       width: 700,
-      height: 500,
+      height: Get.height*0.8,
       child: Column(
         children: [
           SizedBox(

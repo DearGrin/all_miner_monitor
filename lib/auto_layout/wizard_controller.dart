@@ -1,7 +1,7 @@
-import 'package:avalon_tool/auto_layout/wizard_warning.dart';
-import 'package:avalon_tool/ip_section/ip_range_model.dart';
-import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/auto_layout/wizard_model.dart';
+import 'package:AllMinerMonitor/auto_layout/wizard_model.dart';
+import 'package:AllMinerMonitor/auto_layout/wizard_warning.dart';
+import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -51,43 +51,45 @@ class WizardController extends GetxController{
     rig?.gap = value;
   }
   onSaveClick() async {
-    Layout _model = generateLayout();
-    if(_model.tag ==null || _model.rigs!.isEmpty){
-      Get.defaultDialog(
-          title: '',
-          content: WizardWarning('Layout is empty or no tag provided'.tr)
-      );
-    }
-    else if(_model.tag=='Ip range does not match rig parameters'){
-      Get.defaultDialog(
-          title: '',
-          content: WizardWarning('Ip range does not match rig parameters'.tr)
-      );
-    }
-    else{
-      Box box = await Hive.openBox('layouts');
-      bool _overwrite = box.keys.contains(tag);
-      if(_overwrite){
+    Layout? _model = generateLayout();
+    if(_model!=null) {
+      if (_model.tag == null || _model.rigs!.isEmpty) {
         Get.defaultDialog(
             title: '',
-            content:  WizardWarning('This tag already exists'.tr)
+            content: WizardWarning('Layout is empty or no tag provided'.tr)
         );
       }
-      else{
-        try{
-          Box box = await Hive.openBox('layouts');
-          box.put(tag, _model);
-         // box.close();
+      else if (_model.tag == 'Ip range does not match rig parameters') {
+        Get.defaultDialog(
+            title: '',
+            content: WizardWarning('Ip range does not match rig parameters'.tr)
+        );
+      }
+      else {
+        Box box = await Hive.openBox('layouts');
+        bool _overwrite = box.keys.contains(tag);
+        if (_overwrite) {
           Get.defaultDialog(
               title: '',
-              content:  WizardWarning('save_complete'.tr)
+              content: WizardWarning('This tag already exists'.tr)
           );
         }
-        catch(e){
-          Get.defaultDialog(
-              title: '',
-              content:  WizardWarning(e.toString())
-          );
+        else {
+          try {
+            Box box = await Hive.openBox('layouts');
+            box.put(tag, _model);
+            // box.close();
+            Get.defaultDialog(
+                title: '',
+                content: WizardWarning('save_complete'.tr)
+            );
+          }
+          catch (e) {
+            Get.defaultDialog(
+                title: '',
+                content: WizardWarning(e.toString())
+            );
+          }
         }
       }
     }
@@ -143,7 +145,6 @@ class WizardController extends GetxController{
       }
     }
     catch(e){
-      print(e);
       Get.defaultDialog(
         title: '',
         content: WizardWarning('Failed to generate layout'.tr)

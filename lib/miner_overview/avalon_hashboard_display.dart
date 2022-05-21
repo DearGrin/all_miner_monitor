@@ -1,7 +1,7 @@
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/miner_overview/overview_controller.dart';
-import 'package:avalon_tool/miner_overview/avalon_1xxx_hashboard.dart';
-import 'package:avalon_tool/miner_overview/avalon_hashboard_8_9.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/miner_overview/avalon_1xxx_hashboard.dart';
+import 'package:AllMinerMonitor/miner_overview/avalon_hashboard_8_9.dart';
+import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,4 +1,4 @@
-import 'package:avalon_tool/scan_list/table_header_model.dart';
+import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
 
 List<TableHeaderModel> headersDefault = [
   TableHeaderModel(label: 'status'),

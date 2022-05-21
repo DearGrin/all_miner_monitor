@@ -1,5 +1,5 @@
-import 'package:avalon_tool/visual_constructor/constructor_controller.dart';
-import 'package:avalon_tool/visual_constructor/place_constructor.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_controller.dart';
+import 'package:AllMinerMonitor/visual_constructor/place_constructor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

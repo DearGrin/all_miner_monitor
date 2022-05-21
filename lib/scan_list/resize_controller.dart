@@ -1,6 +1,6 @@
-import 'package:avalon_tool/scan_list/header_defaults.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/scan_list/table_header_model.dart';
+import 'package:AllMinerMonitor/scan_list/header_defaults.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';

@@ -1,9 +1,11 @@
-import 'package:avalon_tool/visual_layout/help_ui.dart';
-import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/popup_details.dart';
-import 'package:avalon_tool/visual_layout/rig_layout.dart';
+import 'package:AllMinerMonitor/visual_layout_container/help_ui.dart';
+import 'package:AllMinerMonitor/visual_layout_container/layout_controller.dart';
+import 'package:AllMinerMonitor/visual_layout_container/popup_details.dart';
+import 'package:AllMinerMonitor/visual_layout_container/popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'rig_layout.dart';
 
 class ContainerLayout extends StatefulWidget {
   const ContainerLayout({Key? key}) : super(key: key);
@@ -25,13 +27,24 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
   );
   @override
   void initState() {
-    controller.scanInProgressStream.stream.listen((event) {event==true? _controller.repeat():_controller.stop();});
+    //controller.scanInProgressStream.stream.listen((event) {event==true? _controller.repeat():_controller.stop();});
+    controller.scanIsActive.listen((event) {handleAnimation(event);});
+    _controller.stop();
     super.initState();
   }
   @override
   void dispose() {
-    _controller.dispose();
+   // _controller.dispose();
     super.dispose();
+  }
+  handleAnimation(bool event){
+    print('animation $event');
+    if(event){
+      _controller.repeat();
+    }
+    else{
+      _controller.stop();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -40,6 +53,11 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
         title: Text('${controller.layout.value.tag}', style: Theme.of(context).textTheme.bodyText2,),
         centerTitle: true,
         actions: [
+          Row(
+            children: [
+              Obx(()=> Text('last_scan'.trParams({'value':controller.lastScan.value}))),
+            ],
+          ),
           OutlinedButton(onPressed: (){controller.onCommandClick();}, child: Text('commands'.tr)).marginAll(10.0),
           IconButton(onPressed: (){controller.zoomIn();}, icon: const Icon(Icons.zoom_in)),
           IconButton(onPressed: (){controller.zoomOut();}, icon: const Icon(Icons.zoom_out)),
@@ -93,7 +111,12 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
               (controller.offset.value.dx), // place as is
               //top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
               top: (controller.offset.value.dy+400)>Get.height? (controller.offset.value.dy-400):(controller.offset.value.dy-50),
-             child: controller.offset.value == const Offset(0,0)? Container() : PopupDetails(),
+             child: controller.offset.value == const Offset(0,0)? Container() :
+             Obx(()=>Visibility(
+                   visible: controller.displayPopup.value==0,
+                   replacement: const PopupMenu(),
+                   child: const PopupDetails()),
+             ),
             //  child: controller.offset.value == const Offset(0,0)? Container() : Text('${controller.offset.value.dx} / ${scrollController.offset} / ${Get.width} / ${(controller.offset.value.dx + scrollController.offset)>Get.width? true:false} / ${(controller.offset.value.dx + scrollController.offset)}'),
             )
             )

@@ -1,6 +1,6 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/scan_list/rasp_controller.dart';
-import 'package:avalon_tool/scan_list/resize_controller.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/scan_list/rasp_controller.dart';
+import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

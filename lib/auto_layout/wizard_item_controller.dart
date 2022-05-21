@@ -1,4 +1,4 @@
-import 'package:avalon_tool/auto_layout/wizard_controller.dart';
+import 'package:AllMinerMonitor/auto_layout/wizard_controller.dart';
 import 'package:get/get.dart';
 
 class WizardItemController extends GetxController{

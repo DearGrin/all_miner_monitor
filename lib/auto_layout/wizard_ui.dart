@@ -1,6 +1,6 @@
-import 'package:avalon_tool/auto_layout/wizard_controller.dart';
-import 'package:avalon_tool/auto_layout/wizard_item.dart';
-import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
+import 'package:AllMinerMonitor/auto_layout/wizard_controller.dart';
+import 'package:AllMinerMonitor/auto_layout/wizard_item.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,13 +10,12 @@ class AutoWizard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final WizardController controller = Get.put(WizardController());
-    final LayoutListController layoutListController = Get.put(LayoutListController());
     final TextEditingController tagController = TextEditingController();
     final ScrollController scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){layoutListController.updateList();Get.back();},
+          onPressed: (){Get.back();},
           icon: const Icon(Icons.arrow_back_ios_outlined),
         ),
 

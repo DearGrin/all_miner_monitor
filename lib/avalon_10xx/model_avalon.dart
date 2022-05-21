@@ -1,12 +1,11 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
-import 'package:avalon_tool/avalon_10xx/chip_model.dart';
-import 'package:avalon_tool/avalon_10xx/error_handler.dart';
-import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/avalon_10xx/avalon_error_codes.dart';
+import 'package:AllMinerMonitor/avalon_10xx/chip_model.dart';
+import 'package:AllMinerMonitor/avalon_10xx/error_handler.dart';
+import 'package:AllMinerMonitor/avalon_10xx/regexp_parser.dart' as regexp;
+import 'package:AllMinerMonitor/models/device_model.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart'; // TODO remove
 
 String nullCheck(String? data){return data ?? '-';}
 int? getInt(String? data){
@@ -254,25 +253,10 @@ class AvalonData{
     catch(e){
       print(e);
     }
-    AnalyseResolver analyseResolver = Get.find();
-    bool _speedError = analyseResolver.hasErrors('min_speed', _currentSpeed, _model);
-    bool _tempError =  analyseResolver.hasErrors('temp_max', _tMax, _model);
-    bool _fanError = analyseResolver.hasErrors('null_list', _fans, _model);
-    List<int> _chipCountList = [];
-    for(Hashboard board in _hashBoards){
-      int _ = 0;
-      _chipCountList.add(board.chips!.length); /// first value in avalon is max chip possible
-      for(ChipModel chip in board.chips!){
-        if(chip.voltage!=null && chip.voltage!>0)
-          {
-            _++;
-          }
-      }
-      _chipCountList.add(_);
-    }
-    bool _chipCountError = analyseResolver.hasErrors('chip_count', _chipCountList, _model);
-    bool _chipSError = false;
-    bool _hashCountError = analyseResolver.hasErrors('hash_count', _maxHashBoards, _model);
+    int? _hashBoardCount;
+    _hashBoardCount = getInt(regexp.hashBoardCount.firstMatch(data)?.group(2));
+
+
     return AvalonData(
       version: regexp.version.firstMatch(data)?.group(2) ?? '-',
       elapsed: getInt(regexp.elapsed.firstMatch(data)?.group(2)),
@@ -283,7 +267,7 @@ class AvalonData{
       tInput: getInt(regexp.tempInput.firstMatch(data)?.group(2)),
       fans: _fans,
       fanR: getInt(regexp.fanR.firstMatch(data)?.group(2)),
-      hashBoardCount: getInt(regexp.hashBoardCount.firstMatch(data)?.group(2))??_hashBoards.length,
+      hashBoardCount: _hashBoardCount,
       chipCount: _chipCount,
       tAvg: getInt(regexp.tAvg.firstMatch(data)?.group(2))??getInt(regexp.tAverage.firstMatch(data)?.group(2)),
       tMax: _tMax,
@@ -316,12 +300,7 @@ class AvalonData{
       pools: [],
       rawData: data,
       errors: _errors,
-      chipCountError: _chipCountError,
-      fanError: _fanError,
-      hashCountError: _hashCountError,
-      speedError: _speedError,
-      tempError: _tempError,
-      chipsSError: _chipSError,
+
     );
   }
 
@@ -331,8 +310,8 @@ class Hashboard{
   List<AvalonError>? errors = [];
   Hashboard({this.chips, this.errors});
   factory Hashboard.fromString(int index, String data){
-    var _pvtT;
-    var _pvtV;
+    List<String>? _pvtT;
+    List<String>? _pvtV;
     try {
       if (regexp.pvtT
           .allMatches(data)
@@ -405,7 +384,7 @@ class Hashboard{
 }
 
 class RaspberryAva extends AvalonData{
-  List<AvalonData>? devices;
+  List<DeviceModel>? devices;
   String? version;
   int? elapsed;
   String? elapsedString;
@@ -421,7 +400,7 @@ class RaspberryAva extends AvalonData{
   String? status;
   bool isScrypt = false;
   double? averageSpeed;
-
+  bool isRasp = true;
 
   List<int?>? fans;
   List<int?>? errors;
@@ -437,7 +416,7 @@ class RaspberryAva extends AvalonData{
   RaspberryAva({this.devices, this.version, this.elapsed, this.elapsedString,
     this.tInput, this.tMax, this.currentSpeed, this.ip, this.mm,
     this.model, this.manufacture, this.ipInt, this.fans, this.errors, this.pools,
-  this.ps, this.netFail, this.averageSpeed, this.isScrypt = false, this.status});
+  this.ps, this.netFail, this.averageSpeed, this.isScrypt = false, this.status, this.isRasp=true});
 
   factory RaspberryAva.fromString(String data, String _ip) {
     List<RegExpMatch> _aucs = [];
@@ -447,7 +426,7 @@ class RaspberryAva extends AvalonData{
     catch(e){
       print(e);
     }
-    List<AvalonData> _tmp = [];
+    List<DeviceModel> _tmp = [];
     int? _tempInput;
     int? _tMax;
     double _currentSpeed = 0;
@@ -478,7 +457,8 @@ class RaspberryAva extends AvalonData{
         try {
           AvalonData _data = AvalonData.fromString(
               _auc[i].group(2) ?? '', '$_ip', n);
-          _tmp.add(_data);
+          DeviceModel _model = DeviceModel.fromData(_data, _ip);
+          _tmp.add(_model);
           if(_tempInput==null&&_data.tInput!=null || _tempInput!<_data.tInput!)
           {
             _tempInput = _data.tInput;

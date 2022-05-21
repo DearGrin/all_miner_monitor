@@ -5,8 +5,8 @@ import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AvalonInfo extends StatelessWidget {
-  const AvalonInfo({Key? key}) : super(key: key);
+class AvalonRaspInfo extends StatelessWidget {
+  const AvalonRaspInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +105,6 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
               ///Hashboard info
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -126,23 +125,19 @@ class AvalonInfo extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Visibility(
-                              replacement: Container(),
-                              visible: controller.device[0].data.hashBoardCount!=null,
-                              child: Wrap(
-                                alignment: WrapAlignment.spaceBetween,
-                                children: [
-                                  Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                  SelectableText(controller.device[0].data.hashBoardCount.toString(),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
 
-                                      style: controller.device[0].data.hashBoardCount!=null?   Theme.of(context).textTheme.bodyText2?.
-                                      copyWith(color: controller.device[0].data.hashBoardCount!
-                                          < controller.device[0].data.maxHashBoards!
-                                          ? Colors.red:null) : null,
+                                SelectableText(controller.device[0].data.hashBoardCount.toString(),
+                                    style: Theme.of(context).textTheme.bodyText2?.
+                                    copyWith(color: controller.device[0].data.hashBoardCount!
+                                        < controller.device[0].data.maxHashBoards!
+                                        ? Colors.red:null)),
 
-                                  ),
-                                ],
-                              ),
+
+                              ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
@@ -207,9 +202,6 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
-
-
               /// Speed info
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -265,7 +257,6 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
               /// Power Supply info
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -338,7 +329,6 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
               /// Extras info
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -373,7 +363,6 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
             ]
         )
     );
@@ -478,4 +467,5 @@ class AvalonInfo extends StatelessWidget {
     );
     return _tmp;
   }
-}
+  }
+

@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 final InputDecorationTheme inputDecorationThemeLight = InputDecorationTheme(
-  contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-  border: OutlineInputBorder().copyWith(borderSide: BorderSide(color: Colors.black)),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+  border: const OutlineInputBorder().copyWith(borderSide: const BorderSide(color: Colors.black)),
 );
 final InputDecorationTheme inputDecorationThemeDark = InputDecorationTheme(
-  contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-  border: OutlineInputBorder().copyWith(borderSide: BorderSide(color: Colors.white)),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+  border: const OutlineInputBorder().copyWith(borderSide: const BorderSide(color: Colors.white)),
 );

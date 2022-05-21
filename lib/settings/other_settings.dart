@@ -1,4 +1,4 @@
-import 'package:avalon_tool/settings/settings_controller.dart';
+import 'package:AllMinerMonitor/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

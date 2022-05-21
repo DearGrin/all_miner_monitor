@@ -1,5 +1,5 @@
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:avalon_tool/pools_editor/pools_editor_controller.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/pools_editor/pools_editor_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

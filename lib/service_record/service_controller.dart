@@ -1,5 +1,5 @@
-import 'package:avalon_tool/service_record/add_record.dart';
-import 'package:avalon_tool/service_record/record_model.dart';
+import 'package:AllMinerMonitor/service_record/add_record.dart';
+import 'package:AllMinerMonitor/service_record/record_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 

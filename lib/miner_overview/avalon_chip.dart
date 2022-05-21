@@ -1,5 +1,5 @@
-import 'package:avalon_tool/analyzator/color_map.dart';
-import 'package:avalon_tool/miner_overview/overview_controller.dart';
+import 'package:AllMinerMonitor/analyzator/color_map.dart';
+import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +39,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text((number + 1).toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip #
                     ),
                     Align(
@@ -47,7 +47,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].voltage.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
                     ),
                     Align(
@@ -55,7 +55,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].temp.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 10),
+                        style: const TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
                     ),
                     Align(
@@ -63,7 +63,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].mw.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW
                     ),
                   ],
@@ -75,7 +75,7 @@ class AvalonChip extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text('$number',
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip #
                     ),
                     Align(
@@ -83,7 +83,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].voltage.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip V
                     ),
                     Align(
@@ -91,7 +91,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].temp.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 10),
+                        style: const TextStyle(color: Colors.black, fontSize: 10),
                       ), //chip temp
                     ),
                     Align(
@@ -99,7 +99,7 @@ class AvalonChip extends StatelessWidget {
                       child: Text(
                         controller.device[0].data.hashBoards![board]
                             .chips![number].mw.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 8),
+                        style: const TextStyle(color: Colors.black, fontSize: 8),
                       ), //chip MW
                     ),
                   ],

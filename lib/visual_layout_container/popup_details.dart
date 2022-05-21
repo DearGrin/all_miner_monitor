@@ -1,4 +1,4 @@
-import 'package:avalon_tool/visual_layout/layout_controller.dart';
+import 'package:AllMinerMonitor/visual_layout_container/layout_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,77 +33,77 @@ class PopupDetails extends StatelessWidget {
                   children: [
                     Wrap(
                       children: [
-                        Text('ip: '),
+                        Text('ip: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.ip : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('speed: '),
+                        Text('speed: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.currentSpeed : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('temp: '),
+                        Text('temp: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.tMax : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('hashboards: '),
+                        Text('hashboards: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.hashCount : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('chips: '),
+                        Text('chips: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.chipPerChain : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('fans: '),
+                        Text('fans: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.fans : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('freq: '),
+                        Text('freq: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.freqs : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('volt: '),
+                        Text('volt: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.volt : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('watt: '),
+                        Text('watt: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.watt : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('hw: '),
+                        Text('hw: '.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.data.hwPerChain : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('chip status: '),
+                        Text('chip status: '.tr),
                         chainString(controller.currentDevice != null ? controller
                             .currentDevice.data.chainString : null),
                        // Text('${controller.currentDevice != null ? controller

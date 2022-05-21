@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:avalon_tool/ip_section/add_ip.dart';
-import 'package:avalon_tool/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/ip_section/add_ip.dart';
+import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';

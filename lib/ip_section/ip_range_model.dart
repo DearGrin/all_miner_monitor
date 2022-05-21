@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'ip_range_model.g.dart';
 
 @HiveType(typeId: 0)

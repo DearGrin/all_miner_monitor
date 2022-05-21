@@ -1,21 +1,22 @@
 import 'dart:async';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:avalon_tool/antminer/antminer_model.dart';
-import 'package:avalon_tool/avalon_10xx/api.dart';
-import 'package:avalon_tool/avalon_10xx/api_commands.dart';
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/ip_section/ip_management_controller.dart';
-import 'package:avalon_tool/ip_section/ip_range_model.dart';
-import 'package:avalon_tool/miner_overview/miner_overview_screen.dart';
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:avalon_tool/scan_list/event_model.dart';
-import 'package:avalon_tool/scan_list/scanner.dart';
-import 'package:avalon_tool/scan_list/summary_model.dart';
-import 'package:avalon_tool/pools_editor/set_pool.dart';
-import 'package:avalon_tool/control_panel/reboot_ui.dart';
+
+import 'package:AllMinerMonitor/antminer/antminer_model.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/control_panel/reboot_ui.dart';
+import 'package:AllMinerMonitor/ip_section/ip_management_controller.dart';
+import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/miner_overview/miner_overview_screen.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/pools_editor/set_pool.dart';
+import 'package:AllMinerMonitor/scan_list/event_model.dart';
+import 'package:AllMinerMonitor/scan_list/scanner.dart';
+import 'package:AllMinerMonitor/scan_list/summary_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScanListController extends GetxController{
   late Scanner scanner;
@@ -66,6 +67,7 @@ class ScanListController extends GetxController{
   }
 
   handleEvent(EventModel event){
+
   //  RaspberryAva ava = event.data;
    // print(ava.devices?.length);
     if(isActive) {
@@ -118,7 +120,6 @@ class ScanListController extends GetxController{
     }
   }
   startScan() async {
-    print('sart scan ${ipManagementController.ips.length.toString()}');
     Get.snackbar('Scan', ipManagementController.ips.length.toString());
     await scanner.newScan(scanList: ipManagementController.ips);
   }
@@ -147,7 +148,6 @@ class ScanListController extends GetxController{
   onScanClick(){
     clearQuery();
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
-    print('start scan ${ipsToScan.length}');
     Get.snackbar('Scan', '${ipsToScan.length}');
     scanner.newScan(scanList: ipsToScan);
   }
@@ -261,9 +261,9 @@ class ScanListController extends GetxController{
       _manufac.add(devices[i].manufacture);
         if(devices[i].manufacture=='Antminer'){
           Map<String,dynamic> _json = {
-            '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix??'', '_ant_pool1pw' : pools[0]?.passwd??'',
-            '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix??'', '_ant_pool2pw' : pools[1]?.passwd??'',
-            '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix??'', '_ant_pool3pw' : pools[2]?.passwd??''
+            '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix, '_ant_pool1pw' : pools[0]?.passwd??'',
+            '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix, '_ant_pool2pw' : pools[1]?.passwd??'',
+            '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix, '_ant_pool3pw' : pools[2]?.passwd??''
           };
           _commands.add(_json.toString());
         }
@@ -281,7 +281,7 @@ class ScanListController extends GetxController{
     for(var _ip in devices){
       _ips.add(_ip.ip);
     }
-    scanner.universalCreate(_ips, ['setpool'], _commands, _manufac);
+    scanner.universalCreate(_ips, ['setpool'], addCommands: _commands, manufactures: _manufac, tag: null);
     Get.snackbar('set_pool'.tr, '');
    // scanner.startToChangePools(ips, _pools);
    // create();
@@ -327,27 +327,25 @@ class ScanListController extends GetxController{
       if(manufacture=='Antminer'){
 
         Map<String,dynamic> _json = {
-          '_ant_pool1url' : pools[0]?.fullAdr??'', '_ant_pool1user' : '${pools[0]?.worker}'+_suffix??'', '_ant_pool1pw' : pools[0]?.passwd??'',
-          '_ant_pool2url' : pools[1]?.fullAdr??'', '_ant_pool2user' : '${pools[1]?.worker}'+_suffix??'', '_ant_pool2pw' : pools[1]?.passwd??'',
-          '_ant_pool3url' : pools[2]?.fullAdr??'', '_ant_pool3user' : '${pools[2]?.worker}'+_suffix??'', '_ant_pool3pw' : pools[2]?.passwd??''
+          '_ant_pool1url' : pools[0].fullAdr??'', '_ant_pool1user' : '${pools[0].worker}'+_suffix, '_ant_pool1pw' : pools[0].passwd??'',
+          '_ant_pool2url' : pools[1].fullAdr??'', '_ant_pool2user' : '${pools[1].worker}'+_suffix, '_ant_pool2pw' : pools[1].passwd??'',
+          '_ant_pool3url' : pools[2].fullAdr??'', '_ant_pool3user' : '${pools[2].worker}'+_suffix, '_ant_pool3pw' : pools[2].passwd??''
         };
 
-        String _ = '${pools[0]?.fullAdr??''} ${pools[0]?.worker??'' + _suffix} ${pools[0]?.passwd??''} '
-            '${pools[1]?.fullAdr??''} ${pools[1]?.worker??'' + _suffix} ${pools[1]?.passwd??''} '
-            '${pools[2]?.fullAdr??''} ${pools[2]?.worker??'' + _suffix} ${pools[2]?.passwd??''}   '
+        String _ = '${pools[0].fullAdr??''} ${pools[0].worker??'' + _suffix} ${pools[0].passwd??''} '
+            '${pools[1].fullAdr??''} ${pools[1].worker??'' + _suffix} ${pools[1].passwd??''} '
+            '${pools[2].fullAdr??''} ${pools[2].worker??'' + _suffix} ${pools[2].passwd??''}   '
             '${_device.data.frequency??''}';
 
-        String _tmp = pools[0]?.fullAdr??'' +' ' + '${pools[0]?.worker}'+_suffix??'' +' ' + '${pools[0]?.passwd}'??''
-              + ' '+ pools[1]?.fullAdr??'' +' ' '${pools[2]?.worker}'+_suffix??'' +' ' '${pools[3]?.passwd}'??''
-            + ' '+ pools[2]?.fullAdr??'' +' ' '${pools[3]?.worker}'+_suffix??'' +' ' '${pools[4]?.passwd}'??'';
+
        print(_);
         _commands.add(_);
       }
       else{
         String _command = 'ascset|0,setpool'
-            ',${ pools[0]?.fullAdr??''}'',${pools[0]?.worker}'+_suffix+',${pools[0]?.passwd??''}'
-            ',${ pools[1]?.fullAdr??''}'',${pools[1]?.worker}'+_suffix+',${pools[1]?.passwd??''}'
-            ',${ pools[2]?.fullAdr??''}'',${pools[2]?.worker}'+_suffix+',${pools[2]?.passwd??''}';
+            ',${ pools[0].fullAdr??''}'',${pools[0].worker}'+_suffix+',${pools[0].passwd??''}'
+            ',${ pools[1].fullAdr??''}'',${pools[1].worker}'+_suffix+',${pools[1].passwd??''}'
+            ',${ pools[2].fullAdr??''}'',${pools[2].worker}'+_suffix+',${pools[2].passwd??''}';
         _commands.add(_command);
       }
     }
@@ -355,7 +353,7 @@ class ScanListController extends GetxController{
     for(var _ip in selectedIps){
       _ips.add(_ip);
     }
-    scanner.universalCreate(_ips, ['setpool'], _commands, _manufac);
+    scanner.universalCreate(_ips, ['setpool'],addCommands: _commands, manufactures: _manufac, tag: null);
     Get.snackbar('set_pool'.tr, '');
 
    // scanner.universalCreate(_ips, ['setpool'], commands);
@@ -417,7 +415,7 @@ class ScanListController extends GetxController{
     print(_ips);
     print(_commands);
     print(_manufac);
-    scanner.universalCreate(_ips, ['reboot'], _commands, _manufac);
+    scanner.universalCreate(_ips, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
     Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
@@ -443,7 +441,7 @@ class ScanListController extends GetxController{
       _manufac.add(manufacture);
     }
 
-    scanner.universalCreate(selectedIps, ['reboot'], _commands, _manufac);
+    scanner.universalCreate(selectedIps, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
     Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();

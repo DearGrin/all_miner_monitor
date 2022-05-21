@@ -1,4 +1,4 @@
-import 'package:avalon_tool/settings/settings_controller.dart';
+import 'package:AllMinerMonitor/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -165,6 +165,44 @@ class WarningsSettings extends StatelessWidget {
                                 keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
                                 controller: TextEditingController(text: controller.minHashT9.value.toString()),
                                 onChanged: (value){controller.setMinHash(value, 'T9');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'T19'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashT19.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'T19');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'S11'.tr,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashS11.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'S11');},
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
                             ),

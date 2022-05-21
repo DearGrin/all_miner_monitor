@@ -1,5 +1,5 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/miner_overview/overview_controller.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -279,20 +279,18 @@ class AntminerInfo extends StatelessWidget {
   }
   List<InlineSpan> tempsByBoard(List<int?> temps, BuildContext context, AnalyseResolver analyseResolver){
     List<InlineSpan> _tmp = [];
-    if(temps!=null) {
-      for (int i = 0; i < temps.length; i++) {
+    for (int i = 0; i < temps.length; i++) {
+      _tmp.add(TextSpan(
+        text: temps[i].toString(),
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+        analyseResolver.getColor('temp_max', temps[i])),
+      ));
+      if(i+1 < temps.length)
+      {
         _tmp.add(TextSpan(
-          text: temps[i].toString(),
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-          analyseResolver.getColor('temp_max', temps[i])),
+          text: '/',
+          style: Theme.of(context).textTheme.bodyText2,
         ));
-        if(i+1 < temps.length)
-        {
-          _tmp.add(TextSpan(
-            text: '/',
-            style: Theme.of(context).textTheme.bodyText2,
-          ));
-        }
       }
     }
     return _tmp;
@@ -320,20 +318,18 @@ class AntminerInfo extends StatelessWidget {
   }
   List<InlineSpan> chipByChain(List<int?> chips, String model, BuildContext context, AnalyseResolver analyseResolver){
     List<InlineSpan> _tmp = [];
-    if(chips!=null) {
-      for (int i = 0; i < chips.length; i++) {
+    for (int i = 0; i < chips.length; i++) {
+      _tmp.add(TextSpan(
+        text: chips[i].toString(),
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+        analyseResolver.getColor('chip_count', chips[i], model)),
+      ));
+      if(i+1 < chips.length)
+      {
         _tmp.add(TextSpan(
-          text: chips[i].toString(),
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-          analyseResolver.getColor('chip_count', chips[i], model)),
+          text: '/',
+          style: Theme.of(context).textTheme.bodyText2,
         ));
-        if(i+1 < chips.length)
-        {
-          _tmp.add(TextSpan(
-            text: '/',
-            style: Theme.of(context).textTheme.bodyText2,
-          ));
-        }
       }
     }
     return _tmp;

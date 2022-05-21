@@ -1,4 +1,4 @@
-import 'package:avalon_tool/debugger/debugger_controller.dart';
+import 'package:AllMinerMonitor/debugger/debugger_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,48 +11,51 @@ class DebuggerScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: SingleChildScrollView(
-        child: Card(
-          color: Theme.of(context).cardColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                width: 400,
-                child: TextField(
-                  onChanged: (value){controller.editIp(value);},
-                  style: Get.textTheme.bodyText1,
-                  decoration: InputDecoration(
-                    labelText: 'ip'
+      body: SizedBox(
+        height: Get.height*0.8,
+        child: SingleChildScrollView(
+          child: Card(
+            color: Theme.of(context).cardColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 400,
+                  child: TextField(
+                    onChanged: (value){controller.editIp(value);},
+                    style: Get.textTheme.bodyText1,
+                    decoration: InputDecoration(
+                      labelText: 'ip'
+                    ),
+                    controller: TextEditingController(),
                   ),
-                  controller: TextEditingController(),
                 ),
-              ),
-              const SizedBox(height: 10,),
-              SizedBox(
-                width: 400,
-                child: TextField(
-                  onChanged: (value){controller.editCommand(value);},
-                  style: Get.textTheme.bodyText1,
-                  decoration: InputDecoration(
-                      labelText: 'command'
+                const SizedBox(height: 10,),
+                SizedBox(
+                  width: 400,
+                  child: TextField(
+                    onChanged: (value){controller.editCommand(value);},
+                    style: Get.textTheme.bodyText1,
+                    decoration: InputDecoration(
+                        labelText: 'command'
+                    ),
+                    controller: TextEditingController(),
                   ),
-                  controller: TextEditingController(),
                 ),
-              ),
-              const SizedBox(height: 10,),
-              OutlinedButton(onPressed: (){controller.sendCommand();}, child: const Text('Send')),
-              const SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Wrap(
-                  children: [
-                    Obx(()=>SelectableText('${controller.data}')),
-                  ],
+                const SizedBox(height: 10,),
+                OutlinedButton(onPressed: (){controller.sendCommand();}, child: const Text('Send')),
+                const SizedBox(height: 10,),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Wrap(
+                    children: [
+                      Obx(()=>SelectableText('${controller.data}')),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10,),
-            ],
+                const SizedBox(height: 10,),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
+import 'package:AllMinerMonitor/avalon_10xx/regexp_parser.dart' as regexp;
 import 'package:hive/hive.dart';
-import 'package:avalon_tool/avalon_10xx/regexp_parser.dart' as regexp;
+
 part 'pool_model.g.dart';
 
 @HiveType(typeId: 1)

@@ -4,28 +4,28 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:async/async.dart';
-import 'package:avalon_tool/antminer/antminer_model.dart';
-import 'package:avalon_tool/avalon_10xx/api.dart';
-import 'package:avalon_tool/avalon_10xx/api_commands.dart';
-import 'package:avalon_tool/avalon_10xx/mock_rasp.dart';
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/isolates/rest_api.dart';
-import 'package:avalon_tool/models/device_model.dart';
-import 'package:avalon_tool/pools_editor/device_pool.dart';
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:avalon_tool/scan_list/event_model.dart';
+import 'package:AllMinerMonitor/antminer/antminer_model.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
+import 'package:AllMinerMonitor/avalon_10xx/mock_rasp.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/isolates/rest_api.dart';
+import 'package:AllMinerMonitor/models/device_model.dart';
+import 'package:AllMinerMonitor/pools_editor/device_pool.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/scan_list/event_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 void startCompute(List<String?> f, List<String> commands,
-    StreamController eventStream, StreamController stopStream, [List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials]) async{
-  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand, company, credentials)) {
+    StreamController eventStream, StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
+  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand: addCommand, company: company, credentials: credentials, tag: tag)) {
     eventStream.add(result);
   }
 }
 
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
-    StreamController stopStream, [List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials]) async* {
+    StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async* {
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -58,7 +58,8 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
         'command':commands[i],
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
-        'credentials': credentials!=null? credentials:null
+        'credentials': credentials!=null? credentials:null,
+        'tag': tag??''
       }
       );
     }
@@ -68,7 +69,8 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
         'command':commands[0],
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
-        'credentials': credentials!=null? credentials:null
+        'credentials': credentials!=null? credentials:null,
+        'tag' : tag??''
       }
       );
     }
@@ -87,7 +89,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
 sendAnswer(SendPort p, EventModel eventModel){
   p.send(eventModel);
 }
-socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials}) async{
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
   dynamic data;
   print(addCommands);
   try {
@@ -96,7 +98,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
         socket.listen((dynamic event) {
-          poolHandler(p, utf8.decode(event), device!, ip);
+          poolHandler(p, utf8.decode(event), device!, ip, tag);
           data = utf8.decode(event);
           socket.close();
         });
@@ -114,18 +116,18 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
           //  _api.test(ip, addCommands!);
           var callback = await RestApi().test(ip, addCommands!,credentials);
       //    var c = await  RestApi().setPool(ip, addCommands!);
-            eventModel = EventModel('update', '$callback', ip, callback);
+            eventModel = EventModel('update', '$callback', ip, callback, tag: tag);
           }
         else{
           Socket socket = await Socket.connect(
               ip, 4028, timeout: const Duration(seconds: 5));
           socket.listen((dynamic event) {
-            handler(p, utf8.decode(event), command,  ip);
+            handler(p, utf8.decode(event), command,  ip, tag);
             data = utf8.decode(event);
             socket.close();
           });
           socket.add(utf8.encode(addCommands!));
-          eventModel = EventModel('update', 'set pool', ip, 'set pool');
+          eventModel = EventModel('update', 'set pool', ip, 'set pool', tag: tag);
         }
         sendAnswer(p, eventModel);
         break;
@@ -135,14 +137,14 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
             Socket socket = await Socket.connect(
                 ip, 4028, timeout: const Duration(seconds: 5));
             socket.listen((dynamic event) {
-              handler(p, utf8.decode(event), command,  ip);
+              handler(p, utf8.decode(event), command,  ip, tag);
               data = utf8.decode(event);
               socket.close();
             });
             socket.add(utf8.encode(command));
           }
         else{
-          EventModel eventModel = EventModel('update', 'skip', ip, 'skip');
+          EventModel eventModel = EventModel('update', 'skip', ip, 'skip', tag: tag);
         }
         break;
       case 'reboot':
@@ -152,7 +154,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
           {
             print('case ant');
            var c = await RestApi().reboot(ip, credentials);
-           eventModel = EventModel('update', c, ip, c);
+           eventModel = EventModel('update', c, ip, c, tag: tag);
           }
         else
         {
@@ -160,7 +162,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
               ip, 4028, timeout: const Duration(seconds: 5));
           socket.add(utf8.encode(command));
           socket.close();
-          eventModel = EventModel('update', 'reboot', ip, 'reboot');
+          eventModel = EventModel('update', 'reboot', ip, 'reboot', tag: tag);
         }
        //  eventModel = EventModel('update', 'reboot', ip, 'reboot');
         sendAnswer(p, eventModel);
@@ -169,43 +171,43 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
         var sub = socket.listen((dynamic event) {
-          handler(p, utf8.decode(event), command,  ip);
+          handler(p, utf8.decode(event), command,  ip, tag);
          // data = utf8.decode(event);
           socket.close();
         });
         socket.add(utf8.encode(command));
         await Future.delayed(const Duration(milliseconds: 300));
-        await sub.asFuture<void>().timeout(const Duration(seconds: 7), onTimeout: () async {print('timeout');throw 'timrout';});
+        await sub.asFuture<void>().timeout(const Duration(seconds: 7), onTimeout: () async {print('timeout');throw 'timeout';});
     }
   }
   catch(err){
     data = '$err';
-    EventModel eventModel = EventModel('error', '$err', ip, '$err');
+    EventModel eventModel = EventModel('error', '$err', ip, '$err', tag: tag);
     sendAnswer(p, eventModel);
     //p.send(eventModel);
   }
 }
-poolHandler(SendPort p, String data, DeviceModel device, String ip) async {
-  EventModel eventModel = EventModel('error', 'empty event in pool handler', 'fail', 'event was not initialised - pool handler');
+poolHandler(SendPort p, String data, DeviceModel device, String ip, String? tag) async {
+  EventModel eventModel = EventModel('error', 'empty event in pool handler', 'fail', 'event was not initialised - pool handler',tag: tag);
   Pools? _pools;
   try{
      _pools = Pools.fromString(data);
   }
   catch(e){
     print(e);
-    eventModel = EventModel('error', e.toString(),ip, e.toString());
+    eventModel = EventModel('error', e.toString(),ip, e.toString(), tag: tag);
   }
   if(_pools!=null){
     device.pools = _pools;
-    eventModel = EventModel('device', device, ip, data);
+    eventModel = EventModel('device', device, ip, data, tag: tag);
   }
   else{
-    eventModel = EventModel('device', device, ip, data);
+    eventModel = EventModel('device', device, ip, data, tag: tag);
   }
 sendAnswer(p, eventModel);
 }
-handler(SendPort p, String data, String command, String ip) async {
-  EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised');
+handler(SendPort p, String data, String command, String ip, String? tag) async {
+  EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised', tag: tag);
  // dynamic device;
   DeviceModel? model;
   if(command=='estats'||command=='stats|debug'||command=='stats'){
@@ -218,7 +220,7 @@ handler(SendPort p, String data, String command, String ip) async {
       //  eventModel = EventModel('device', device, ip, data);
       }
       catch(e){
-        eventModel = EventModel('error', e.toString(),ip, data);
+        eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
         sendAnswer(p, eventModel);
       }
     }
@@ -230,7 +232,7 @@ handler(SendPort p, String data, String command, String ip) async {
       //  eventModel = EventModel('device', device, ip, data);
       }
       catch(e){
-        eventModel = EventModel('error', e.toString(),ip, data);
+        eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
         sendAnswer(p, eventModel);
       }
     }
@@ -243,17 +245,17 @@ handler(SendPort p, String data, String command, String ip) async {
       //  eventModel = EventModel('device', device, ip, data);
       }
       catch(e){
-        eventModel = EventModel('error', e.toString(),ip, data);
+        eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
         sendAnswer(p, eventModel);
       }
     }
     else{
       data = data;
-      eventModel = EventModel('error', data,ip, data); //TODO unknown device
+      eventModel = EventModel('error', data,ip, data, tag: tag); //TODO unknown device
       sendAnswer(p, eventModel);
     }
     if(model!=null){
-      socketSendCommand(ip, 'pools', p, device: model);
+      socketSendCommand(ip, 'pools', p, device: model, tag: tag);
     }
 /*
       try {
@@ -284,10 +286,10 @@ handler(SendPort p, String data, String command, String ip) async {
   }
   else{
     if(data.contains('STATUS=')) {
-      eventModel = EventModel('update', data, ip, data);
+      eventModel = EventModel('update', data, ip, data, tag: tag);
     }
     else{
-      eventModel = EventModel('error', data, ip, data);
+      eventModel = EventModel('error', data, ip, data, tag: tag);
     }
     sendAnswer(p, eventModel);
   }
@@ -320,7 +322,7 @@ Future<void> sendCommand(SendPort p) async{
       // TODO do the logic here
       socketSendCommand(message['ip']??'', message['command']??'', p,
           addCommands: message['addCommand'], company: message['company'],
-        credentials: message['credentials']
+        credentials: message['credentials'], tag: message['tag']
       );
       /*
       dynamic data;

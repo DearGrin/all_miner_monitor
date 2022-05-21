@@ -1,7 +1,7 @@
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/models/device_model.dart';
-import 'package:avalon_tool/scan_list/header_defaults.dart';
-import 'package:avalon_tool/scan_list/table_header_model.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/models/device_model.dart';
+import 'package:AllMinerMonitor/scan_list/header_defaults.dart';
+import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -80,7 +80,7 @@ class RaspController extends GetxController{
         device.devices?.sort((a,b)=>a.mm!.compareTo(b.mm!));
         break;
       case 'errors':
-        device.devices?.sort((a,b)=>a.ECMM!.first.id.toString().compareTo(b.ECMM!.first.id.toString())); //TODO check for null
+        device.devices?.sort((a,b)=>a.data.ECMM!.first.id.toString().compareTo(b.data.ECMM!.first.id.toString())); //TODO check for null
         break;
       case 'ps':
         device.devices?.sort((a,b)=>a.ps.toString().compareTo(b.ps.toString()));

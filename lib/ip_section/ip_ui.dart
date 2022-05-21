@@ -1,4 +1,4 @@
-import 'package:avalon_tool/ip_section/ip_management_controller.dart';
+import 'package:AllMinerMonitor/ip_section/ip_management_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

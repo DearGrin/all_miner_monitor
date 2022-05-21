@@ -1,21 +1,21 @@
 
-import 'package:avalon_tool/ip_section/ip_range_model.dart';
-import 'package:avalon_tool/locales/messages.dart';
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:avalon_tool/scan_list/header_defaults.dart';
-import 'package:avalon_tool/scan_list/table_header_model.dart';
-import 'package:avalon_tool/service_record/record_model.dart';
-import 'package:avalon_tool/settings/header_list_model.dart';
-import 'package:avalon_tool/styles/d_l_theme.dart';
-import 'package:avalon_tool/ui/desktop_scan_screen.dart';
-import 'package:avalon_tool/utils/bindings.dart';
-import 'package:avalon_tool/visual_constructor/constructor_model.dart';
+import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/locales/messages.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/scan_list/header_defaults.dart';
+import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
+import 'package:AllMinerMonitor/service_record/record_model.dart';
+import 'package:AllMinerMonitor/settings/header_list_model.dart';
+import 'package:AllMinerMonitor/styles/d_l_theme.dart';
+import 'package:AllMinerMonitor/ui/desktop_scan_screen.dart';
+import 'package:AllMinerMonitor/utils/bindings.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
-  await Hive.initFlutter();
+  await Hive.initFlutter('All Miner');
   Hive.registerAdapter(IpRangeModelAdapter());
   Hive.registerAdapter(PoolAdapter());
   Hive.registerAdapter(TableHeaderModelAdapter());
@@ -41,6 +41,10 @@ checkSettings() async {
   int? _octet = box.get('octet_count');
   if(_octet == null){
     box.put('octet_count', 2);
+  }
+  List<dynamic>? _creds = box.get('ant_passwords');
+  if(_creds == null || _creds.isEmpty){
+    box.put('ant_passwords', [{'root':'root'},]);
   }
  // box.close();
   //TODO add warnings params

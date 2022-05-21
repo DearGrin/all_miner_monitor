@@ -1,5 +1,5 @@
-import 'package:avalon_tool/pools_editor/device_pool.dart';
-import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/pools_editor/device_pool.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 
 class DeviceModel{
   String? status;
@@ -70,12 +70,6 @@ class DeviceModel{
     //Pools?  _pools = data.pools;
     ///status resolver
     String _status = '';
-    bool? _speedError = data.speedError;
-    bool? _fanError = data.fanError;
-    bool? _tempError = data.tempError;
-    bool? _chipCountError = data.chipCountError;
-    bool? _chipSError = data.chipsSError;
-    bool? _hashCountError = data.hashCountError;
     return DeviceModel(
       ip: _ip,
       ipInt: _ipInt,
@@ -96,12 +90,6 @@ class DeviceModel{
       status: _status,
       ps: _ps,
       netFail: _netFail,
-      speedError: _speedError,
-      fanError: _fanError,
-      tempError: _tempError,
-      chipCountError: _chipCountError,
-      chipsSError: _chipSError,
-      hashCountError: _hashCountError,
     );
   }
 }

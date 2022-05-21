@@ -1,18 +1,19 @@
-import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_layout/layout_tile_controller.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LayoutTile extends StatefulWidget {
   final Layout layout;
-  const LayoutTile(this.layout, {Key? key}) : super(key: key);
+  final LayoutTileController controller;
+  const LayoutTile(this.layout, this.controller, {Key? key}) : super(key: key);
 
   @override
   State<LayoutTile> createState() => _LayoutTileState();
 }
 
 class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
-  late LayoutTileController controller;
+  //late LayoutTileController controller;
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 2),
     vsync: this,
@@ -23,10 +24,13 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
   );
   @override
   void initState() {
-    controller = Get.put(LayoutTileController(widget.layout), tag: widget.layout.tag);
+   // Get.create(()=>LayoutTileController((widget.layout)),tag: widget.layout.tag, permanent: false);
+   // controller = Get.find(tag: widget.layout.tag);
+    print('init tile');
+    //controller = Get.put(LayoutTileController(widget.layout), tag: widget.layout.tag));
     //controller.scanInProgressStream.stream.listen((event) {event.isEven? _controller.repeat():_controller.stop();});
     _controller.stop();
-    controller.isActive.listen((event) {event? _controller.repeat():_controller.stop();});
+   widget.controller.isActive.listen((event) {event? _controller.repeat():_controller.stop();});
     super.initState();
   }
   @override
@@ -52,7 +56,7 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                       top: -10,
                       child:  RotationTransition(
                           turns: _animation,
-                          child: IconButton(onPressed: (){controller.scan();}, icon: const Icon(Icons.refresh))),
+                          child: IconButton(onPressed: (){widget.controller.scan(true);}, icon: const Icon(Icons.refresh))),
                       /*
                       child: IconButton(
                           padding: const EdgeInsets.all(0),
@@ -64,14 +68,28 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                       */
                     ),
                     Positioned(
+                      right: 60,
+                      top: -10,
+                      child: IconButton(
+                          padding: const EdgeInsets.all(0),
+                          iconSize: 20,
+                          splashRadius: 1.0,
+                          onPressed: (){widget.controller.showGraphs();},
+                          icon:  const Icon(Icons.stacked_line_chart_outlined),
+                          tooltip: 'graphs'.tr,
+                      ),
+
+                    ),
+                    Positioned(
                       right: 30,
                       top: -10,
                       child: Obx(()=>IconButton(
                             padding: const EdgeInsets.all(0),
                             iconSize: 20,
                             splashRadius: 1.0,
-                            onPressed: (){controller.switchMode();},
-                            icon:  Icon(controller.viewMode.value==0? Icons.list_alt_outlined : Icons.settings_overscan_outlined)
+                            onPressed: (){widget.controller.switchMode();},
+                            icon:  Icon(widget.controller.viewMode.value==0? Icons.list_alt_outlined : Icons.settings_overscan_outlined),
+                            tooltip: 'toggle_view'.tr,
                         ),
                       ),
                     ),
@@ -82,14 +100,14 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                           padding: const EdgeInsets.all(0),
                           iconSize: 20,
                           splashRadius: 1.0,
-                          onPressed: (){controller.openMenu();},
+                          onPressed: (){widget.controller.openMenu();},
                           icon: const Icon(Icons.more_vert_outlined,)
                       ),
                     ),
-                    Obx(()=>controller.isMenuOpen.value? Align(
+                    Obx(()=>widget.controller.isMenuOpen.value? Align(
                       alignment: Alignment.topCenter,
                       child: MouseRegion(
-                        onExit: (event){controller.closeMenu();},
+                        onExit: (event){widget.controller.closeMenu();},
                         child: Card(
                           color: Theme.of(context).cardColor,
                           child: Padding(
@@ -97,9 +115,9 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                OutlinedButton(onPressed: (){controller.onEditTagClick();}, child: Text('rename'.tr)),
-                                OutlinedButton(onPressed: (){controller.editLayout();}, child: Text('edit'.tr)),
-                                OutlinedButton(onPressed: (){controller.deleteLayout();}, child: Text('delete'.tr))
+                                OutlinedButton(onPressed: (){widget.controller.onEditTagClick();}, child: Text('rename'.tr)),
+                                OutlinedButton(onPressed: (){widget.controller.editLayout();}, child: Text('edit'.tr)),
+                                OutlinedButton(onPressed: (){widget.controller.deleteLayout();}, child: Text('delete'.tr))
                               ],
                             ),
                           ),
@@ -114,7 +132,7 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                 height: 10,
               ),
               Obx(()=>IndexedStack(
-                  index: controller.viewMode.value,
+                  index: widget.controller.viewMode.value,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,23 +143,23 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Obx(()=> Text('scan_res'.trParams({'value':'${controller.scannedDevices.value}/${controller.layout.ips?.length}'}))),
+                                Obx(()=> Text('scan_res'.trParams({'value':'${widget.controller.scannedDevices.value}/${widget.controller.layout.ips?.length}'}))),
                                 const Divider(),
                                 const Text('SHA256'),
-                                Obx(()=>Text('devices'.trParams({'value':'${controller.deviceCountSHA256}'})),),
-                                Obx(()=>Text('total'.trParams({'value':(controller.speedSHA256).toStringAsFixed(2)}))),
-                                Obx(()=>Text('average'.trParams({'value':(controller.speedAvgSHA256).toStringAsFixed(2)}))),
+                                Obx(()=>Text('devices'.trParams({'value':'${widget.controller.deviceCountSHA256}'})),),
+                                Obx(()=>Text('total'.trParams({'value':(widget.controller.speedSHA256).toStringAsFixed(2)}))),
+                                Obx(()=>Text('average'.trParams({'value':(widget.controller.speedAvgSHA256).toStringAsFixed(2)}))),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Obx(()=>Text('with_problems'.trParams({'value':'${controller.totalErrors.length}'})),),
+                                Obx(()=>Text('with_problems'.trParams({'value':'${widget.controller.totalErrors.length}'})),),
                                const Divider(),
                                 const Text('SCRYPT'),
-                                Obx(()=>Text('devicesGH'.trParams({'value':'${controller.deviceCountSCRYPT}'})),),
-                                Obx(()=>Text('totalGH'.trParams({'value':(controller.speedSCRYPT/1000).toStringAsFixed(2)}))),
-                                Obx(()=>Text('averageGH'.trParams({'value':(controller.speedAvgSCRYPT).toStringAsFixed(2)}))),
+                                Obx(()=>Text('devicesGH'.trParams({'value':'${widget.controller.deviceCountSCRYPT}'})),),
+                                Obx(()=>Text('totalGH'.trParams({'value':(widget.controller.speedSCRYPT/1000).toStringAsFixed(2)}))),
+                                Obx(()=>Text('averageGH'.trParams({'value':(widget.controller.speedAvgSCRYPT).toStringAsFixed(2)}))),
                               ],
                             ),
                           ],
@@ -157,24 +175,24 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Obx(()=>Text('speed_error'.trParams({'value':'${controller.speedErrors.length}'})),),
-                                Obx(()=>Text('temp_error'.trParams({'value':'${controller.tempErrors.length}'}))),
-                                Obx(()=>Text('fan_error'.trParams({'value':'${controller.fanErrors.length}'})),),
+                                Obx(()=>Text('speed_error'.trParams({'value':'${widget.controller.speedErrors.length}'})),),
+                                Obx(()=>Text('temp_error'.trParams({'value':'${widget.controller.tempErrors.length}'}))),
+                                Obx(()=>Text('fan_error'.trParams({'value':'${widget.controller.fanErrors.length}'})),),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Obx(()=>Text('hash_count_error'.trParams({'value':'${controller.hashCountErrors.length}'})),),
-                                Obx(()=>Text('chip_count_error'.trParams({'value':'${controller.chipCountErrors.length}'}))),
-                                Obx(()=>Text('chip_s_error'.trParams({'value':'${controller.chipsSErrors.length}'})),),
+                                Obx(()=>Text('hash_count_error'.trParams({'value':'${widget.controller.hashCountErrors.length}'})),),
+                                Obx(()=>Text('chip_count_error'.trParams({'value':'${widget.controller.chipCountErrors.length}'}))),
+                                Obx(()=>Text('chip_s_error'.trParams({'value':'${widget.controller.chipsSErrors.length}'})),),
                               ],
                             ),
                           ],
                         ),
                         const SizedBox(height: 5.0,),
                         OutlinedButton(
-                            onPressed: (){controller.showMore();},
+                            onPressed: (){widget.controller.showMore();},
                             child: Text('more'.tr)
                         ).marginAll(10.0)
                       ],
@@ -187,16 +205,17 @@ class _LayoutTileState extends State<LayoutTile> with TickerProviderStateMixin{
               ),
               Row(
                 children: [
-                  Expanded(child: OutlinedButton(onPressed: (){controller.openLayout();}, child: Text('details'.tr))),
+                  Expanded(child: OutlinedButton(onPressed: (){widget.controller.openLayout();}, child: Text('details'.tr))),
                 ],
               ),
               const SizedBox(
                 height: 5,
               ),
               Obx(()=> LinearProgressIndicator(
-                  value: controller.progress.value,
+                  value: widget.controller.progress.value,
                 ),
               ),
+              Obx(()=>Text('last_scan'.trParams({'value':widget.controller.lastScanTime.value}))),
             ],
           ),
         ),

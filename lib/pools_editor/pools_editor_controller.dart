@@ -1,5 +1,5 @@
-import 'package:avalon_tool/pools_editor/pool_model.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -28,16 +28,16 @@ class PoolsEditorController extends GetxController{
     scanListController.submitPoolsSelected(pools, suffixMode);
   }
   onAddrChange(int index, String? value){
-    pools[index]!.addr = value;
+    pools[index].addr = value;
   }
   onPortChange(int index, String? value){
-    pools[index]!.port = value;
+    pools[index].port = value;
   }
   onPasswdChange(int index, String? value){
-    pools[index]!.passwd = value;
+    pools[index].passwd = value;
   }
   onWorkerChange(int index, String? value){
-    pools[index]!.worker = value;
+    pools[index].worker = value;
   }
   suffixSelect(int index, int? value){
     suffixMode[index] = value??0;

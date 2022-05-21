@@ -1,5 +1,5 @@
-import 'package:avalon_tool/service_record/record_model.dart';
-import 'package:avalon_tool/service_record/record_tag.dart';
+import 'package:AllMinerMonitor/service_record/record_model.dart';
+import 'package:AllMinerMonitor/service_record/record_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

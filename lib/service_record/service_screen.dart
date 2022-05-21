@@ -1,5 +1,5 @@
-import 'package:avalon_tool/service_record/record_card.dart';
-import 'package:avalon_tool/service_record/service_controller.dart';
+import 'package:AllMinerMonitor/service_record/record_card.dart';
+import 'package:AllMinerMonitor/service_record/service_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

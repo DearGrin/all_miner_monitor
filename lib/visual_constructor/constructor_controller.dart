@@ -1,6 +1,6 @@
-import 'package:avalon_tool/visual_constructor/confirm_overwrite.dart';
-import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_constructor/save_result.dart';
+import 'package:AllMinerMonitor/visual_constructor/confirm_overwrite.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
+import 'package:AllMinerMonitor/visual_constructor/save_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -211,15 +211,14 @@ class ConstructorController extends GetxController{
     collectIps();
     Box box = await Hive.openBox('layouts');
     try {
+      if(initialTag!=null){
+        box.delete(initialTag);
+      }
       box.put('${layout.value.tag}', layout.value);
       Get.defaultDialog(title: '', content: SaveResult('save_complete'.tr));
     }
     catch(e){
       Get.defaultDialog(title: '', content: SaveResult('$e'));
-    }
-
-    if(initialTag!=null && initialTag!=layout.value.tag){
-      box.delete(initialTag);
     }
   }
   editTag(String value){

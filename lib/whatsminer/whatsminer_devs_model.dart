@@ -8,24 +8,24 @@ class WhatsminerDevsModel {
     if (json['STATUS'] != null) {
       status = <STATUS>[];
       json['STATUS'].forEach((v) {
-        status!.add(new STATUS.fromJson(v));
+        status!.add(STATUS.fromJson(v));
       });
     }
     if (json['DEVS'] != null) {
       devs = <DEVS>[];
       json['DEVS'].forEach((v) {
-        devs!.add(new DEVS.fromJson(v));
+        devs!.add(DEVS.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.status != null) {
-      data['STATUS'] = this.status!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (status != null) {
+      data['STATUS'] = status!.map((v) => v.toJson()).toList();
     }
-    if (this.devs != null) {
-      data['DEVS'] = this.devs!.map((v) => v.toJson()).toList();
+    if (devs != null) {
+      data['DEVS'] = devs!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -127,7 +127,7 @@ class DEVS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['ASC'] = this.aSC;
     data['Slot'] = this.slot;
     data['Enabled'] = this.enabled;

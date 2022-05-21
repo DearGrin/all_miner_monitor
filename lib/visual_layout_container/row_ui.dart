@@ -1,8 +1,9 @@
-import 'package:avalon_tool/visual_constructor/constructor_model.dart';
-import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/place_ui.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
+import 'package:AllMinerMonitor/visual_layout_container/layout_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../visual_layout_container/place_ui.dart';
 
 class RowUI extends StatelessWidget {
   final int rigIndex;

@@ -1,7 +1,7 @@
-import 'package:avalon_tool/avalon_10xx/api.dart';
-import 'package:avalon_tool/avalon_10xx/api_commands.dart';
-import 'package:avalon_tool/command_panel/command_list.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api.dart';
+import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
+import 'package:AllMinerMonitor/command_panel/command_list.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:get/get.dart';
 
 class CommandPanelController extends GetxController{
@@ -23,10 +23,10 @@ class CommandPanelController extends GetxController{
     String _withOptions =  commands.firstWhere((element) => element.keys.first==value).values.first.values.first;
     command.value = value??'';
     //withOptions.value = _withOptions=='none'? false:true;
-    rawCommand.value = _rawCommand??''; //TODO get list of commands
+    rawCommand.value = _rawCommand; //TODO get list of commands
   }
   onInputChange(String value){
-    rawCommand.value = value??'';
+    rawCommand.value = value;
   }
   onTempChange(String value){
     int? _value = int.tryParse(value);

@@ -1,12 +1,12 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/control_panel/control_panel_controller.dart';
-import 'package:avalon_tool/ip_section/ip_management_controller.dart';
-import 'package:avalon_tool/miner_overview/overview_controller.dart';
-import 'package:avalon_tool/scan_list/resize_controller.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/scan_list/scanner.dart';
-import 'package:avalon_tool/visual_layout/layout_controller.dart';
-import 'package:avalon_tool/visual_layout/layout_list_controller.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/control_panel/control_panel_controller.dart';
+import 'package:AllMinerMonitor/ip_section/ip_management_controller.dart';
+import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
+import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/scan_list/scanner.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_list_controller.dart';
+import 'package:AllMinerMonitor/visual_layout_container/layout_controller.dart';
 import 'package:get/get.dart';
 
 class InitBinding implements Bindings{

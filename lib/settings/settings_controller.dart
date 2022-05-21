@@ -1,8 +1,8 @@
-import 'package:avalon_tool/scan_list/header_defaults.dart';
-import 'package:avalon_tool/scan_list/resize_controller.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/scan_list/table_header_model.dart';
-import 'package:avalon_tool/settings/header_list_model.dart';
+import 'package:AllMinerMonitor/scan_list/header_defaults.dart';
+import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
+import 'package:AllMinerMonitor/settings/header_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -22,6 +22,8 @@ class SettingsController extends GetxController{
   RxDouble minHashS9 = 15.0.obs;
   RxDouble minHashS19 = 100.0.obs;
   RxDouble minHashT9 = 12.0.obs;
+  RxDouble minHashT19 = 12.0.obs;
+  RxDouble minHashS11 = 12.0.obs;
   RxDouble minHash1047 = 36.0.obs;
   RxDouble minHash1066 = 50.0.obs;
   RxDouble minHash11xx = 70.0.obs;
@@ -132,6 +134,20 @@ class SettingsController extends GetxController{
     else{
       minHashT9.value = _minHashT9;
     }
+    double? _minHashT19 = box.get('min_hash_T19');
+    if(_minHashT19==null){
+      box.put('min_hash_T19', 15.0);
+    }
+    else{
+      minHashT19.value = _minHashT19;
+    }
+    double? _minHashS11 = box.get('min_hash_S11');
+    if(_minHashS11==null){
+      box.put('min_hash_S11', 15.0);
+    }
+    else{
+      minHashS11.value = _minHashS11;
+    }
     double? _minHash1047 = box.get('min_hash_1047');
     if(_minHash1047==null){
       box.put('min_hash_1047', 36.0);
@@ -202,7 +218,7 @@ class SettingsController extends GetxController{
     List<Map<dynamic, dynamic>>? _antPasswords;
     //= box.get('ant_passwords');
     _antPasswords = _t.cast<Map>();
-    if(_antPasswords==null || _antPasswords.isEmpty)
+    if(_antPasswords.isEmpty)
       {
       box.put('ant_passwords', [{'root':'root'},]);
       antPasswords.add({'root':'root'});

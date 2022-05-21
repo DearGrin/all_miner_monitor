@@ -1,5 +1,5 @@
-import 'package:avalon_tool/command_panel/freq_set_contoller.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/command_panel/freq_set_contoller.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

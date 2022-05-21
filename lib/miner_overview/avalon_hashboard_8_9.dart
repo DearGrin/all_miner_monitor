@@ -1,6 +1,6 @@
-import 'package:avalon_tool/avalon_10xx/avalon_error_codes.dart';
-import 'package:avalon_tool/miner_overview/avalon_chip.dart';
-import 'package:avalon_tool/miner_overview/overview_controller.dart';
+import 'package:AllMinerMonitor/avalon_10xx/avalon_error_codes.dart';
+import 'package:AllMinerMonitor/miner_overview/avalon_chip.dart';
+import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,14 +12,14 @@ class Avalon89Hashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final OverviewController controller = Get.put(OverviewController());
     List<Widget> _row1 = [];
-    for(int i = 0; i < (controller.device[0].hashBoards![boardIndex].chips!.length/2).round(); i++)
+    for(int i = 0; i < (controller.device[0].data.hashBoards![boardIndex].chips!.length/2).round(); i++)
       {
 
         _row1.add(AvalonChip(board: boardIndex, number: i)); //TODO get index of board
       }
     List<Widget> _row2 = [];
-    for(int i = (controller.device[0].hashBoards![boardIndex].chips!.length/2).round();
-      i < controller.device[0].hashBoards![boardIndex].chips!.length; i++)
+    for(int i = (controller.device[0].data.hashBoards![boardIndex].chips!.length/2).round();
+      i < controller.device[0].data.hashBoards![boardIndex].chips!.length; i++)
     {
       _row2.add(AvalonChip(board: boardIndex, number: i)); //TODO get index of board
     }
@@ -38,7 +38,7 @@ class Avalon89Hashboard extends StatelessWidget {
               children: [
                 SelectableText.rich(
                     TextSpan(
-                        children: errors(controller.device[0].ECHU?[boardIndex], context)
+                        children: errors(controller.device[0].data.ECHU?[boardIndex], context)
                     )
                 ),
               ],

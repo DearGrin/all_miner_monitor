@@ -1,6 +1,6 @@
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
-import 'package:avalon_tool/settings/settings_screen.dart';
-import 'package:avalon_tool/visual_layout/layout_screen.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/settings/settings_screen.dart';
+import 'package:AllMinerMonitor/visual_layout/layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

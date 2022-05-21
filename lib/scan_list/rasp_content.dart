@@ -1,8 +1,8 @@
-import 'package:avalon_tool/avalon_10xx/model_avalon.dart';
-import 'package:avalon_tool/scan_list/content_container_with_sort.dart';
-import 'package:avalon_tool/scan_list/data_row.dart';
-import 'package:avalon_tool/scan_list/rasp_controller.dart';
-import 'package:avalon_tool/scan_list/scan_list_controller.dart';
+import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
+import 'package:AllMinerMonitor/scan_list/content_container_with_sort.dart';
+import 'package:AllMinerMonitor/scan_list/data_row.dart';
+import 'package:AllMinerMonitor/scan_list/rasp_controller.dart';
+import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
