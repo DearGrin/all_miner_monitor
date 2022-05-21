@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
+import '../debugger/debug_print.dart';
+
 class AnalyseResolver extends GetxController{
   late Box box;
   int maxTempInput = 90;
@@ -14,6 +16,8 @@ class AnalyseResolver extends GetxController{
   double minSpeedS9 = 15;
   double minSpeedS19 = 100;
   double minSpeedT9 = 12;
+  double minSpeedT19 = 12;
+  double minSpeedS11 = 12;
   double minSpeed1047 = 36;
   double minSpeed1066 = 50;
   double minSpeed11xx = 70;
@@ -26,10 +30,14 @@ class AnalyseResolver extends GetxController{
   int hashCountS9 = 3;
   int hashCountS19 = 3;
   int hashCountT9 = 3;
+  int hashCountT19 = 3; //TODO fix value
+  int hashCountS11 = 3;
   int chipCountL3 = 72;
   int chipCountS9 = 63;
   int chipCountS19 = 96;
   int chipCountT9 = 54;
+  int chipCountT19 = 54; //TODO fix value
+  int chipCountS11 = 84;
   int hashCount8xx = 4;
   int hashCount9xx = 6;
   int hashCount1047 = 2;
@@ -75,6 +83,12 @@ class AnalyseResolver extends GetxController{
         case 'min_hash_T9':
           minSpeedT9 = event.value;
           break;
+        case 'min_hash_T19':
+          minSpeedT19 = event.value;
+          break;
+        case 'min_hash_S11':
+          minSpeedS11 = event.value;
+          break;
         case 'min_hash_1047':
           minSpeed1047 = event.value;
           break;
@@ -111,6 +125,8 @@ class AnalyseResolver extends GetxController{
     minSpeedS9 = box.get('min_hash_S9')??15;
     minSpeedS19 = box.get('min_hash_S19')??100;
     minSpeedT9 = box.get('min_hash_T9')??12;
+    minSpeedT19 = box.get('min_hash_T19')??12;
+    minSpeedS11 = box.get('min_hash_S11')??12;
     minSpeed1047 = box.get('min_hash_1047')??36;
     minSpeed1066 = box.get('min_hash_1066')??50;
     minSpeed11xx = box.get('min_hash_11xx')??70;
@@ -151,7 +167,7 @@ class AnalyseResolver extends GetxController{
           break;
         case 'hash_count':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -184,6 +200,12 @@ class AnalyseResolver extends GetxController{
             case 'T9':
               _ = value<hashCountT9? Colors.red:null;
               break;
+            case 'T19':
+              _ = value<hashCountT19? Colors.red:null;
+              break;
+            case 'S11':
+              _ = value<hashCountS11? Colors.red:null;
+              break;
             default:
               _ = Colors.red;
           }
@@ -202,6 +224,12 @@ class AnalyseResolver extends GetxController{
             case 'T9':
               _ = value<chipCountT9? Colors.red:null;
               break;
+            case 'T19':
+              _ = value<chipCountT19? Colors.red:null;
+              break;
+            case 'S11':
+              _ = value<chipCountS11? Colors.red:null;
+              break;
             default:
               _ = Colors.red;
           }
@@ -209,7 +237,7 @@ class AnalyseResolver extends GetxController{
 
         case 'min_speed':
           String? _model = model;
-          if(model!='L3'&&model!='S9'&&model!='S19'&&model!='T9'){
+          if(model!='L3'&&model!='S9'&&model!='S19'&&model!='T9'&&model!='T19'&&model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -242,6 +270,12 @@ class AnalyseResolver extends GetxController{
             case 'T9':
               _ = value>minSpeedT9? null : Colors.red;
               break;
+            case 'T19':
+              _ = value>minSpeedT19? null : Colors.red;
+              break;
+            case 'S11':
+              _ = value>minSpeedS11? null : Colors.red;
+              break;
             case '1047':
               _ = value>minSpeed1047? null : Colors.red;
               break;
@@ -270,7 +304,7 @@ class AnalyseResolver extends GetxController{
     }
     return _;
   }
-  bool hasErrors(String? type, dynamic value, [String? model]){
+  Future<bool> hasErrors(String? type, dynamic value, [String? model]) async{
     bool _ = false;
     if(value !=null) {
       switch (type) {
@@ -297,7 +331,7 @@ class AnalyseResolver extends GetxController{
           break;
         case 'min_speed':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -330,6 +364,12 @@ class AnalyseResolver extends GetxController{
             case 'T9':
               _ = value<minSpeedT9;
               break;
+            case 'T19':
+              _ = value<minSpeedT19;
+              break;
+            case 'S11':
+              _ = value<minSpeedS11;
+              break;
             case '1047':
               _ = value<minSpeed1047;
               break;
@@ -354,7 +394,7 @@ class AnalyseResolver extends GetxController{
           break;
         case 'hash_count':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'){
+          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -387,6 +427,12 @@ class AnalyseResolver extends GetxController{
             case 'T9':
               _ = value<hashCountT9;
               break;
+            case 'T19':
+              _ = value<hashCountT19;
+              break;
+            case 'S11':
+              _ = value<hashCountS11;
+              break;
             case '1047':
               _ = value<hashCount1047;
               break;
@@ -410,41 +456,57 @@ class AnalyseResolver extends GetxController{
           }
           break;
         case 'chip_count':
+          debug(subject: 'analyse resolver', message: 'value: $value', function: 'chip count');
           List<int?>? chipPerChain = value;
-          int _minChip = 0;
+          int? _minChip;
           if(chipPerChain!=null){
             for(int? c in chipPerChain){
-              if(c!=null && c < _minChip || c!=null&& _minChip==0){
-                _minChip = c;
+              if(_minChip==null)
+                {
+                  _minChip = c;
+                }
+              else{
+                if(c!=null &&_minChip>c){
+                  _minChip = c;
+                }
               }
             }
           }
-          switch(model){
-            case 'L3':
-              _ = _minChip<chipCountL3;
-              break;
-            case 'S9':
-              _ = _minChip<chipCountS9;
-              break;
-            case 'S19':
-              _ = _minChip<chipCountS19;
-              break;
-            case 'T9':
-              _ = _minChip<chipCountT9;
-              break;
-            default:
-              try {
-                int _maxChip = 0;
-                if (chipPerChain != null && chipPerChain.length > 1) {
-                  _maxChip = chipPerChain[0] ?? 0;
+          if(_minChip!=null){
+            switch(model){
+              case 'L3':
+                _ = _minChip<chipCountL3;
+                break;
+              case 'S9':
+                _ = _minChip<chipCountS9;
+                break;
+              case 'S19':
+                _ = _minChip<chipCountS19;
+                break;
+              case 'T9':
+                _ = _minChip<chipCountT9;
+                break;
+              case 'T19':
+                _ = _minChip<chipCountT19;
+                break;
+              case 'S11':
+                _ = _minChip<chipCountS11;
+                break;
+              default:
+                try {
+                  int _maxChip = 0;
+                  if (chipPerChain != null && chipPerChain.length > 1) {
+                    _maxChip = chipPerChain[0] ?? 0;
+                  }
+                  _ = _minChip < _maxChip;
                 }
-                _ = _minChip < _maxChip;
-              }
-              catch(e){
-                _ = true;
-              }
-              break;
+                catch(e){
+                  _ = true;
+                }
+                break;
+            }
           }
+
           break;
         default:
            _ = false;

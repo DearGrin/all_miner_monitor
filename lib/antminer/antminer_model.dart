@@ -1,8 +1,7 @@
-import 'package:avalon_tool/analyzator/analyse_resolver.dart';
-import 'package:avalon_tool/antminer/antminer_regexp.dart' as regexp;
-import 'package:avalon_tool/pools_editor/pool_model.dart';
+import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
+import 'package:AllMinerMonitor/antminer/antminer_regexp.dart' as regexp;
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 String nullCheck(String? data){return data ?? '-';}
 int? getInt(String? data){
@@ -114,6 +113,12 @@ class AntMinerModel{
     }
     else if (_mm.contains('T9')){
       _model = 'T9';
+    }
+    else if (_mm.contains('T19')){
+      _model = 'T19';
+    }
+    else if (_mm.contains('S11')){
+      _model = 'S11';
     }
     List<int?>? _freqs;
     try {
@@ -257,20 +262,9 @@ class AntMinerModel{
     catch(e){
       print(e);
     }
-    AnalyseResolver analyseResolver = Get.find();
-    bool _speedError = analyseResolver.hasErrors('min_speed', _currentSpeed, _model);
-    bool _tempError =  analyseResolver.hasErrors('temp_max', _tMax, _model);
-    bool _fanError = analyseResolver.hasErrors('null_list', _fans, _model);
-    bool _chipCountError = analyseResolver.hasErrors('chip_count', _chips, _model);
-    bool chipsSError = analyseResolver.hasErrors('acn_s', _chipString, _model);
-    bool _hashCountError = analyseResolver.hasErrors('hash_count', null, _model);
+
     return AntMinerModel(
-      speedError: _speedError,
-      fanError: _fanError,
-      tempError: _tempError,
-      chipCountError: _chipCountError,
-      chipsSError: chipsSError,
-      hashCountError: _hashCountError,
+
       ip: _ip,
       ipInt: _ipInt,
       manufacture: 'Antminer',
