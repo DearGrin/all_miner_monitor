@@ -49,6 +49,25 @@ class OtherSettings extends StatelessWidget {
             ),
           ],
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'rasp_count'.tr,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Obx(()=> SizedBox(
+              width: 60,
+              child: TextField(
+                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                controller: TextEditingController(text: controller.raspCount.value.toString()),
+                onChanged: (value){controller.setRaspCount(value);},
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+            ),
+          ],
+        ),
       ],
     );
   }

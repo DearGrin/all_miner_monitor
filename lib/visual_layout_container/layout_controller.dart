@@ -13,6 +13,7 @@ import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../visual_layout_container/command_dialog.dart';
@@ -39,6 +40,7 @@ class LayoutController extends GetxController{
   RxString newIp = ''.obs;
   RxBool clearQuery = false.obs;
   Rx<DeviceModel> newDevice = DeviceModel().obs;
+  int raspCount = 2;
   late LayoutTileController controller;
   @override
   void onClose() {
@@ -61,6 +63,8 @@ class LayoutController extends GetxController{
     scanIsActive.value = controller.isActive.value;
     controller.isActive.listen((event) {handleIsActive(event);});
     controller.clearQuery.listen((event) {clearData(event);});
+    Box box = await Hive.openBox('settings');
+    raspCount = box.get('rasp_count')??5;
     for(var r in layout.value.rigs!){
      if(r.shelves!=null && r.shelves!.length>maxRow){
        maxRow = r.shelves!.length;

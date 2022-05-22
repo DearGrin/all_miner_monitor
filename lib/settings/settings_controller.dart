@@ -30,6 +30,7 @@ class SettingsController extends GetxController{
   RxDouble minHash12xx = 82.0.obs;
   RxDouble minHash9xx = 18.0.obs;
   RxDouble minHash8xx = 14.0.obs;
+  RxInt raspCount = 5.obs;
   RxInt volReq = 1200.obs;
   RxDouble maxDh = 7.5.obs;
   RxDouble kWork = 10.0.obs;
@@ -227,6 +228,13 @@ class SettingsController extends GetxController{
      // box.delete('ant_passwords');
       antPasswords.value = _antPasswords;
     }
+    int? _raspCount = box.get('rasp_count');
+    if(_raspCount==null){
+      box.put('rasp_count', 5);
+    }
+    else{
+      raspCount.value = _raspCount;
+    }
    /*
     List<Map<String, String>>? _avalonPasswords = box.get('avalon_passwords');
     if(_avalonPasswords==null || _avalonPasswords.isEmpty)
@@ -248,6 +256,13 @@ class SettingsController extends GetxController{
   setOctetCount(int value){
     octetCount.value =  value;
     box.put('octet_count', value);
+  }
+  setRaspCount(String value){
+    int? _ = int.tryParse(value);
+    if(_!=null){
+      raspCount.value = _;
+      box.put('rasp_count', _);
+    }
   }
   setThreadsCount(String value){
     int? _ = int.tryParse(value);

@@ -41,10 +41,10 @@ class RowUI extends StatelessWidget {
           _placeIndex++;
         }
         else {
-          for (int c = 0; c < 5; c++) {
+          for (int c = 0; c < controller.raspCount; c++) {
             _tmp.add(PlaceUI(_place, _placeIndex + c));
           }
-          _placeIndex += 5; //TODO get from setttings
+          _placeIndex += controller.raspCount;
         }
       }
     }

@@ -198,4 +198,5 @@ final Map<String, String> en_US = {
   'total_speed': 'Total speed graph',
   'graphs':'show graphs',
   'toggle_view':'toggle view',
+  'rasp_count': 'Devices per auc (Avalon 8xx, 9xx)',
 };

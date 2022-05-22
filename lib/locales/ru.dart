@@ -202,4 +202,5 @@ final Map<String, String> ru_RU = {
   'total_speed': 'Гафик суммарной скорости',
   'graphs':'показать графики',
   'toggle_view':'сменить вид',
+  'rasp_count': 'Устройств на аук (Avalon 8xx, 9xx)',
 };
