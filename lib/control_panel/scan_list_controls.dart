@@ -10,9 +10,8 @@ class ScanListControls extends StatelessWidget {
     final ControlPanelController controller = Get.put(ControlPanelController());
     return Card(
       child: Padding(
-        padding: const EdgeInsets.only(top: 4.0),
+        padding: const EdgeInsets.only(top: 8.0),
         child: Wrap(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           alignment: WrapAlignment.spaceEvenly,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [

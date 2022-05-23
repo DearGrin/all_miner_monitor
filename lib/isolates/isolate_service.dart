@@ -246,6 +246,15 @@ handler(SendPort p, String data, String command, String ip, String? tag) async {
         sendAnswer(p, eventModel);
       }
     }
+    else if(data.toLowerCase().contains('invalid command')){
+      try{
+        //TODO send whats command
+      }
+      catch(e){
+        eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
+        sendAnswer(p, eventModel);
+      }
+    }
     else{
       data = data;
       eventModel = EventModel('error', data,ip, data, tag: tag); //TODO unknown device
