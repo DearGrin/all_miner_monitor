@@ -1,6 +1,7 @@
 import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/control_panel/control_panel_controller.dart';
 import 'package:AllMinerMonitor/ip_section/ip_management_controller.dart';
+import 'package:AllMinerMonitor/isolates/layout_scanner.dart';
 import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
@@ -19,6 +20,7 @@ class InitBinding implements Bindings{
     Get.lazyPut(() => ControlPanelController());
     Get.lazyPut(() => IpManagementController());
     Get.lazyPut(() => ResizeController());
+    Get.lazyPut(() => LayoutScanner());
   }
 }
 class LayoutBinding implements Bindings{
