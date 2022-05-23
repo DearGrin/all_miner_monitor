@@ -3,25 +3,29 @@ import 'dart:async';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
 import 'package:AllMinerMonitor/graphic_section/total_stats.dart';
 import 'package:AllMinerMonitor/graphic_section/total_stats_controller.dart';
+import 'package:AllMinerMonitor/isolates/layout_scanner.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
-import 'package:AllMinerMonitor/scan_list/scanner.dart';
 import 'package:AllMinerMonitor/utils/bindings.dart';
 import 'package:AllMinerMonitor/visual_constructor/constructor_layout.dart';
 import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_list_controller.dart';
 import 'package:AllMinerMonitor/visual_layout/more_dialog.dart';
+import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import '../visual_layout_container/container_layout.dart';
 
-class LayoutTileController extends GetxController{
+class LayoutTileController extends GetxController with GetSingleTickerProviderStateMixin{
   Layout layout;
   LayoutTileController(this.layout);
-  final LayoutListController controller = Get.put(LayoutListController());
-  final Scanner scanner = Get.put(Scanner());
+  late AnimationController animationController;
+  late final Animation<double> _animation;
+  final LayoutListController controller = Get.find();
+  final LayoutScanner layoutScanner = Get.find();
+//  final Scanner scanner = Get.put(Scanner());
   RxDouble progress = 0.0.obs;
   RxBool isMenuOpen = false.obs;
   RxList<dynamic> devices = [].obs;
@@ -32,7 +36,7 @@ class LayoutTileController extends GetxController{
   RxDouble speedAvgSHA256 = 0.0.obs;
   RxInt deviceCountSCRYPT = 0.obs;
   RxInt deviceCountSHA256 = 0.obs;
-  StreamSubscription? scanResultSub;
+//  StreamSubscription? scanResultSub;
   int _counter = 0;
   RxInt scannedDevices = 0.obs;
   RxInt withProblems = 0.obs;
@@ -54,20 +58,70 @@ class LayoutTileController extends GetxController{
   late Box boxStats;
   @override
   void onInit() async{
-
+    animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: false);
+    _animation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.linear,
+    );
+    animationController.stop();
     ///watch for layout changes
     boxLayouts = await Hive.openBox('layouts');
     boxStats = await Hive.openBox('stats_${layout.tag}');
     print(boxStats);
     boxLayouts.watch(key: layout.tag).listen((event) {handleLayoutChange(event);});
     ///listen to scan results with tag
-    scanResultSub==null? scanResultSub = scanner.scanResult.stream.listen((event) async {await handleScanResult(event);}) : null;
+   // scanResultSub==null? scanResultSub = scanner.scanResult.stream.listen((event) async {await handleScanResult(event);}) : null;
+
+    layoutScanner.scanResult.listen((event) async{await handleScanResult(event);});
+    layoutScanner.scanCompletedTag.listen((tag) async{await handleScanComplete(tag);});
+    controller.startScanTag.listen((tag) async{await handleStartScan(tag);});
     super.onInit();
   }
   handleLayoutChange(BoxEvent event){
-    debug(subject: 'box event', message: '${event.value}', function: 'layout_tile > handleLayoutChange ');
+    debug(subject: 'box event', message: 'key: ${event.key}, content: ${event.value}', function: 'layout_tile > handleLayoutChange ');
     if(event.value!=null) {
       layout = event.value;
+    }
+  }
+  handleStartScan(String tag) async{
+    if(tag == layout.tag) {
+      await scan(false);
+    }
+  }
+  handleScanComplete(String tag) async{
+    if(tag == layout.tag) {
+      debug(subject: 'scan completed', message: 'tag: $tag, progress: ${progress.value}', function: 'layout_tile > handleScanComplete ');
+      isActive.value = false;
+      animationController.stop();
+      if (progress.value >= 1.0){
+
+    //    scanInProgressStream.add(_counter);
+     //   _counter++;
+        DateFormat dateFormat = DateFormat.Hm()
+            .add_yMd();
+        String date = dateFormat.format(DateTime.now());
+        lastScanTime.value = date;
+        await writeToLog();
+        debug(subject: 'call on scan complete',
+            message: 'isManual: $isManualScan',
+            function: 'layout_tile > handleScanResult > progress>=1');
+
+     //   controller.onScanComplete(true, layout.tag!);
+        /*
+        if (tag.values.first) {
+          controller.onScanComplete(true, layout.tag!);
+        }
+        else {
+          //   await Future.delayed(const Duration(seconds: 1));
+          controller.onScanComplete(false, layout.tag!);
+        }
+
+
+         */
+      }
     }
   }
   handleScanResult(EventModel event)  async {
@@ -113,10 +167,7 @@ class LayoutTileController extends GetxController{
         catch(e){
           debug(subject: 'catch error', message: '$e', function: 'layout_tile > handleScanResult > count errors');
         }
-
-
-
-        ///
+        /// summary
         if (event.data.isScrypt == true) {
           deviceCountSCRYPT.value++;
           speedSCRYPT.value += event.data.currentSpeed;
@@ -128,44 +179,65 @@ class LayoutTileController extends GetxController{
           speedAvgSHA256.value = speedSHA256.value / deviceCountSHA256.value;
         }
       }
+/*
       else if(event.type=='abort'){
         if(isActive.value) {
           debug(subject: 'got abort',
               message: 'tag: ${event.tag}',
               function: 'layout_tile > handleScanResult');
+          Get.snackbar('ABORT', "next scan command");
           scanInProgressStream.add(_counter);
           _counter++;
           isActive.value = false;
+          await Future.delayed(const Duration(seconds: 1));
           controller.onScanComplete(true, layout.tag!);
         }
+
+
+
       }
-      await Future.delayed(const Duration(seconds: 1));
+ */
+  //    await Future.delayed(const Duration(seconds: 1));
       jobsDone++;
       progress.value = jobsDone / layout.ips!.length;
       debug(subject: 'scan progress', message: 'progress: ${progress.value}', function: 'layout_tile > handleScanResult');
-      if(progress.value>=1.0){
-        scanInProgressStream.add(_counter);
-        _counter++;
-        DateFormat dateFormat = DateFormat.Hm().add_yMd(); // how you want it to be formatted
-        String date = dateFormat.format( DateTime.now()); // format it
-        lastScanTime.value = date;
-        await writeToLog();
-        debug(subject: 'call on scan complete', message: 'isManual: $isManualScan', function: 'layout_tile > handleScanResult > progress>=1');
-        if(isManualScan){
-          controller.onScanComplete(true, layout.tag!);
+
+
+      /*
+      if(isActive.value) {
+        if (progress.value >= 1.0) {
+          scanInProgressStream.add(_counter);
+          _counter++;
+          DateFormat dateFormat = DateFormat.Hm()
+              .add_yMd();
+          String date = dateFormat.format(DateTime.now());
+          lastScanTime.value = date;
+          await writeToLog();
+          debug(subject: 'call on scan complete',
+              message: 'isManual: $isManualScan',
+              function: 'layout_tile > handleScanResult > progress>=1');
+          if (isManualScan) {
+            controller.onScanComplete(true, layout.tag!);
+          }
+          else {
+            await Future.delayed(const Duration(seconds: 1));
+            controller.onScanComplete(false, layout.tag!);
+          }
+       //   isActive.value = false;
         }
-        else{
-          controller.onScanComplete(false, layout.tag!);
-        }
-        isActive.value = false;
       }
+
+
+       */
+
+
     }
 
   }
   writeToLog()  async{
     Map<String,Object> _total ={'date': lastScanTime.value, 'name':'total devices', 'value': scannedDevices.value};
     Map<String,Object> _speedSHA ={'date': lastScanTime.value, 'name':'speed SHA256', 'value':  speedSHA256.value};
-    Map<String,Object> _speedScrypt ={'date': lastScanTime.value, 'name':'speed SCRYPT', 'value': speedSCRYPT.value};
+    Map<String,Object> _speedScrypt ={'date': lastScanTime.value, 'name':'speed SCRYPT', 'value': (speedSCRYPT.value/1000).toPrecision(2)};
     Map<String,Object> _totalErrors ={'date': lastScanTime.value, 'name':'total errors', 'value': totalErrors.length};
     Map<String,Object> _tempErrors ={'date': lastScanTime.value, 'name':'temp errors', 'value': tempErrors.length};
     Map<String,Object> _fanErrors ={'date': lastScanTime.value, 'name':'fan errors', 'value': fanErrors.length};
@@ -185,19 +257,28 @@ class LayoutTileController extends GetxController{
   }
 
   scan(bool _isManual) async {
-    debug(subject: 'start scan', message: 'tag: ${layout.tag}, ips: ${layout.ips}', function: 'layout_tile > scan');
-    await clearSummary();
-    isManualScan = _isManual;
-    scanInProgressStream.add(_counter);
-    _counter++;
-    if(layout.ips!.isNotEmpty){
-     // scanlistController.clearQuery();
+  //  await Future.delayed(Duration(milliseconds: 500));
+    if(!isActive.value) {
       isActive.value = true;
-     await scanner.newScan(ips: layout.ips, tg: layout.tag,);
+      debug(subject: 'start scan',
+          message: 'tag: ${layout.tag}, isManual: $_isManual, ips: ${layout.ips}',
+          function: 'layout_tile > scan');
+      await clearSummary();
+
+      isManualScan = _isManual;
+
+      animationController.repeat();
+     // scanInProgressStream.add(_counter);
+     // _counter++;
+
+      if (layout.ips!.isNotEmpty) {
+        // scanlistController.clearQuery();
+        await layoutScanner.scan(ips: layout.ips!, tag: layout.tag, isManual: _isManual);
+        // await scanner.newScan(ips: layout.ips, tg: layout.tag,);
+      }
     }
   }
   clearSummary()async{
-    debug(subject: 'clear', message: 'start to clear', function: 'layout_tile > clearSummary');
     clearQuery.value = true;
     _counter = 0;
     jobsDone = 0;
@@ -218,8 +299,8 @@ class LayoutTileController extends GetxController{
     chipCountErrors.clear();
     chipsSErrors.clear();
     clearQuery.value = false;
-    await Future.delayed(const Duration(seconds: 1));
-    debug(subject: 'clear', message: 'finish clear', function: 'layout_tile > clearSummary');
+   // await Future.delayed(const Duration(seconds: 1));
+    debug(subject: 'clear data', message: 'finish clear', function: 'layout_tile > clearSummary');
   }
   switchMode(){
     viewMode.value==0? viewMode.value = 1 : viewMode.value = 0;

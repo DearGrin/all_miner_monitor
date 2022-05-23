@@ -57,7 +57,8 @@ class LayoutScreen extends StatelessWidget {
               ),
               itemBuilder: (BuildContext context, int index){
                 //  return layoutTile(context, _.tags[index], controller);
-                return LayoutTile(controller.layouts[index], Get.put(LayoutTileController(controller.layouts[index]), tag:controller.layouts[index].tag ));
+                LayoutTileController _c = Get.put(LayoutTileController(controller.layouts[index]), tag: controller.layouts[index].tag??'');
+                return LayoutTile(controller.layouts[index].tag??'');
               }
           ),
       ),

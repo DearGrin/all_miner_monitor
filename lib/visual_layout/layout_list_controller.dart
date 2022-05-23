@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:AllMinerMonitor/auto_layout/wizard_ui.dart';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
+import 'package:AllMinerMonitor/isolates/layout_scanner.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:AllMinerMonitor/ui/desktop_scan_screen.dart';
 import 'package:AllMinerMonitor/visual_constructor/constructor_layout.dart';
@@ -13,6 +14,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class LayoutListController extends GetxController{
   late Box box;
+  final LayoutScanner layoutScanner = Get.find();
   List<dynamic> tags = [].obs;
   RxList<Layout> layouts = <Layout>[].obs;
   String? oldTag;
@@ -23,6 +25,9 @@ class LayoutListController extends GetxController{
   RxString autoValue = 'never'.obs;
   int? periodic;
   Timer? timer;
+  String? currentTag;
+  bool isManualScanActive = false;
+  RxString startScanTag = ''.obs;
   @override
   void onInit() async{
     try {
@@ -31,7 +36,9 @@ class LayoutListController extends GetxController{
       for(String t in tags){
         print(t);
         Layout _ = box.get(t);
-        Get.put(LayoutTileController((_)),tag: t, permanent: false);
+      //
+        //  Get.put(LayoutTileController((_)),tag: t, permanent: false);
+      //  Get.putAsync<LayoutTileController>(() async => await LayoutTileController((_)),tag: t, permanent: false);
         layouts.add(box.get(t));
       }
       debug(subject: 'tags in db', message: '$tags', function: 'layout_list_controller > onInit');
@@ -41,6 +48,8 @@ class LayoutListController extends GetxController{
       debug(subject: 'catch error', message: '$e', function: 'layout_list_controller > onInit');
     }
     box.watch().listen((event) {handleBoxEvent(event);});
+    layoutScanner.isManualScan.listen((event) {setManualScan(event);});
+    layoutScanner.nextScan.listen((event) {onScanComplete(false, event);});
    setTimer();
     super.onInit();
   }
@@ -73,24 +82,34 @@ class LayoutListController extends GetxController{
       content: const EditTagDialog(),
     );
   }
-  startScan(){
+  startScan() async {
+    isManualScanActive = false;
     currentScanIndex = 0;
-    scanSingle();
+    await scanSingle();
   }
   scanSingle(){
     if(currentScanIndex<layouts.length) {
       debug(subject: 'scan single', message: 'index: $currentScanIndex, tag: ${layouts[currentScanIndex].tag}', function: 'layout_list_controller > scanSingle');
+      startScanTag.value = layouts[currentScanIndex].tag??'';
+      startScanTag.value = '';
+   /*
       LayoutTileController _controller = Get.find(
           tag: layouts[currentScanIndex].tag);
+      currentTag = layouts[currentScanIndex].tag;
       _controller.scan(false);
+     */
     }
   }
   onScanComplete(bool abort, String tag){
-    debug(subject: 'on scan complete', message: 'abort: $abort, tag: $tag', function: 'layout_list_controller > onScanComplete');
-    if(!abort) {
+    if(!isManualScanActive&&tag=='next') {
+      debug(subject: 'on scan complete', message: 'abort: $abort, tag: $tag, isManual: $isManualScanActive', function: 'layout_list_controller > onScanComplete');
       currentScanIndex++;
       scanSingle();
     }
+  }
+  setManualScan(bool isManual){
+    debug(subject: 'set manual scan flag', message: 'isManual: $isManual', function: 'layout_list_controller > setManualScan');
+    isManualScanActive = isManual;
   }
   onBack() async {
     try {
