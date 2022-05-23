@@ -6,20 +6,29 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class ConstructorController extends GetxController{
-  List<int> settings = [1, 1, 6].obs;
+  List<int> settings = [1, 1, 5].obs;
   RxInt selectedItem = 0.obs; //TODO change type and track
   Rig? selectedRig;
   final layout = Layout(tag: null, rigs: []).obs;
   int counter = 0;
   String? initialTag;
 
-  setData(String? tag)async{
+  setData(String? tag, Layout? _layout)async{
     if(tag!=null && tag!='a very new layout'){
-      Box box = await Hive.openBox('layouts');
-      layout.value = box.get(tag);
-      counter = layout.value.counter??0;
-      initialTag = tag;
+      try {
+        Box box = await Hive.openBox('layouts');
+        layout.value = box.get(tag);
+        counter = layout.value.counter ?? 0;
+        initialTag = tag;
+      }
+      catch(e){
+        print(e);
+        layout.value = _layout??Layout(tag: null, rigs: []);
+        counter = layout.value.counter ?? 0;
+        initialTag = _layout?.tag??'';
+      }
     }
+/*
     else{
       Box box = await Hive.openBox('settings');
       try {
@@ -29,9 +38,15 @@ class ConstructorController extends GetxController{
       catch(e){
         print(e);
       }
+
+      Box box = await Hive.openBox('settings');
+     settings[2] = box.get('rasp_count')??5;
       generateRigs(settings[0]);
       rigSelect(0);
     }
+
+
+ */
     update(['rigs']);
   }
   int generateId(){

@@ -1,4 +1,5 @@
 import 'package:AllMinerMonitor/visual_constructor/constructor_controller.dart';
+import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:AllMinerMonitor/visual_constructor/cont_rig_row_controls.dart';
 import 'package:AllMinerMonitor/visual_constructor/rig_constructor.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_list_controller.dart';
@@ -7,13 +8,14 @@ import 'package:get/get.dart';
 
 class ConstructorLayout extends StatelessWidget {
   final String? tag;
-  const ConstructorLayout({this.tag, Key? key}) : super(key: key);
+  final Layout? layout;
+  const ConstructorLayout({this.tag, this.layout, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final ConstructorController controller = Get.put(ConstructorController());
     final LayoutListController layoutListController = Get.put(LayoutListController());
-    controller.setData(tag);
+    controller.setData(tag, layout);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){layoutListController.onBack();},
