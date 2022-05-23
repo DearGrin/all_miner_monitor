@@ -9,7 +9,7 @@ class WizardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final WizardItemController controller = Get.put(WizardItemController(), tag: '$id');
-    final TextEditingController ipController = TextEditingController();
+    final TextEditingController ipController = TextEditingController(text: controller.ipRange.value);
     final TextEditingController shelfController = TextEditingController();
     final TextEditingController placeController = TextEditingController();
     final TextEditingController gapController = TextEditingController();

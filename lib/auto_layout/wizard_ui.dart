@@ -100,7 +100,7 @@ class AutoWizard extends StatelessWidget {
                         shrinkWrap: true,
                         itemCount: _.model.rigs!.length,
                         itemBuilder: (BuildContext context, int index){
-                          return WizardItem(_.model.rigs![index].id!);
+                          return WizardItem(_.model.rigs![index].id!,);
                         }
                     ),
                   );

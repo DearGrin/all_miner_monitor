@@ -2,14 +2,14 @@ import 'package:AllMinerMonitor/auto_layout/wizard_controller.dart';
 import 'package:get/get.dart';
 
 class WizardItemController extends GetxController{
-  RxString? ipRange = ''.obs;
+  RxString ipRange = ''.obs;
   RxBool ipError = false.obs;
   RxInt shelfCount = 0.obs;
   RxInt placeCount = 0.obs;
   RxInt gap = 0.obs;
   final WizardController controller = Get.put(WizardController());
   editIp(String value, int rigId){
-    ipRange?.value = value;
+    ipRange.value = value;
     if(value==''||!value.contains('-')){
       ipError.value = true;
     }
