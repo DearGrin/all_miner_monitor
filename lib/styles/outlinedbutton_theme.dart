@@ -1,5 +1,4 @@
 
-import 'package:AllMinerMonitor/styles/d_l_theme.dart';
 import 'package:AllMinerMonitor/styles/text_theme.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,3 @@
-import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/antminer/antminer_regexp.dart' as regexp;
 import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:get/get.dart';

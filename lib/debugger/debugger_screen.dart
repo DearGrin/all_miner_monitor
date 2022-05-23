@@ -24,7 +24,7 @@ class DebuggerScreen extends StatelessWidget {
                   child: TextField(
                     onChanged: (value){controller.editIp(value);},
                     style: Get.textTheme.bodyText1,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'ip'
                     ),
                     controller: TextEditingController(),
@@ -37,13 +37,13 @@ class DebuggerScreen extends StatelessWidget {
                     onChanged: (value){controller.editCommand(value);},
                     style: Get.textTheme.bodyText1,
                     decoration: InputDecoration(
-                        labelText: 'command'
+                        labelText: 'command'.tr
                     ),
                     controller: TextEditingController(),
                   ),
                 ),
                 const SizedBox(height: 10,),
-                OutlinedButton(onPressed: (){controller.sendCommand();}, child: const Text('Send')),
+                OutlinedButton(onPressed: (){controller.sendCommand();}, child: Text('send'.tr)),
                 const SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.all(10.0),

@@ -12,19 +12,19 @@ class WhatsminerErrorModel {
     status = json['STATUS'];
     when = json['When'];
     code = json['Code'];
-    msg = json['Msg'] != null ? new Msg.fromJson(json['Msg']) : null;
+    msg = json['Msg'] != null ? Msg.fromJson(json['Msg']) : null;
     description = json['Description'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['STATUS'] = this.status;
-    data['When'] = this.when;
-    data['Code'] = this.code;
-    if (this.msg != null) {
-      data['Msg'] = this.msg!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['STATUS'] = status;
+    data['When'] = when;
+    data['Code'] = code;
+    if (msg != null) {
+      data['Msg'] = msg!.toJson();
     }
-    data['Description'] = this.description;
+    data['Description'] = description;
     return data;
   }
 }
@@ -38,15 +38,15 @@ class Msg {
     if (json['error_code'] != null) {
       errorCode = <ErrorCode>[];
       json['error_code'].forEach((v) {
-        errorCode!.add(new ErrorCode.fromJson(v));
+        errorCode!.add(ErrorCode.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.errorCode != null) {
-      data['error_code'] = this.errorCode!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (errorCode != null) {
+      data['error_code'] = errorCode!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -63,8 +63,8 @@ class ErrorCode {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['329'] = this.error;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['329'] = error;
     return data;
   }
 }

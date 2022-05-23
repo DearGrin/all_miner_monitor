@@ -5,17 +5,13 @@ import 'dart:isolate';
 
 import 'package:async/async.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
-import 'package:AllMinerMonitor/avalon_10xx/api.dart';
-import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
-import 'package:AllMinerMonitor/avalon_10xx/mock_rasp.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/isolates/rest_api.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/pools_editor/device_pool.dart';
 import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
-import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+
 
 void startCompute(List<String?> f, List<String> commands,
     StreamController eventStream, StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
@@ -58,7 +54,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
         'command':commands[i],
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
-        'credentials': credentials!=null? credentials:null,
+        'credentials': credentials,
         'tag': tag??''
       }
       );
@@ -69,7 +65,7 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
         'command':commands[0],
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
-        'credentials': credentials!=null? credentials:null,
+        'credentials': credentials,
         'tag' : tag??''
       }
       );
@@ -116,7 +112,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
           //  _api.test(ip, addCommands!);
           var callback = await RestApi().test(ip, addCommands!,credentials);
       //    var c = await  RestApi().setPool(ip, addCommands!);
-            eventModel = EventModel('update', '$callback', ip, callback, tag: tag);
+            eventModel = EventModel('update', callback, ip, callback, tag: tag);
           }
         else{
           Socket socket = await Socket.connect(
@@ -145,6 +141,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
           }
         else{
           EventModel eventModel = EventModel('update', 'skip', ip, 'skip', tag: tag);
+          sendAnswer(p, eventModel);
         }
         break;
       case 'reboot':

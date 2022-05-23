@@ -3,7 +3,6 @@ import 'package:AllMinerMonitor/command_panel/command_panel_controller.dart';
 import 'package:AllMinerMonitor/command_panel/set_freq_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 
 class CommandPanelUi extends StatelessWidget {
   CommandPanelUi({Key? key}) : super(key: key);
@@ -80,7 +79,7 @@ class CommandPanelUi extends StatelessWidget {
     return Obx(() {
       switch (controller.command.value) {
         case 'set_freq':
-          return SetFreqDialog();
+          return const SetFreqDialog();
         case 'set_volt':
           return TextField(
             onChanged: (value){

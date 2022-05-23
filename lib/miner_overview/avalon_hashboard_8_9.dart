@@ -43,13 +43,13 @@ class Avalon89Hashboard extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               height: 60,
               child: Row(
                 children: _row1,
               ),
             ),
-            Container(
+            SizedBox(
               height: 60,
               child: Row(
                 children: _row2,

@@ -8,24 +8,24 @@ class WhatsminerModel {
     if (json['STATUS'] != null) {
       status = <STATUS>[];
       json['STATUS'].forEach((v) {
-        status!.add(new STATUS.fromJson(v));
+        status!.add(STATUS.fromJson(v));
       });
     }
     if (json['SUMMARY'] != null) {
       summary = <SUMMARY>[];
       json['SUMMARY'].forEach((v) {
-        summary!.add(new SUMMARY.fromJson(v));
+        summary!.add(SUMMARY.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.status != null) {
-      data['STATUS'] = this.status!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (status != null) {
+      data['STATUS'] = status!.map((v) => v.toJson()).toList();
     }
-    if (this.summary != null) {
-      data['SUMMARY'] = this.summary!.map((v) => v.toJson()).toList();
+    if (summary != null) {
+      data['SUMMARY'] = summary!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -43,9 +43,9 @@ class STATUS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['STATUS'] = this.sTATUS;
-    data['Msg'] = this.msg;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['STATUS'] = sTATUS;
+    data['Msg'] = msg;
     return data;
   }
 }
@@ -163,42 +163,42 @@ class SUMMARY {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Elapsed'] = this.elapsed;
-    data['MHS av'] = this.mHSAv;
-    data['MHS 5s'] = this.mHS5s;
-    data['MHS 1m'] = this.mHS1m;
-    data['MHS 5m'] = this.mHS5m;
-    data['MHS 15m'] = this.mHS15m;
-    data['HS RT'] = this.hSRT;
-    data['Accepted'] = this.accepted;
-    data['Rejected'] = this.rejected;
-    data['Total MH'] = this.totalMH;
-    data['Temperature'] = this.temperature;
-    data['freq_avg'] = this.freqAvg;
-    data['Fan Speed In'] = this.fanSpeedIn;
-    data['Fan Speed Out'] = this.fanSpeedOut;
-    data['Power'] = this.power;
-    data['Power Rate'] = this.powerRate;
-    data['Pool Rejected%'] = this.poolRejected;
-    data['Pool Stale%'] = this.poolStale;
-    data['Last getwork'] = this.lastGetwork;
-    data['Uptime'] = this.uptime;
-    data['Security Mode'] = this.securityMode;
-    data['Hash Stable'] = this.hashStable;
-    data['Hash Stable Cost Seconds'] = this.hashStableCostSeconds;
-    data['Hash Deviation%'] = this.hashDeviation;
-    data['Target Freq'] = this.targetFreq;
-    data['Target MHS'] = this.targetMHS;
-    data['Env Temp'] = this.envTemp;
-    data['Power Mode'] = this.powerMode;
-    data['Factory GHS'] = this.factoryGHS;
-    data['Power Limit'] = this.powerLimit;
-    data['Chip Temp Min'] = this.chipTempMin;
-    data['Chip Temp Max'] = this.chipTempMax;
-    data['Chip Temp Avg'] = this.chipTempAvg;
-    data['Debug'] = this.debug;
-    data['Btminer Fast Boot'] = this.btminerFastBoot;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Elapsed'] = elapsed;
+    data['MHS av'] = mHSAv;
+    data['MHS 5s'] = mHS5s;
+    data['MHS 1m'] = mHS1m;
+    data['MHS 5m'] = mHS5m;
+    data['MHS 15m'] = mHS15m;
+    data['HS RT'] = hSRT;
+    data['Accepted'] = accepted;
+    data['Rejected'] = rejected;
+    data['Total MH'] = totalMH;
+    data['Temperature'] = temperature;
+    data['freq_avg'] = freqAvg;
+    data['Fan Speed In'] = fanSpeedIn;
+    data['Fan Speed Out'] = fanSpeedOut;
+    data['Power'] = power;
+    data['Power Rate'] = powerRate;
+    data['Pool Rejected%'] = poolRejected;
+    data['Pool Stale%'] = poolStale;
+    data['Last getwork'] = lastGetwork;
+    data['Uptime'] = uptime;
+    data['Security Mode'] = securityMode;
+    data['Hash Stable'] = hashStable;
+    data['Hash Stable Cost Seconds'] = hashStableCostSeconds;
+    data['Hash Deviation%'] = hashDeviation;
+    data['Target Freq'] = targetFreq;
+    data['Target MHS'] = targetMHS;
+    data['Env Temp'] = envTemp;
+    data['Power Mode'] = powerMode;
+    data['Factory GHS'] = factoryGHS;
+    data['Power Limit'] = powerLimit;
+    data['Chip Temp Min'] = chipTempMin;
+    data['Chip Temp Max'] = chipTempMax;
+    data['Chip Temp Avg'] = chipTempAvg;
+    data['Debug'] = debug;
+    data['Btminer Fast Boot'] = btminerFastBoot;
     return data;
   }
 }

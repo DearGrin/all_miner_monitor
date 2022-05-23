@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
 import 'package:AllMinerMonitor/graphic_section/total_stats.dart';
-import 'package:AllMinerMonitor/graphic_section/total_stats_controller.dart';
 import 'package:AllMinerMonitor/isolates/layout_scanner.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';

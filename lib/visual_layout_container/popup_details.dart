@@ -145,21 +145,21 @@ class PopupDetails extends StatelessWidget {
                   children: [
                     Wrap(
                       children: [
-                        Text('ip: '),
+                        const Text('ip: '),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.ip : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('speed: '),
+                        Text('speed'.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.currentSpeed : ''}')
                       ],
                     ),
                     Wrap(
                       children: [
-                        Text('temp: '),
+                        Text('temp'.tr),
                         Text('${controller.currentDevice != null ? controller
                             .currentDevice.tMax : ''}')
                       ],

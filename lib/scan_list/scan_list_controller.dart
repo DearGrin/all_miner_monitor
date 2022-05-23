@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
-import 'package:AllMinerMonitor/avalon_10xx/api.dart';
 import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/control_panel/reboot_ui.dart';
@@ -32,7 +31,6 @@ class ScanListController extends GetxController{
   Rx<AntMinerModel> currentAntDevice = AntMinerModel().obs;
   //dynamic currentDevice;
   RxInt displayMode = 0.obs;
-  final Api api = Api();
   final CommandConstructor commandConstructor = CommandConstructor();
   List<dynamic> apiToDo = [];
   List<Function> toDo = [];
@@ -326,20 +324,10 @@ class ScanListController extends GetxController{
       String manufacture = _device.manufacture;
       _manufac.add(manufacture);
       if(manufacture=='Antminer'){
-
-        Map<String,dynamic> _json = {
-          '_ant_pool1url' : pools[0].fullAdr??'', '_ant_pool1user' : '${pools[0].worker}'+_suffix, '_ant_pool1pw' : pools[0].passwd??'',
-          '_ant_pool2url' : pools[1].fullAdr??'', '_ant_pool2user' : '${pools[1].worker}'+_suffix, '_ant_pool2pw' : pools[1].passwd??'',
-          '_ant_pool3url' : pools[2].fullAdr??'', '_ant_pool3user' : '${pools[2].worker}'+_suffix, '_ant_pool3pw' : pools[2].passwd??''
-        };
-
         String _ = '${pools[0].fullAdr??''} ${pools[0].worker??'' + _suffix} ${pools[0].passwd??''} '
             '${pools[1].fullAdr??''} ${pools[1].worker??'' + _suffix} ${pools[1].passwd??''} '
             '${pools[2].fullAdr??''} ${pools[2].worker??'' + _suffix} ${pools[2].passwd??''}   '
             '${_device.data.frequency??''}';
-
-
-       print(_);
         _commands.add(_);
       }
       else{

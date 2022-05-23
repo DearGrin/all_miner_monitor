@@ -43,9 +43,9 @@ class STATUS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['STATUS'] = this.status;
-    data['Msg'] = this.msg;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['STATUS'] = status;
+    data['Msg'] = msg;
     return data;
   }
 }

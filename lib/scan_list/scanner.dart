@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
 import 'package:AllMinerMonitor/antminer/mock_ant.dart';
-import 'package:AllMinerMonitor/avalon_10xx/api.dart';
 import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
 import 'package:AllMinerMonitor/avalon_10xx/chip_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/mock_data.dart';
@@ -22,7 +21,6 @@ import 'package:hive/hive.dart';
 import '../pools_editor/device_pool.dart';
 
 class Scanner extends GetxController{
-  final Api api = Api();
   final CommandConstructor command = CommandConstructor();
   final  AnalyseResolver analyseResolver = Get.find();
   final int threadMax = 10; //TODO should change via settings?
@@ -207,7 +205,7 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       List<dynamic> _t = box.get('ant_passwords');
       List<Map<dynamic, dynamic>>? _antPasswords;
       _antPasswords = _t.cast<Map>();
-      if(_antPasswords!=null && _antPasswords.isNotEmpty){
+      if(_antPasswords.isNotEmpty){
         credentials = _antPasswords;
       }
 

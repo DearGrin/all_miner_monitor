@@ -197,7 +197,7 @@ class LayoutScanner extends GetxController{
   Future<void>abortScan(String tag, bool isManual)async{
     debug(subject: 'abort scan', message: 'tag: $tag', function: 'LayoutScanner > abortScan');
     stopStream.add(true); ///send event to isolates
-    scanCompletedTag.value = currentTag??'';
+    scanCompletedTag.value = currentTag;
     scanCompletedTag.value =  '';
     await clearQuery();
   }

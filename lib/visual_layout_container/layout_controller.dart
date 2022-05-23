@@ -1,13 +1,9 @@
 import 'dart:async';
 
-import 'package:AllMinerMonitor/antminer/antminer_model.dart';
-import 'package:AllMinerMonitor/avalon_10xx/mock_data.dart';
+
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
-import 'package:AllMinerMonitor/miner_overview/miner_overview_screen.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
-import 'package:AllMinerMonitor/scan_list/event_model.dart';
-import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:AllMinerMonitor/scan_list/scanner.dart';
 import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_tile_controller.dart';

@@ -8,24 +8,24 @@ class WhatsminerPoollModel {
     if (json['STATUS'] != null) {
       status = <STATUS>[];
       json['STATUS'].forEach((v) {
-        status!.add(new STATUS.fromJson(v));
+        status!.add(STATUS.fromJson(v));
       });
     }
     if (json['POOLS'] != null) {
       pools = <POOLS>[];
       json['POOLS'].forEach((v) {
-        pools!.add(new POOLS.fromJson(v));
+        pools!.add(POOLS.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.status != null) {
-      data['STATUS'] = this.status!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (status != null) {
+      data['STATUS'] = status!.map((v) => v.toJson()).toList();
     }
-    if (this.pools != null) {
-      data['POOLS'] = this.pools!.map((v) => v.toJson()).toList();
+    if (pools != null) {
+      data['POOLS'] = pools!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -43,9 +43,9 @@ class STATUS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['STATUS'] = this.status;
-    data['Msg'] = this.msg;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['STATUS'] = status;
+    data['Msg'] = msg;
     return data;
   }
 }
@@ -160,41 +160,41 @@ class POOLS {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['POOL'] = this.pOOL;
-    data['URL'] = this.uRL;
-    data['Status'] = this.status;
-    data['Priority'] = this.priority;
-    data['Quota'] = this.quota;
-    data['Long Poll'] = this.longPoll;
-    data['Getworks'] = this.getworks;
-    data['Accepted'] = this.accepted;
-    data['Rejected'] = this.rejected;
-    data['Works'] = this.works;
-    data['Discarded'] = this.discarded;
-    data['Stale'] = this.stale;
-    data['Get Failures'] = this.getFailures;
-    data['Remote Failures'] = this.remoteFailures;
-    data['User'] = this.user;
-    data['Last Share Time'] = this.lastShareTime;
-    data['Diff1 Shares'] = this.diff1Shares;
-    data['Proxy Type'] = this.proxyType;
-    data['Proxy'] = this.proxy;
-    data['Difficulty Accepted'] = this.difficultyAccepted;
-    data['Difficulty Rejected'] = this.difficultyRejected;
-    data['Difficulty Stale'] = this.difficultyStale;
-    data['Last Share Difficulty'] = this.lastShareDifficulty;
-    data['Work Difficulty'] = this.workDifficulty;
-    data['Has Stratum'] = this.hasStratum;
-    data['Stratum Active'] = this.stratumActive;
-    data['Stratum URL'] = this.stratumURL;
-    data['Stratum Difficulty'] = this.stratumDifficulty;
-    data['Best Share'] = this.bestShare;
-    data['Pool Rejected%'] = this.poolRejected;
-    data['Pool Stale%'] = this.poolStale;
-    data['Bad Work'] = this.badWork;
-    data['Current Block Height'] = this.currentBlockHeight;
-    data['Current Block Version'] = this.currentBlockVersion;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['POOL'] = pOOL;
+    data['URL'] = uRL;
+    data['Status'] = status;
+    data['Priority'] = priority;
+    data['Quota'] = quota;
+    data['Long Poll'] = longPoll;
+    data['Getworks'] = getworks;
+    data['Accepted'] = accepted;
+    data['Rejected'] = rejected;
+    data['Works'] = works;
+    data['Discarded'] = discarded;
+    data['Stale'] = stale;
+    data['Get Failures'] = getFailures;
+    data['Remote Failures'] = remoteFailures;
+    data['User'] = user;
+    data['Last Share Time'] = lastShareTime;
+    data['Diff1 Shares'] = diff1Shares;
+    data['Proxy Type'] = proxyType;
+    data['Proxy'] = proxy;
+    data['Difficulty Accepted'] = difficultyAccepted;
+    data['Difficulty Rejected'] = difficultyRejected;
+    data['Difficulty Stale'] = difficultyStale;
+    data['Last Share Difficulty'] = lastShareDifficulty;
+    data['Work Difficulty'] = workDifficulty;
+    data['Has Stratum'] = hasStratum;
+    data['Stratum Active'] = stratumActive;
+    data['Stratum URL'] = stratumURL;
+    data['Stratum Difficulty'] = stratumDifficulty;
+    data['Best Share'] = bestShare;
+    data['Pool Rejected%'] = poolRejected;
+    data['Pool Stale%'] = poolStale;
+    data['Bad Work'] = badWork;
+    data['Current Block Height'] = currentBlockHeight;
+    data['Current Block Version'] = currentBlockVersion;
     return data;
   }
 }

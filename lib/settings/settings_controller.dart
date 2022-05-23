@@ -1,8 +1,5 @@
-import 'package:AllMinerMonitor/scan_list/header_defaults.dart';
 import 'package:AllMinerMonitor/scan_list/resize_controller.dart';
-import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
-import 'package:AllMinerMonitor/settings/header_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -362,7 +359,7 @@ class SettingsController extends GetxController{
   editLogin(String value, int index, String type){
     switch(type){
       case 'antminer':
-        Map<String,String> _ = {'$value':antPasswords[index].entries.first.value};
+        Map<String,String> _ = {value:antPasswords[index].entries.first.value};
         antPasswords.replaceRange(index, index+1, [_]);
         box.delete('ant_passwords');
         box.put('ant_passwords', antPasswords);
@@ -373,7 +370,7 @@ class SettingsController extends GetxController{
     switch(type){
       case 'antminer':
         antPasswords[index].values.toList()[0] = value;
-        Map<String,String> _ = {antPasswords[index].entries.first.key:'$value'};
+        Map<String,String> _ = {antPasswords[index].entries.first.key:value};
         antPasswords.replaceRange(index, index+1, [_]);
         box.delete('ant_passwords');
         box.put('ant_passwords', antPasswords);

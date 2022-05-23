@@ -17,7 +17,6 @@ class ControlPanelController extends GetxController{
     index!=4? currentIndex.value = index : null;
     if(index == 0)
       {
-       print('on scan click');
        await scanListController.onScanClick();
       }
     else if(index == 4)

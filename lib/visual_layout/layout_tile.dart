@@ -1,4 +1,3 @@
-import 'package:AllMinerMonitor/visual_constructor/constructor_model.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_tile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,4 +1,4 @@
-import 'package:AllMinerMonitor/avalon_10xx/api.dart';
+
 import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
 import 'package:AllMinerMonitor/command_panel/command_list.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
@@ -10,7 +10,6 @@ class CommandPanelController extends GetxController{
   int? valueToSet;
   List<List<int>> freqToSet = [[500,525,650],[00,525,650],[00,525,650]].obs;
   final CommandConstructor commandConstructor = CommandConstructor();
-  final Api api = Api();
   late ScanListController scanListController;
   //RxString withOptions = false.obs;
   @override

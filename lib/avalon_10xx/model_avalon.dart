@@ -1,4 +1,3 @@
-import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/avalon_10xx/avalon_error_codes.dart';
 import 'package:AllMinerMonitor/avalon_10xx/chip_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/error_handler.dart';
@@ -456,7 +455,7 @@ class RaspberryAva extends AvalonData{
      //   print(_auc[i].group(2));
         try {
           AvalonData _data = AvalonData.fromString(
-              _auc[i].group(2) ?? '', '$_ip', n);
+              _auc[i].group(2) ?? '', _ip, n);
           DeviceModel _model = DeviceModel.fromData(_data, _ip);
           _tmp.add(_model);
           if(_tempInput==null&&_data.tInput!=null || _tempInput!<_data.tInput!)

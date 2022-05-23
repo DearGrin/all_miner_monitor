@@ -1,6 +1,4 @@
 import 'package:AllMinerMonitor/control_panel/control_viewport.dart';
-import 'package:AllMinerMonitor/control_panel/scan_list_controls.dart';
-import 'package:AllMinerMonitor/control_panel/summary.dart';
 import 'package:AllMinerMonitor/ip_section/ip_ui.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_screen.dart';
