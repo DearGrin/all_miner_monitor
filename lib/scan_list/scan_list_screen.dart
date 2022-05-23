@@ -27,13 +27,17 @@ class ScanListScreen extends StatelessWidget{
                 content: const ErrorsDebugger(),
               );},
               child: Text('show errors', style: Theme.of(context).textTheme.bodyText1,)
-          ),
+          ).marginAll(10.0),
           OutlinedButton(
               onPressed: (){Get.dialog(
                 const DebuggerScreen()
               );},
               child: Text('command test', style: Theme.of(context).textTheme.bodyText1,)
-          )
+          ).marginAll(10.0),
+          OutlinedButton(
+              onPressed: (){controller.saveLog();},
+              child: Text('save log to file', style: Theme.of(context).textTheme.bodyText1,)
+          ).marginAll(10.0)
         ],
       ),
       body: Scrollbar(

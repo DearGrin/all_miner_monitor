@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/api.dart';
 import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
@@ -529,4 +530,19 @@ class ScanListController extends GetxController{
 
 
    */
+  saveLog()async{
+    Box box = await Hive.openBox('log');
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); // 1
+    String appDocumentsPath = appDocumentsDirectory.path; // 2
+    String filePath = '$appDocumentsPath/all_miner_log.txt';
+    File file = File(filePath); // 1
+    String _log = 'Log\n';
+    for(var l in box.values){
+      String _ = 'event: ${l['event']}, function: ${l['function']}\nmessage: ${l['message']}\n';
+      _log  = _log + _;
+    }
+    file.writeAsString(_log); // 2
+    String _path = filePath.replaceAll('\\', '/');
+    Get.snackbar('Save complete', _path,);
+  }
 }

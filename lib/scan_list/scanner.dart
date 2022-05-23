@@ -27,7 +27,7 @@ class Scanner extends GetxController{
   final  AnalyseResolver analyseResolver = Get.find();
   final int threadMax = 10; //TODO should change via settings?
   StreamController scanResult = StreamController<dynamic>.broadcast();
-  StreamController computeStatus = StreamController<String>();
+//  StreamController computeStatus = StreamController<String>();
   StreamController progressStream = StreamController<double>();
   StreamController isolateStream = StreamController<EventModel>();
   StreamController stopStream = StreamController<bool>.broadcast();
@@ -42,10 +42,13 @@ class Scanner extends GetxController{
   double progress = 0.0;
   @override
   void onInit(){
+  /*
     sub = computeStatus.stream.listen((event) {
 
       currentIndex++;
     });
+
+   */
     isolateStream.stream.listen((event) async{
       currentIndex++;
      await handleDevice(event);
@@ -65,9 +68,7 @@ class Scanner extends GetxController{
 handleDevice(EventModel event) async {
   debug(subject: 'got event', message: 'type: ${event.type}, tag: $tag', function: 'scanner > handleDevice');
     //  event.tag = tag;
-      jobsDone++;
-      progress = jobsDone/finalProgress;
-      progressStream.add(progress);
+
       ///mock pools
      // var _pool = Pools.fromString(mockPoolAva);
       ///mock L3
@@ -106,6 +107,9 @@ handleDevice(EventModel event) async {
      else {
       scanResult.add(event);
      }
+  jobsDone++;
+  progress = jobsDone/finalProgress;
+  progressStream.add(progress);
 }
 Future<DeviceModel>analyse(DeviceModel device) async {
   bool _speedError = false;
@@ -240,7 +244,7 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       }
     }
   }
-
+/*
 handleCallback(String callback, String ip){
   computeStatus.add('next');
   dynamic _data;
@@ -266,12 +270,15 @@ handleCallback(String callback, String ip){
   scanResult.add(_event);
 }
 
+
+ */
   newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tg}) async {
     stopStream.add(true);
     debug(subject: 'new scan', message: 'tag: ${tg}, ips: ${ips}', function: 'scanner > newScan');
-    if(tag!=null&& (0<=progress && progress<1)){
+    if(0<=progress && progress<1){
       debug(subject: 'new scan', message: 'tag: ${tg}', function: 'scanner > newScan > abort process');
       scanResult.add(EventModel('abort', null, '', '', tag: tag));
+      stopStream.add(true);
     }
     tag = tg;
     clearQuery();
