@@ -50,6 +50,8 @@ checkSettings() async {
   //TODO add warnings params
   bool _isDarkMode = box.get('dark_mode')??true;
   String? _language = box.get('language');
+  var boxLog = await Hive.openBox('log');
+  boxLog.clear();
   Locale _l;
   if(_language!=null){
     switch(_language){
