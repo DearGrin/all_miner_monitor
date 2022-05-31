@@ -1,3 +1,5 @@
+import 'package:AllMinerMonitor/debugger/debugger_screen.dart';
+import 'package:AllMinerMonitor/scan_list/errors_debugger.dart';
 import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:AllMinerMonitor/settings/settings_screen.dart';
 import 'package:AllMinerMonitor/visual_layout/layout_screen.dart';
@@ -34,5 +36,13 @@ class ControlPanelController extends GetxController{
   goToLayout(){
     scanListController.setActive(false);
     Get.to(()=>const LayoutScreen());
+  }
+  addActions(String value){
+    value!='1'? Get.defaultDialog(
+      title: 'Errors',
+      content: const ErrorsDebugger(),
+    ): Get.dialog(
+        const DebuggerScreen()
+    );
   }
 }

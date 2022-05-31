@@ -10,11 +10,14 @@ import 'package:AllMinerMonitor/avalon_10xx/mock_rasp.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
 import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/isolates/isolate_construct_ips_by_threads.dart';
+import 'package:AllMinerMonitor/isolates/isolate_iprange_to_ip_list.dart';
 import 'package:AllMinerMonitor/isolates/isolate_service.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/pools_editor/mock_pool.dart';
 import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -150,25 +153,31 @@ Future<DeviceModel>analyse(DeviceModel device) async {
   }
 
   try {
-    List<int> _chipCountList = [];
-    if (device.manufacture == 'Avalon') {
-      for (Hashboard board in device.data.hashBoards) {
-        int _ = 0;
-        _chipCountList.add(board.chips!.length);
-
-        /// first value in avalon is max chip possible
-        for (ChipModel chip in board.chips!) {
-          if (chip.voltage != null && chip.voltage! > 0) {
-            _++;
-          }
-        }
-        _chipCountList.add(_);
-      }
+    print('manufac is ${device.manufacture}');
+    if (device.manufacture!.contains('Whatsminer')) {
+      _chipCountError = false;
     }
-    _chipCountError = await analyseResolver.hasErrors(
-        'chip_count', device.manufacture == 'Antminer'
-        ? device.data.chipPerChain
-        : _chipCountList, device.model);
+    else {
+      List<int> _chipCountList = [];
+      if (device.manufacture == 'Avalon') {
+        for (Hashboard board in device.data.hashBoards) {
+          int _ = 0;
+          _chipCountList.add(board.chips!.length);
+
+          /// first value in avalon is max chip possible
+          for (ChipModel chip in board.chips!) {
+            if (chip.voltage != null && chip.voltage! > 0) {
+              _++;
+            }
+          }
+          _chipCountList.add(_);
+        }
+      }
+      _chipCountError = await analyseResolver.hasErrors(
+          'chip_count', device.manufacture == 'Antminer'
+          ? device.data.chipPerChain
+          : _chipCountList, device.model);
+    }
   }
   catch(e){
     debug(subject: 'catch error', message: '$e', function: 'scanner > handleDevice > _chipCountError');
@@ -188,6 +197,15 @@ Future<DeviceModel>analyse(DeviceModel device) async {
   device.chipCountError = _chipCountError;
   device.chipsSError = _chipsSError;
   device.hashCountError = _hashCountError;
+  if(_speedError||_fanError||_tempError||_chipsSError||_chipCountError||_hashCountError){
+    device.status = 'with problems';
+  }
+  else {
+    device.status = 'success';
+  }
+  debug(subject: 'errors summary', message: 'speed: ${device.speedError}, fan: ${device.fanError},'
+      'temp: ${device.tempError}, chipCount: ${device.chipCountError}, chipS: ${device.chipsSError},'
+      'hashCount: ${device.hashCountError}, total: ${device.status}', function: 'scanner > handleDevice > analyse');
   return device;
 }
   universalCreate(List<String?>? ips, List<String> commands, {List<dynamic>? addCommands, List<String>? manufactures, String? tag}) async {
@@ -198,7 +216,7 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       int _threads = box.get('max_threads') ?? 20;
       int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
-      List<List<String>> commandsByThread = [];
+      List<List<String?>> commandsByThread = [];
       List<List<dynamic>> addCommandsByThread = [];
       List<List<String>> manufacturesByThread = [];
       List<Map<dynamic,dynamic>> credentials = [{'root':'root'}];
@@ -208,12 +226,19 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       if(_antPasswords.isNotEmpty){
         credentials = _antPasswords;
       }
+      tasksByThread = await compute(constructIpsByThread, [_threads, ips]);
 
       for (int i = 0; i < _threads; i++) {
-        List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
+       // List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
+
         if (commands.length > 1) {
+          commandsByThread = await compute(constructIpsByThread, [_threads, commands]);
+          /*
           List<String> _c = commands.skip(i * maxTasks).take(maxTasks).toList();
           commandsByThread.add(_c);
+
+
+           */
         }
         else {
           commandsByThread.add(commands);
@@ -226,9 +251,13 @@ Future<DeviceModel>analyse(DeviceModel device) async {
           List<String> _m = manufactures.skip(i * maxTasks).take(maxTasks).toList();
           manufacturesByThread.add(_m);
         }
+        /*
         if (_.isNotEmpty) {
           tasksByThread.add(_);
         }
+
+         */
+
       }
       stopStream.add(true);
       for (int i = 0; i < tasksByThread.length; i++) {
@@ -270,7 +299,7 @@ handleCallback(String callback, String ip){
 
 
  */
-  newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tg}) async {
+ Future<int>newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tg}) async {
     stopStream.add(true);
     debug(subject: 'new scan', message: 'tag: ${tg}, ips: ${ips}', function: 'scanner > newScan');
     if(0<=progress && progress<1){
@@ -281,7 +310,15 @@ handleCallback(String callback, String ip){
     tag = tg;
     clearQuery();
     List<String?> _ips = [];
+    List<List<String?>> _t = [];
+
     if(scanList!=null) {
+      for(var s in scanList){
+        List<String?> _tmp = [s.startIp, s.endIp];
+        _t.add(_tmp);
+      }
+      _ips = await compute<List<List<String?>>, List<String>>(getIpsFromRange, _t);
+      /*
       for (int i = 0; i < scanList.length; i++) {
         List<int>? _start = scanList[i].startIp?.split('.').map((e) =>
         int.tryParse(e)!).toList();
@@ -306,11 +343,13 @@ handleCallback(String callback, String ip){
           }
         }
       }
+      */
     }
     if(ips!=null){
       _ips=ips;
     }
     universalCreate(_ips, ['stats'], tag: tg);
+    return _ips.length;
   }
 clearQuery(){
     currentIndex = 0;

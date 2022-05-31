@@ -60,7 +60,9 @@ class OtherSettings extends StatelessWidget {
               width: 60,
               child: TextField(
                 keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                controller: TextEditingController(text: controller.raspCount.value.toString()),
+                controller: TextEditingController(text: controller.raspCount.value.toString())..selection=TextSelection.fromPosition
+    (TextPosition(offset:controller.raspCount.value.toString().length,
+    affinity: TextAffinity.upstream)),
                 onChanged: (value){controller.setRaspCount(value);},
                 style: Theme.of(context).textTheme.bodyText1,
               ),

@@ -17,11 +17,11 @@ import 'package:intl/intl.dart';
 
 import '../visual_layout_container/container_layout.dart';
 
-class LayoutTileController extends GetxController with GetSingleTickerProviderStateMixin{
+class LayoutTileController extends GetxController with GetTickerProviderStateMixin{
   Layout layout;
   LayoutTileController(this.layout);
   late AnimationController animationController;
-  late final Animation<double> _animation;
+  late Animation<double> animation;
   final LayoutListController controller = Get.find();
   final LayoutScanner layoutScanner = Get.find();
 //  final Scanner scanner = Get.put(Scanner());
@@ -57,19 +57,10 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
   late Box boxStats;
   @override
   void onInit() async{
-    animationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: false);
-    _animation = CurvedAnimation(
-      parent: animationController,
-      curve: Curves.linear,
-    );
-    animationController.stop();
+   await initAnimation();
     ///watch for layout changes
     boxLayouts = await Hive.openBox('layouts');
     boxStats = await Hive.openBox('stats_${layout.tag}');
-    print(boxStats);
     boxLayouts.watch(key: layout.tag).listen((event) {handleLayoutChange(event);});
     ///listen to scan results with tag
    // scanResultSub==null? scanResultSub = scanner.scanResult.stream.listen((event) async {await handleScanResult(event);}) : null;
@@ -78,6 +69,18 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
     layoutScanner.scanCompletedTag.listen((tag) async{await handleScanComplete(tag);});
     controller.startScanTag.listen((tag) async{await handleStartScan(tag);});
     super.onInit();
+  }
+  initAnimation() async{
+    animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: false);
+    animation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.linear,
+    );
+    animationController.addListener(() {update(['anim_${layout.tag}']);});
+    animationController.stop(canceled: false);
   }
   handleLayoutChange(BoxEvent event){
     debug(subject: 'box event', message: 'key: ${event.key}, content: ${event.value}', function: 'layout_tile > handleLayoutChange ');
@@ -94,7 +97,8 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
     if(tag == layout.tag) {
       debug(subject: 'scan completed', message: 'tag: $tag, progress: ${progress.value}', function: 'layout_tile > handleScanComplete ');
       isActive.value = false;
-      animationController.stop();
+      animationController.stop(canceled: false);
+      animationController.reset();
       if (progress.value >= 1.0){
 
     //    scanInProgressStream.add(_counter);
@@ -235,7 +239,7 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
   }
   writeToLog()  async{
     Map<String,Object> _total ={'date': lastScanTime.value, 'name':'total devices', 'value': scannedDevices.value};
-    Map<String,Object> _speedSHA ={'date': lastScanTime.value, 'name':'speed SHA256', 'value':  speedSHA256.value};
+    Map<String,Object> _speedSHA ={'date': lastScanTime.value, 'name':'speed SHA256', 'value':  (speedSHA256.value).toPrecision(2)};
     Map<String,Object> _speedScrypt ={'date': lastScanTime.value, 'name':'speed SCRYPT', 'value': (speedSCRYPT.value/1000).toPrecision(2)};
     Map<String,Object> _totalErrors ={'date': lastScanTime.value, 'name':'total errors', 'value': totalErrors.length};
     Map<String,Object> _tempErrors ={'date': lastScanTime.value, 'name':'temp errors', 'value': tempErrors.length};
@@ -259,6 +263,7 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
   //  await Future.delayed(Duration(milliseconds: 500));
     if(!isActive.value) {
       isActive.value = true;
+      animationController.repeat();
       debug(subject: 'start scan',
           message: 'tag: ${layout.tag}, isManual: $_isManual, ips: ${layout.ips}',
           function: 'layout_tile > scan');
@@ -266,7 +271,7 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
 
       isManualScan = _isManual;
 
-      animationController.repeat();
+
      // scanInProgressStream.add(_counter);
      // _counter++;
 
@@ -329,7 +334,7 @@ class LayoutTileController extends GetxController with GetSingleTickerProviderSt
     controller.deleteLayout(layout.tag);
   }
   openLayout(){
-    Get.to(()=> const ContainerLayout(), binding: LayoutBinding(), arguments: [layout, lastScanTime.value]); //TODO adn pass result if ready
+    Get.to(()=> const ContainerLayout(), binding: LayoutBinding(), arguments: [layout, lastScanTime.value, this]); //TODO adn pass result if ready
   }
   openMenu(){
     isMenuOpen.value=true;

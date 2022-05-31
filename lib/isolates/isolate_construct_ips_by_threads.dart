@@ -1,5 +1,5 @@
 
-Future<List<List<String?>>> constructCommands(List<dynamic> args)async{
+Future<List<List<String?>>> constructIpsByThread(List<dynamic> args)async{
   int maxThreads = args[0];
   List<String?> ips = args[1];
   int maxTasks = (ips.length / maxThreads).ceil();

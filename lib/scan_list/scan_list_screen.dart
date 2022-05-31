@@ -19,6 +19,7 @@ class ScanListScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     return Scaffold(
+      /*
       appBar: AppBar(
         actions: [
           OutlinedButton(
@@ -34,12 +35,9 @@ class ScanListScreen extends StatelessWidget{
               );},
               child: Text('command test', style: Theme.of(context).textTheme.bodyText1,)
           ).marginAll(10.0),
-          OutlinedButton(
-              onPressed: (){controller.saveLog();},
-              child: Text('save log to file', style: Theme.of(context).textTheme.bodyText1,)
-          ).marginAll(10.0)
         ],
       ),
+      */
       body: Scrollbar(
         controller: scrollController,
         isAlwaysShown: true,
@@ -145,7 +143,7 @@ class ScanListScreen extends StatelessWidget{
       return AvalonDataRow(index, data);
     }
     else{
-      return Container();
+      return AvalonDataRow(index, data);
     }
 
   }

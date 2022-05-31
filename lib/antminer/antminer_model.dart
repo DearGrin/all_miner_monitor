@@ -121,12 +121,18 @@ class AntMinerModel{
     }
     List<int?>? _freqs;
     try {
-      _freqs = regexp.freqs.allMatches(data).map((e) =>
-          int.tryParse(nullCheck(e.group(2)))).toList();
+      if(_model.contains('S19')||_model.contains('T19')){
+       _freqs = regexp.freqsS19.allMatches(data).map((e) =>
+           int.tryParse(nullCheck(e.group(2)))).toList().take(3).toList();
+      }
+      else {
+        _freqs = regexp.freqs.allMatches(data).map((e) =>
+            int.tryParse(nullCheck(e.group(2)))).toList();
+      }
      if(_freqs.isEmpty){
        _freqs = regexp.freqsAvg.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
      }
-      if(_model=='S9'||_model=='T9'){
+      if(_model.contains('S9')||_model=='T9'){
         _freqs = _freqs.skip(5).take(3).toList();
       }
     }
@@ -159,7 +165,7 @@ class AntMinerModel{
     List<int?>? _fans;
     try{
     _fans = regexp.fans.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _fans = _fans.skip(4).take(2).toList();
     }
     }
@@ -176,7 +182,7 @@ class AntMinerModel{
     List<int?>? _tChipO;
     try{
     _tChipO = regexp.tChipsO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _tChipO = _tChipO.skip(5).take(3).toList();
     }
     }
@@ -186,7 +192,7 @@ class AntMinerModel{
     List<int?>? _tPcbI;
     try{
     _tPcbI =  regexp.tPcbI.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _tPcbI = _tPcbI.skip(5).take(3).toList();
     }
     }
@@ -196,7 +202,7 @@ class AntMinerModel{
     List<int?>? _tPcbO;
     try{
     _tPcbO =  regexp.tPcbO.allMatches(data).map((e) => double.tryParse(nullCheck(e.group(2)))?.toInt()).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _tPcbO = _tPcbO.skip(5).take(3).toList();
     }
     }
@@ -220,8 +226,11 @@ class AntMinerModel{
     List<int?>? _hw;
     try{
     _hw = regexp.hw.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _hw = _hw.skip(5).take(3).toList();
+    }
+    else if(_model.contains('S19')||_model.contains('T19')){
+      _hw = _hw.take(3).toList();
     }
     }
     catch(e){
@@ -237,7 +246,7 @@ class AntMinerModel{
     List<String?>? _chipString;
     try{
     _chipString = regexp.chain_acs.allMatches(data).map((e) => e.group(2)).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _chipString = _chipString.skip(5).take(3).toList();
     }
     }
@@ -247,8 +256,11 @@ class AntMinerModel{
     List<int?>? _chips;
     try{
     _chips = regexp.chain_acn.allMatches(data).map((e) => int.tryParse(nullCheck(e.group(2)))).toList();
-    if(_model=='S9'||_model=='T9'){
+    if(_model.contains('S9')||_model=='T9'){
       _chips = _chips.skip(5).take(3).toList();
+    }
+    else if(_model.contains('S19')||_model.contains('T19')){
+      _chips = _chips.take(3).toList();
     }
     }
     catch(e){

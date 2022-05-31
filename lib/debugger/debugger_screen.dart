@@ -15,7 +15,7 @@ class DebuggerScreen extends StatelessWidget {
         height: Get.height*0.8,
         child: SingleChildScrollView(
           child: Card(
-            color: Theme.of(context).cardColor,
+            color: Get.theme.cardTheme.color,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -43,7 +43,17 @@ class DebuggerScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10,),
-                OutlinedButton(onPressed: (){controller.sendCommand();}, child: Text('send'.tr)),
+                Row(
+                  children: [
+                    OutlinedButton(onPressed: (){controller.sendCommand();}, child: Text('send'.tr)),
+                    const SizedBox(width: 20.0,),
+                    OutlinedButton(onPressed: (){controller.saveLog();}, child: Text('save'.tr)),
+                    /*
+                    const SizedBox(width: 20.0,),
+                    OutlinedButton(onPressed: (){controller.tryToken();}, child: Text('try'.tr)),
+                    */
+                  ],
+                ),
                 const SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.all(10.0),

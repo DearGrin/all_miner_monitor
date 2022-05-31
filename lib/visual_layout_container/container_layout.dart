@@ -7,47 +7,13 @@ import 'package:get/get.dart';
 
 import 'rig_layout.dart';
 
-class ContainerLayout extends StatefulWidget {
+class ContainerLayout extends StatelessWidget {
   const ContainerLayout({Key? key}) : super(key: key);
 
   @override
-  State<ContainerLayout> createState() => _ContainerLayoutState();
-}
-
-class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderStateMixin{
-  final LayoutController  controller = Get.put(LayoutController());
-  final ScrollController scrollController = ScrollController();
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 2),
-    vsync: this,
-  )..repeat(reverse: false);
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.linear,
-  );
-  @override
-  void initState() {
-    //controller.scanInProgressStream.stream.listen((event) {event==true? _controller.repeat():_controller.stop();});
-    controller.scanIsActive.listen((event) {handleAnimation(event);});
-    _controller.stop();
-    super.initState();
-  }
-  @override
-  void dispose() {
-   // _controller.dispose();
-    super.dispose();
-  }
-  handleAnimation(bool event){
-    print('animation $event');
-    if(event){
-      _controller.repeat();
-    }
-    else{
-      _controller.stop();
-    }
-  }
-  @override
   Widget build(BuildContext context) {
+    final LayoutController  controller = Get.put(LayoutController());
+    final ScrollController scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
         title: Text('${controller.layout.value.tag}', style: Theme.of(context).textTheme.bodyText2,),
@@ -58,13 +24,21 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
               Obx(()=> Text('last_scan'.trParams({'value':controller.lastScan.value}))),
             ],
           ),
+          /*
           OutlinedButton(onPressed: (){controller.onCommandClick();}, child: Text('commands'.tr)).marginAll(10.0),
+          */
           IconButton(onPressed: (){controller.zoomIn();}, icon: const Icon(Icons.zoom_in)),
           IconButton(onPressed: (){controller.zoomOut();}, icon: const Icon(Icons.zoom_out)),
           IconButton(onPressed: (){Get.defaultDialog(title: '', content: const HelpUI());}, icon: const Icon(Icons.help_outline_outlined)),
-          RotationTransition(
-              turns: _animation,
-              child: IconButton(onPressed: (){controller.onRefresh();}, icon: const Icon(Icons.refresh)))
+           Obx(()=> Visibility(
+                visible: !controller.scanIsActive.value,
+                replacement: const SizedBox(height: 20, width: 25, child: FittedBox(fit: BoxFit.contain, child: CircularProgressIndicator())),
+                child: SizedBox(width: 25, child: IconButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: (){controller.onRefresh();}, icon: const Icon(Icons.refresh)))
+          ),
+          ),
+          const SizedBox(width: 10.0,)
         ],
       ),
       body: Container(
@@ -86,14 +60,14 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
                         child: Card(
                           color: Theme.of(context).cardColor,
                           child: Stack(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: rigs(controller),
-                                  ),
-                                ],
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: rigs(controller),
+                              ),
+                            ],
 
 
                           ),
@@ -111,14 +85,13 @@ class _ContainerLayoutState extends State<ContainerLayout> with TickerProviderSt
               (controller.offset.value.dx), // place as is
               //top: (controller.offset.value.dy+50)>(7*50)?(controller.offset.value.dy-100):(controller.offset.value.dy-50),
               top: (controller.offset.value.dy+400)>Get.height? (controller.offset.value.dy-400):(controller.offset.value.dy-50),
-             child: controller.offset.value == const Offset(0,0)? Container() :
-             Obx(()=>Visibility(
-                   visible: controller.displayPopup.value==0,
-                   replacement: const PopupMenu(),
-                   child: const PopupDetails()),
-             ),
-            //  child: controller.offset.value == const Offset(0,0)? Container() : Text('${controller.offset.value.dx} / ${scrollController.offset} / ${Get.width} / ${(controller.offset.value.dx + scrollController.offset)>Get.width? true:false} / ${(controller.offset.value.dx + scrollController.offset)}'),
-            )
+              child: controller.offset.value == const Offset(0,0)? Container() :
+              Obx(()=>Visibility(
+                  visible: controller.displayPopup.value==0,
+                  replacement: const PopupMenu(),
+                  child: PopupDetails(controller.currentDevice))),
+              ),
+              //  child: controller.offset.value == const Offset(0,0)? Container() : Text('${controller.offset.value.dx} / ${scrollController.offset} / ${Get.width} / ${(controller.offset.value.dx + scrollController.offset)>Get.width? true:false} / ${(controller.offset.value.dx + scrollController.offset)}'),
             )
           ],
         ),

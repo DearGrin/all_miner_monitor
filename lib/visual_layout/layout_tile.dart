@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 class LayoutTile extends StatelessWidget {
  final String layoutTag;
+
   const LayoutTile(this.layoutTag, {Key? key}) : super(key: key);
  @override
  Widget build(BuildContext context) {
@@ -27,11 +28,18 @@ class LayoutTile extends StatelessWidget {
                    Positioned(
                      left: -5,
                      top: -10,
-                     child:  RotationTransition(
-                           turns: controller.animationController,
-                           child: IconButton(
-                               onPressed: (){controller.scan(true);},
-                               icon: const Icon(Icons.refresh))),
+                     child: GetBuilder<LayoutTileController>(
+                       init: controller,
+                       id: 'anim_$layoutTag',
+                       builder: (_){
+                         return  RotationTransition(
+                             turns: controller.animation,
+                             child: IconButton(
+                                 onPressed: (){controller.scan(true);},
+                                 icon: const Icon(Icons.refresh)));
+                       },
+                     ),
+
 
                      /*
                       child: IconButton(

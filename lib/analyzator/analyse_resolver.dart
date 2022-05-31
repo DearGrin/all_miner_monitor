@@ -24,6 +24,9 @@ class AnalyseResolver extends GetxController{
   double minSpeed12xx = 82;
   double minSpeed9xx = 18;
   double minSpeed8xx = 14;
+  double minSpeedM20 = 50;
+  double minSpeedM31 = 70;
+  double minSpeedM32 = 60;
 
   /// fixed values
   int hashCountL3 = 4;
@@ -34,7 +37,7 @@ class AnalyseResolver extends GetxController{
   int hashCountS11 = 3;
   int chipCountL3 = 72;
   int chipCountS9 = 63;
-  int chipCountS19 = 96;
+  int chipCountS19 = 76;
   int chipCountT9 = 54;
   int chipCountT19 = 54; //TODO fix value
   int chipCountS11 = 84;
@@ -107,6 +110,15 @@ class AnalyseResolver extends GetxController{
         case 'min_hash_8xx':
           minSpeed8xx = event.value;
           break;
+        case 'min_hash_m20':
+          minSpeedM20 = event.value;
+          break;
+        case 'min_hash_m31':
+          minSpeedM31 = event.value;
+          break;
+        case 'min_hash_m32':
+          minSpeedM32 = event.value;
+          break;
         default:
       }
     }
@@ -133,6 +145,9 @@ class AnalyseResolver extends GetxController{
     minSpeed12xx = box.get('min_hash_12xx')??82;
     minSpeed9xx = box.get('min_hash_9xx')??18;
     minSpeed8xx = box.get('min_hash_8xx')??14;
+    minSpeedM20 = box.get('min_hash_m20')??50;
+    minSpeedM31 = box.get('min_hash_m31')??70;
+    minSpeedM32 = box.get('min_hash_m32')??60;
   }
 
   Color? getColor(String? type, dynamic value, [String? model]){
@@ -167,7 +182,7 @@ class AnalyseResolver extends GetxController{
           break;
         case 'hash_count':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
+          if(model!='L3'||model!.contains('S9')||model.contains('S19')||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -331,7 +346,7 @@ class AnalyseResolver extends GetxController{
           break;
         case 'min_speed':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
+          if(model!='L3'||model!.contains('S9')||model.contains('S19')||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }
@@ -350,6 +365,23 @@ class AnalyseResolver extends GetxController{
             else{
               _model = '1047';
             }
+          }
+          else if(model.contains('M2')||model.contains('M31')||model.contains('M32')){
+            if(model.contains('M2')){
+              _model = 'M20';
+            }
+            else if(model.contains('M32')){
+              _model = 'M32';
+            }
+            else{
+              _model = 'M31';
+            }
+          }
+          else if(model.contains('S19')){
+            _model = 'S19';
+          }
+          else if(model.contains('S9')){
+            _model = 'S9';
           }
           switch(_model){
             case 'L3':
@@ -388,13 +420,22 @@ class AnalyseResolver extends GetxController{
             case '8xx':
               _ = value<minSpeed8xx;
               break;
+            case 'M20':
+              _ = value<minSpeedM20;
+              break;
+            case 'M31':
+              _ = value<minSpeedM31;
+              break;
+            case 'M32':
+              _ = value<minSpeedM32;
+              break;
             default:
               _ = value<minSpeedDefault;
           }
           break;
         case 'hash_count':
           String? _model = model;
-          if(model!='L3'||model!='S9'||model!='S19'||model!='T9'||model!='T19'||model!='S11'){
+          if(model!='L3'||model!.contains('S19')||model.contains('S19')||model!='T9'||model!='T19'||model!='S11'){
             if(model!.startsWith('9')){
               _model = '9xx';
             }

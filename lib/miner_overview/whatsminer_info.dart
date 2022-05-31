@@ -1,12 +1,10 @@
 import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
-import 'package:AllMinerMonitor/avalon_10xx/avalon_error_codes.dart';
-import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/miner_overview/overview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AvalonRaspInfo extends StatelessWidget {
-  const AvalonRaspInfo({Key? key}) : super(key: key);
+class WhatsMinerInfo extends StatelessWidget {
+  const WhatsMinerInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,39 +53,14 @@ class AvalonRaspInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('version'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.version ?? '', style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].mm ?? '', style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('elapsed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.elapsedString.toString(), style: Theme.of(context).textTheme.bodyText2),
-                              ],
-                            ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('dna'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.dna ?? '', style: Theme.of(context).textTheme.bodyText2),
-                              ],
-                            ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('work_mode'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.workMode ?? '', style: Theme.of(context).textTheme.bodyText2),
-                              ],
-                            ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('temp_input'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.tInput.toString(),
-                                    style: Theme.of(context).textTheme.bodyText1?.
-                                    copyWith(color: analyseResolver.getColor(
-                                        'temp_input', controller.device[0].data.tInput))
-                                ), //TODO get color scheme
+                                SelectableText(controller.device[0].elapsedString.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
@@ -96,7 +69,7 @@ class AvalonRaspInfo extends StatelessWidget {
                                 Text('fans'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: fans(controller.device[0].data.fans, controller.device[0].data.fanR, context, analyseResolver),
+                                    children: fans(controller.device[0].fans),
                                   ),
                                 ),
                               ],
@@ -104,12 +77,15 @@ class AvalonRaspInfo extends StatelessWidget {
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('errors_ecmm'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText.rich(
-                                  TextSpan(
-                                    children: errors(controller.device[0].data.ECMM, context),
-                                  ),
-                                ),
+                                Text('error_codes_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText(controller.device[0].data.summary[0].summary[0].errorCodeCount.toString(), style: Theme.of(context).textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('factory_error_codes_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText(controller.device[0].data.summary[0].summary[0].factoryErrorCodeCount.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                           ],
@@ -143,45 +119,41 @@ class AvalonRaspInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('board_count'.tr, style: Theme.of(context).textTheme.bodyText1,),
-
-                                SelectableText(controller.device[0].data.hashBoardCount.toString(),
+                                SelectableText(controller.device[0].data.devs[0].devs.length.toString(),
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: controller.device[0].data.hashBoardCount!
-                                        < controller.device[0].data.maxHashBoards!
-                                        ? Colors.red:null)),
-
-
+                                    copyWith(color:  controller.device[0].hashCountError? Colors.red:null
+                                    )
+                                ),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('temps'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                Text('freqs_by_board'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText.rich(
+                                  TextSpan(
+                                    children: fans(controller.device[0].data.devs[0].devs.map((e)=>e.chipFrequency).toList()),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('temps_chip'.tr, style: Theme.of(context).textTheme.bodyText1,),
 
                                 SelectableText.rich(
                                   TextSpan(
-                                      children: [
-                                        TextSpan(
-                                            text: controller.device[0].data.tAvg.toString(),
-                                            style: Theme.of(context).textTheme.bodyText2!.
-                                            copyWith(color: analyseResolver.getColor(
-                                                'temp_max', controller.device[0].data.tAvg))
-                                        ),
-                                        TextSpan(text: '/', style: Theme.of(context).textTheme.bodyText2),
-                                        TextSpan(
-                                            text: controller.device[0].data.tMax.toString(),
-                                            style: Theme.of(context).textTheme.bodyText2!.
-                                            copyWith(color:analyseResolver.getColor(
-                                                'max_temp', controller.device[0].data.tMax))
-                                        ),
-                                      ]
+                                    children: tempsByBoard(controller.device[0].data.devs[0].devs.map((e)=>e.chipTempMax).toList(), context, analyseResolver),
                                   ),
                                 ),
 
-
-
                               ],
                             ),
+
+
+
+                            /*
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
@@ -189,26 +161,26 @@ class AvalonRaspInfo extends StatelessWidget {
 
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: tempsByBoard(controller.device[0].data.tMaxByHashBoard,controller.device[0].data.hashBoards,  context, analyseResolver),
+                                    children: tempsByBoard(controller.device[0].data.tPcbO, context, analyseResolver),
                                   ),
                                 ),
 
                               ],
                             ),
+                            */
+
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('hard_errors'.tr, style: Theme.of(context).textTheme.bodyText1,),
-
                                 SelectableText.rich(
                                   TextSpan(
-                                    children: hardwareErrors(controller.device[0].data.dh, controller.device[0].data.hw, context, analyseResolver),
+                                    children: hardwareErrors(controller.device[0].data.devs[0].devs.map((e)=>e.hardwareErrors).toList()),
                                   ),
                                 ),
-
-
                               ],
                             ),
+
                           ],
                         ),
                       ),
@@ -240,30 +212,19 @@ class AvalonRaspInfo extends StatelessWidget {
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('frequency'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.freq.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.summary[0].summary[0].freqAvg.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('current_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.currentSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
+                                SelectableText(controller.device[0].data.currentSpeed?.toStringAsFixed(2) ?? '' '${controller.device[0].isScrypt? ' Gh/s':' Th/s'}',
                                     style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].currentSpeed, controller.device[0].model))
+                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.currentSpeed, controller.device[0].data.model))
                                 ),
                               ],
                             ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('average_speed'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.averageSpeed?.toStringAsFixed(2) ?? '' 'Th/s',
-                                    style: Theme.of(context).textTheme.bodyText2?.
-                                    copyWith(color: analyseResolver.getColor('min_speed', controller.device[0].data.averageSpeed,controller.device[0].model))
-                                ),
-                              ],
-                            ),
-
                           ],
                         ),
                       ),
@@ -294,46 +255,33 @@ class AvalonRaspInfo extends StatelessWidget {
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('voltage_mm'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.voltageMM.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                Text('voltage'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText((controller.device[0].data.summary[0].summary[0].voltage ?? 0/100).toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
                               ],
                             ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('voltage_out'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.voltageOutput.toString()+ 'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
-                              ],
-                            ),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              children: [
-                                Text('voltage_req'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.voltageOutput.toString()+'V', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
-                              ],
-                            ),
-
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
                                 Text('hash_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.powerHashBoards.toString() +
-                                    'A/' + controller.device[0].data.consumption.toString() +
-                                    'W', style: Theme.of(context).textTheme.bodyText2),
+                                SelectableText(controller.device[0].data.summary[0].summary[0].power.toString(), style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('total_consumption'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.consumption.toString()+ 'W', style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                Text('fans'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText.rich(
+                                  TextSpan(
+                                    children:  fans([controller.device[0].data.summary[0].summary[0].powerFanspeed]),
+                                  ),
+                                ),
                               ],
                             ),
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('ps_communication'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.psCommunication.toString(), style: Theme.of(context).textTheme.bodyText2), //TODO add some check?
+                                Text('power_mode'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText(controller.device[0].data.summary[0].summary[0].powerMode, style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                           ],
@@ -343,7 +291,7 @@ class AvalonRaspInfo extends StatelessWidget {
                   ),
                 ),
               ),
-              /// Extras info
+              /// Pools
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
@@ -355,7 +303,7 @@ class AvalonRaspInfo extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('extras'.tr, style: Theme.of(context).textTheme.bodyText2),
+                          child: Text('pools'.tr, style: Get.textTheme.bodyText2),
                         ),
                       ),
                       Padding(
@@ -366,8 +314,43 @@ class AvalonRaspInfo extends StatelessWidget {
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
-                                Text('aging'.tr, style: Theme.of(context).textTheme.bodyText1,),
-                                SelectableText(controller.device[0].data.aging.toString(), style: Theme.of(context).textTheme.bodyText2),
+                                Text('pool 1'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.isNotEmpty? controller.device[0].pools.pools[0].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 1'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.isNotEmpty? controller.device[0].pools.pools[0].worker : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('pool 2'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>1? controller.device[0].pools.pools[1].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 2'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>1? controller.device[0].pools.pools[1].worker : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('pool 3'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>2? controller.device[0].pools.pools[2].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 3'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>2? controller.device[0].pools.pools[2].worker : '', style: Get.textTheme.bodyText2),
                               ],
                             ),
                           ],
@@ -381,105 +364,82 @@ class AvalonRaspInfo extends StatelessWidget {
         )
     );
   }
-  List<InlineSpan> errors(List<AvalonError>? errors, BuildContext context){
+  List<InlineSpan> fans(List<dynamic> data){
     List<InlineSpan> _tmp = [];
-    if(errors!=null){
-      for(int i = 0; i<errors.length; i++){
-        _tmp.add(TextSpan(
-          text: errors[i].id.toString() + ' - ' + errors[i].descr +'\n',
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-          null // TODO get from analyze
-          ),
-        ));
-      }
-    }
-    return _tmp;
-  }
-  List<InlineSpan> tempsByBoard(List<int?>? temps, List<Hashboard>? hashboards, BuildContext context,AnalyseResolver analyseResolver){
-    List<InlineSpan> _tmp = [];
-    if(temps!=null) {
-      for (int i = 0; i < temps.length; i++) {
-        _tmp.add(TextSpan(
-          text: temps[i].toString(),
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-          analyseResolver.getColor('temp_max', temps[i])),
-        ));
-        if(i+1 < temps.length)
+    if(data.isNotEmpty) {
+      for (int i = 0; i < data.length; i++) {
+        _tmp.add(
+            TextSpan(
+              text: data[i].toString(),
+              style: Get.textTheme.bodyText2?.copyWith(color:
+              (data[i]??0)>0? null:Colors.red
+                //analyseResolver.getColor('null', data[i])
+              ),
+            )
+        );
+        if(i+1 < data.length)
         {
-          _tmp.add(TextSpan(
-            text: '/',
-            style: Theme.of(context).textTheme.bodyText2,
-          ));
-        }
-      }
-    }
-    else{
-      for(int i =0; i < hashboards!.length; i++){
-        int _t = 0;
-        for(int n=0; n< hashboards[i].chips!.length; n++){
-          if(hashboards[i].chips![n].temp!=null &&  hashboards[i].chips![n].temp!>0)
-          {
-            _t +=hashboards[i].chips![n].temp!;
-          }
-        }
-        int _tA = (_t/hashboards[i].chips!.length).floor();
-        _tmp.add(TextSpan(
-          text: _tA.toString(),
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-          analyseResolver.getColor('temp_max', _tA)),
-        ));
-        if(i+1 < hashboards.length)
-        {
-          _tmp.add(TextSpan(
-            text: '/',
-            style: Theme.of(context).textTheme.bodyText2,
-          ));
+          _tmp.add(TextSpan(text: '/', style: Get.textTheme.bodyText2));
         }
       }
     }
     return _tmp;
   }
-  List<InlineSpan> hardwareErrors(double? dh, int? hw, BuildContext context, AnalyseResolver analyseResolver){
+  List<InlineSpan> tempsByBoard(List<dynamic> temps, BuildContext context, AnalyseResolver analyseResolver){
     List<InlineSpan> _tmp = [];
-    _tmp.add(TextSpan(
-      text: dh.toString() +'%',
-      style: Theme.of(context).textTheme.bodyText2?.
-      copyWith(color: analyseResolver.getColor('dh', dh)),
-    ));
-    _tmp.add(TextSpan(
-      text: '/',
-      style: Theme.of(context).textTheme.bodyText2,
-    ));
-    _tmp.add(TextSpan(
-      text: hw.toString(),
-      style: Theme.of(context).textTheme.bodyText2?.
-      copyWith(color: hw!=null? hw<10000? null:Colors.red:null), //TODO get some formula
-    ));
-
-
-    return _tmp;
-  }
-  List<InlineSpan> fans(List<int?> fans, int? fanR, BuildContext context, AnalyseResolver analyseResolver){
-    List<InlineSpan> _tmp = [];
-    for (int i = 0; i < fans.length; i++) {
-      _tmp.add(
-          TextSpan(
-            text: fans[i].toString(),
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-            analyseResolver.getColor('null', fans[i])),
-          )
-      );
-      if(i+1 < fans.length)
+    for (int i = 0; i < temps.length; i++) {
+      _tmp.add(TextSpan(
+        text: temps[i].toString(),
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
+        analyseResolver.getColor('temp_max', temps[i])),
+      ));
+      if(i+1 < temps.length)
       {
-        _tmp.add(TextSpan(text: '/', style: Theme.of(context).textTheme.bodyText2));
+        _tmp.add(TextSpan(
+          text: '/',
+          style: Theme.of(context).textTheme.bodyText2,
+        ));
       }
     }
-    _tmp.add(
-        TextSpan(text: ' - ' + fanR.toString()  + '%',
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(color:
-            analyseResolver.getColor('null', fanR)))
-    );
     return _tmp;
   }
+  List<InlineSpan> hardwareErrors(List<dynamic> hw,){
+    print(hw);
+    List<InlineSpan> _tmp = [];
+    if(hw.isNotEmpty){
+      for(int i = 0; i < hw.length; i++){
+        _tmp.add(TextSpan(
+          text: hw[i].toString(),
+          style: Get.textTheme.bodyText2?.
+          copyWith(color: hw[i]!=null? hw[i]!<5000? null:Colors.red:null), //TODO get some formula
+        ));
+        if(i+1 < hw.length)
+        {
+          _tmp.add(TextSpan(
+            text: '/',
+            style: Get.textTheme.bodyText2,
+          ));
+        }
+      }
+    }
+    return _tmp;
   }
-
+  List<InlineSpan> chipByChain(List<int?> chips, String model, AnalyseResolver analyseResolver){
+    List<InlineSpan> _tmp = [];
+    for (int i = 0; i < chips.length; i++) {
+      _tmp.add(TextSpan(
+        text: chips[i].toString(),
+        style: Get.textTheme.bodyText2?.copyWith(color:
+        analyseResolver.getColor('chip_count', chips[i], model)),
+      ));
+      if(i+1 < chips.length)
+      {
+        _tmp.add(TextSpan(
+          text: '/',
+          style: Get.textTheme.bodyText2,
+        ));
+      }
+    }
+    return _tmp;
+  }
+}

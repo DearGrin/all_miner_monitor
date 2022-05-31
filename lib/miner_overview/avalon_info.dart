@@ -40,6 +40,20 @@ class AvalonInfo extends StatelessWidget {
                             Wrap(
                               alignment: WrapAlignment.spaceBetween,
                               children: [
+                                Text('model'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText(controller.device[0].model ?? '', style: Theme.of(context).textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('manufacture'.tr, style: Theme.of(context).textTheme.bodyText1,),
+                                SelectableText(controller.device[0].manufacture ?? '', style: Theme.of(context).textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
                                 Text('version'.tr, style: Theme.of(context).textTheme.bodyText1,),
                                 SelectableText(controller.device[0].data.version ?? '', style: Theme.of(context).textTheme.bodyText2),
                               ],
@@ -373,7 +387,75 @@ class AvalonInfo extends StatelessWidget {
                   ),
                 ),
               ),
-
+              /// Pools
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  color: Get.theme.cardTheme.color,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('pools'.tr, style: Get.textTheme.bodyText2),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 24.0, left: 12.0, right: 8.0, bottom: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('pool 1'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.isNotEmpty? controller.device[0].pools.pools[0].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 1'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.isNotEmpty? controller.device[0].pools.pools[0].worker : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('pool 2'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>1? controller.device[0].pools.pools[1].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 2'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>1? controller.device[0].pools.pools[1].worker : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('pool 3'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>2? controller.device[0].pools.pools[2].url : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                Text('worker 3'.tr, style: Get.textTheme.bodyText1,),
+                                SelectableText(controller.device[0].pools.pools.length>2? controller.device[0].pools.pools[2].worker : '', style: Get.textTheme.bodyText2),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ]
         )
     );

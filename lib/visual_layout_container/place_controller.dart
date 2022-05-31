@@ -246,7 +246,7 @@ class PlaceController extends GetxController{
    */
   onDoubleTap(){
 
-    if(currentDevice.value!=DeviceModel()) {
+    if(currentDevice.value!=DeviceModel(ip: null)) {
       Get.to(()=> const MinerOverviewScreen(), binding: MinerOverviewBinding(), arguments: currentDevice.value);
     }
     else{

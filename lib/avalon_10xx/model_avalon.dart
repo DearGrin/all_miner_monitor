@@ -78,7 +78,7 @@ class AvalonData{
   int? led;
   List<Pool>? pools;
   bool isScrypt = false;
-
+  bool isRasp = false;
   bool? speedError;
   bool? fanError;
   bool? tempError;
@@ -92,8 +92,8 @@ class AvalonData{
     this.voltageOutput, this.powerHashBoards, this.requiredVoltage, this.consumption,
     this.psCommunication, this.hashBoards, this.maxHashBoards, this.ip,
     this.model, this.mm, this.manufacture, this.aging, this.status='', this.aucN,
-    this.ipInt, this.led, this.pools, this.errors, this.speedError, this.chipCountError, this.chipsSError, this.fanError, this.hashCountError, this.tempError});
-  factory AvalonData.fromString(String data, String ip, [int? _aucN]){
+    this.ipInt, this.led, this.pools, this.errors, this.speedError, this.chipCountError, this.chipsSError, this.fanError, this.hashCountError, this.tempError, this.isRasp=false});
+  factory AvalonData.fromString(String data, String ip, [int? _aucN, bool? _isRasp]){
     String _company = 'Unknown';
     try {
      // _company = regexp.company.firstMatch(data)?.group(2) ?? '-';
@@ -299,7 +299,7 @@ class AvalonData{
       pools: [],
       rawData: data,
       errors: _errors,
-
+      isRasp: _isRasp??false,
     );
   }
 
@@ -455,7 +455,7 @@ class RaspberryAva extends AvalonData{
      //   print(_auc[i].group(2));
         try {
           AvalonData _data = AvalonData.fromString(
-              _auc[i].group(2) ?? '', _ip, n);
+              _auc[i].group(2) ?? '', _ip, n, true);
           DeviceModel _model = DeviceModel.fromData(_data, _ip);
           _tmp.add(_model);
           if(_tempInput==null&&_data.tInput!=null || _tempInput!<_data.tInput!)
