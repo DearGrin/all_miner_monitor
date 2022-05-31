@@ -1,28 +1,77 @@
+import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
+
+import '../isolates/int_to_date.dart';
+
 class WhatsminerDevsModel {
-  List<STATUS>? status;
+  ///general data
+  String? status;//
+  String? ip;//
+  int? ipInt;//
+  String? manufacture;//
+  String? model;//
+  bool isScrypt = false;//
+  int? elapsed;//
+  String? elapsedString;//
+  double? currentSpeed;
+  double? averageSpeed;
+  int? tMax;
+  int? tInput;
+  String? mm;
+  List<int?>? fans;//
+  List<int?>? errors;//
+  List<Pool>? pools;//
+  String? rawData;
+  List<dynamic>? ps;
+  List<int?>? netFail;
+  ///manufacture specific data
+  List<STATUS>? statusMsg;
   List<DEVS>? devs;
 
-  WhatsminerDevsModel({this.status, this.devs});
+  WhatsminerDevsModel({this.status, this.devs, this.ip, this.ipInt, this.statusMsg,
+    this.errors, this.model, this.currentSpeed, this.tMax, this.manufacture,
+    this.pools, this.averageSpeed, this.elapsed, this.elapsedString, this.fans,
+    this.isScrypt=false, this.mm, this.netFail, this.ps, this.rawData, this.tInput});
 
-  WhatsminerDevsModel.fromJson(Map<String, dynamic> json) {
+  WhatsminerDevsModel.fromJson(Map<String, dynamic> json, String _ip) {
     if (json['STATUS'] != null) {
-      status = <STATUS>[];
-      json['STATUS'].forEach((v) {
-        status!.add(STATUS.fromJson(v));
-      });
+      statusMsg = <STATUS>[];
+      for(var v in json['STATUS']){
+        statusMsg!.add(STATUS.fromJson(v));
+      }
     }
     if (json['DEVS'] != null) {
       devs = <DEVS>[];
-      json['DEVS'].forEach((v) {
+      for(var v in json['DEVS']){
+        print(v);
         devs!.add(DEVS.fromJson(v));
-      });
+      }
     }
+    ip = _ip;
+    List<String> _octet = _ip.split('.');
+    if(_octet[3].length==1){
+      _octet[3] = '00${_octet[3]}';
+    }
+    else if(_octet[3].length==2){
+      _octet[3] = '0${_octet[3]}';
+    }
+    ipInt = int.tryParse(_octet.join());
+    elapsed = devs?[0].elapsed;
+    elapsedString = intToDate(elapsed);
+    manufacture = 'Whatsminer';
+    model = devs?[0].name;
+    status = '';
+    fans = [devs?[0].fanIn,devs?[0].fanOut];
+    errors = [];
+    pools = [];
+    rawData = json.toString();
+    netFail = [];
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (status != null) {
-      data['STATUS'] = status!.map((v) => v.toJson()).toList();
+      data['STATUS'] = statusMsg!.map((v) => v.toJson()).toList();
     }
     if (devs != null) {
       data['DEVS'] = devs!.map((v) => v.toJson()).toList();
@@ -55,7 +104,7 @@ class DEVS {
   int? slot;
   String? enabled;
   String? status;
-  int? temperature;
+  double? temperature;
   int? chipFrequency;
   double? mHSAv;
   double? mHS5s;
@@ -74,7 +123,10 @@ class DEVS {
   double? chipTempMax;
   double? chipTempAvg;
   int? chipVolDiff;
-
+  int? elapsed;
+  String? name;
+  int? fanIn;
+  int? fanOut;
   DEVS(
       {this.aSC,
         this.slot,
@@ -98,14 +150,31 @@ class DEVS {
         this.chipTempMin,
         this.chipTempMax,
         this.chipTempAvg,
-        this.chipVolDiff});
+        this.chipVolDiff,
+        this.elapsed,
+        this.name,
+        this.fanIn,
+        this.fanOut,
+      });
 
   DEVS.fromJson(Map<String, dynamic> json) {
     aSC = json['ASC'];
+    print(aSC);
     slot = json['Slot'];
+    print(slot);
     enabled = json['Enabled'];
+    print(enabled);
     status = json['Status'];
+    print(status);
     temperature = json['Temperature'];
+    elapsed = json[' Device Elapsed'];
+    print(elapsed);
+    name = json['Name'];
+    print(name);
+    fanIn = json['Fan Speed In'];
+    print(fanIn);
+    fanOut = json['Fan Speed Out'];
+    print(fanOut);
     chipFrequency = json['Chip Frequency'];
     mHSAv = json['MHS av'];
     mHS5s = json['MHS 5s'];

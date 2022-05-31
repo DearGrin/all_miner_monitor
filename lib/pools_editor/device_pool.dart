@@ -26,4 +26,11 @@ class Pools{
     }
     pools = _tmp;
   }
+  Pools.fromJson(Map<String,dynamic> json){
+    List<DevicePool>? _pools = [];
+    for(var v in json['POOLS']){
+      _pools.add(DevicePool(url: v['URL'], worker: v['User']));
+    }
+    pools = _pools;
+  }
 }

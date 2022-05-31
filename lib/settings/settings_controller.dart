@@ -3,6 +3,7 @@ import 'package:AllMinerMonitor/scan_list/table_header_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsController extends GetxController{
   RxInt currentIndex = 0.obs;
@@ -27,12 +28,16 @@ class SettingsController extends GetxController{
   RxDouble minHash12xx = 82.0.obs;
   RxDouble minHash9xx = 18.0.obs;
   RxDouble minHash8xx = 14.0.obs;
+  RxDouble minHashM20 = 50.0.obs;
+  RxDouble minHashM31 = 70.0.obs;
+  RxDouble minHashM32 = 60.0.obs;
   RxInt raspCount = 5.obs;
   RxInt volReq = 1200.obs;
   RxDouble maxDh = 7.5.obs;
   RxDouble kWork = 10.0.obs;
   RxBool isAntVisible = false.obs;
   RxBool isAvalonVisible = false.obs;
+  RxBool isWhatsminerVisible = false.obs;
   RxList<Map<dynamic, dynamic>> antPasswords = <Map<dynamic, dynamic>>[].obs;
   RxList<Map<String, String>> avalonPasswords = <Map<String, String>>[].obs;
   RxBool isObscured = true.obs;
@@ -188,6 +193,27 @@ class SettingsController extends GetxController{
     else{
       minHash8xx.value = _minHash8xx;
     }
+    double? _minHashM20 = box.get('min_hash_m20');
+    if(_minHashM20==null){
+      box.put('min_hash_m20', 50.0);
+    }
+    else{
+      minHashM20.value = _minHashM20;
+    }
+    double? _minHashM31 = box.get('min_hash_m31');
+    if(_minHashM31==null){
+      box.put('min_hash_m31', 70.0);
+    }
+    else{
+      minHashM31.value = _minHashM31;
+    }
+    double? _minHashM32 = box.get('min_hash_m32');
+    if(_minHashM32==null){
+      box.put('min_hash_m32', 60.0);
+    }
+    else{
+      minHashM32.value = _minHashM32;
+    }
     int? _volReq = box.get('min_vol');
     if(_volReq==null){
       box.put('min_vol', 100);
@@ -334,6 +360,9 @@ class SettingsController extends GetxController{
   showAvalonSettings(){
     isAvalonVisible.value = !isAvalonVisible.value;
   }
+  showWhatsminerSettings(){
+    isWhatsminerVisible.value = !isWhatsminerVisible.value;
+  }
   addField(String type){
     switch(type){
       case 'antminer':
@@ -379,5 +408,9 @@ class SettingsController extends GetxController{
   }
   showPasswords(){
     isObscured.value = !isObscured.value;
+  }
+  openLink(String url)async{
+    final Uri _url = Uri.parse('url');
+    if (!await launchUrlString(url)) throw 'Could not launch $url';
   }
 }

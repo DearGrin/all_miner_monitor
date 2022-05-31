@@ -4,7 +4,7 @@ import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/avalon_10xx/chip_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
-import 'package:AllMinerMonitor/isolates/isolate_comand_constructor.dart';
+import 'package:AllMinerMonitor/isolates/isolate_construct_ips_by_threads.dart';
 import 'package:AllMinerMonitor/isolates/isolate_service.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
@@ -47,7 +47,7 @@ class LayoutScanner extends GetxController{
       int _threads = box.get('max_threads') ?? 20;
      // int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
-        tasksByThread = await compute(constructCommands, [_threads, ips]);
+        tasksByThread = await compute(constructIpsByThread, [_threads, ips]);
         /*
       for (int i = 0; i < _threads; i++) {
         List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
@@ -135,25 +135,30 @@ class LayoutScanner extends GetxController{
    }
 
    try {
-     List<int> _chipCountList = [];
-     if (device.manufacture == 'Avalon') {
-       for (Hashboard board in device.data.hashBoards) {
-         int _ = 0;
-         _chipCountList.add(board.chips!.length);
-
-         /// first value in avalon is max chip possible
-         for (ChipModel chip in board.chips!) {
-           if (chip.voltage != null && chip.voltage! > 0) {
-             _++;
-           }
-         }
-         _chipCountList.add(_);
-       }
+     if (device.manufacture!.contains('Whatsminer')) {
+       _chipCountError = false;
      }
-     _chipCountError = await analyseResolver.hasErrors(
-         'chip_count', device.manufacture == 'Antminer'
-         ? device.data.chipPerChain
-         : _chipCountList, device.model);
+     else {
+       List<int> _chipCountList = [];
+       if (device.manufacture == 'Avalon') {
+         for (Hashboard board in device.data.hashBoards) {
+           int _ = 0;
+           _chipCountList.add(board.chips!.length);
+
+           /// first value in avalon is max chip possible
+           for (ChipModel chip in board.chips!) {
+             if (chip.voltage != null && chip.voltage! > 0) {
+               _++;
+             }
+           }
+           _chipCountList.add(_);
+         }
+       }
+       _chipCountError = await analyseResolver.hasErrors(
+           'chip_count', device.manufacture == 'Antminer'
+           ? device.data.chipPerChain
+           : _chipCountList, device.model);
+     }
    }
    catch(e){
      debug(subject: 'catch error', message: '$e', function: 'LayoutScanner > analyseDevice > _chipCountError');
@@ -185,7 +190,7 @@ class LayoutScanner extends GetxController{
    return device;
  }
   Future<bool>checkScanProgress()async{
-    if(progress<1){
+    if(finalProgress>0 && progress<1){
       debug(subject: 'check scan progress', message: 'scan in progress: true', function: 'LayoutScanner > checkScanProgress');
       return true;
     }

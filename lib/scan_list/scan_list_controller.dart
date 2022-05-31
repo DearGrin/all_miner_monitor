@@ -18,13 +18,15 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../visual_layout/more_dialog.dart';
+
 class ScanListController extends GetxController{
   late Scanner scanner;
   List<dynamic> devices = <dynamic>[];
   List<String> selectedIps = <String>[].obs;
   bool isSelected = false;
   late IpManagementController ipManagementController;
-  SummaryModel summary = SummaryModel();
+  SummaryModel summary = SummaryModel(speedErrors: [], fanErrors: [], tempErrors: [],  chipCountErrors: [], chipsSErrors: [], hashCountErrors: []);
   StreamSubscription? scanResult;
   late StreamController progress;
   Rx<AvalonData> currentDevice = AvalonData().obs;
@@ -38,9 +40,10 @@ class ScanListController extends GetxController{
  // Rx<Speed> speedInfo = Speed().obs;
   List<int> expandedRasp = [];
   bool isActive = true;
-  List<String> errors = <String>[].obs;
+  RxList<String> errors = <String>[].obs;
   RxInt isPopupVisible = (-1).obs;
   RxDouble mousePosition = 0.0.obs;
+  int summaryViewMode = 0;
   @override
   Future<void> onInit() async {
     ipManagementController = Get.put(IpManagementController());
@@ -94,8 +97,17 @@ class ScanListController extends GetxController{
           if (event.data.tMax != null && summary.maxTemp < event.data.tMax!) {
             summary.maxTemp = event.data.tMax!;
           }
-        }
 
+        }
+        if(event.data.status=='with problems'){
+          summary.withErrors++;
+        }
+        event.data.speedError==true?summary.speedErrors.add(event.ip):null;
+        event.data.fanError==true?summary.fanErrors.add(event.ip):null;
+        event.data.tempError==true?summary.tempErrors.add(event.ip):null;
+        event.data.chipCountError==true?summary.chipCountErrors.add(event.ip):null;
+        event.data.chipsSError==true?summary.chipsSErrors.add(event.ip):null;
+        event.data.hashCountError==true?summary.hashCountErrors.add(event.ip):null;
         update(['list', 'summary']);
       }
       else if (event.runtimeType == EventModel && event.type == 'update') {
@@ -120,7 +132,8 @@ class ScanListController extends GetxController{
   }
   startScan() async {
     Get.snackbar('Scan', ipManagementController.ips.length.toString());
-    await scanner.newScan(scanList: ipManagementController.ips);
+    errors.value = [];
+    summary.totalProgress =  await scanner.newScan(scanList: ipManagementController.ips);
   }
   selectIp(String ip, bool value){
     if(value)
@@ -144,11 +157,12 @@ class ScanListController extends GetxController{
     isSelected = value;
     update(['list', 'header','ips']);
   }
-  onScanClick(){
+  onScanClick()async{
     clearQuery();
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
     Get.snackbar('Scan', '${ipsToScan.length}');
-    scanner.newScan(scanList: ipsToScan);
+    errors.clear();
+    summary.totalProgress = await scanner.newScan(scanList: ipsToScan);
   }
   clearQuery(){
     devices.clear();
@@ -519,18 +533,33 @@ class ScanListController extends GetxController{
 
    */
   saveLog()async{
-    Box box = await Hive.openBox('log');
     Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); // 1
     String appDocumentsPath = appDocumentsDirectory.path; // 2
-    String filePath = '$appDocumentsPath/all_miner_log.txt';
-    File file = File(filePath); // 1
-    String _log = 'Log\n';
-    for(var l in box.values){
-      String _ = 'event: ${l['event']}, function: ${l['function']}\nmessage: ${l['message']}\n';
-      _log  = _log + _;
+    if(!Directory('$appDocumentsPath/All Miner/logs').existsSync()) {
+      Directory('$appDocumentsPath/All Miner/logs').create();
     }
-    file.writeAsString(_log); // 2
+    String filePath = '$appDocumentsPath/All Miner/logs/all_miner_log_${DateTime.now()}.txt';
+    File file = File(filePath); // 1
+   // file.writeAsString(); // 2
     String _path = filePath.replaceAll('\\', '/');
     Get.snackbar('Save complete', _path,);
+  }
+  switchViewSummaryMode(){
+    summaryViewMode==0? summaryViewMode=1:summaryViewMode=0;
+    update(['summary_view']);
+  }
+  showProblemList(){
+    List<List<String>> _tmp =[
+      summary.tempErrors,
+      summary.fanErrors,
+      summary.speedErrors,
+      summary.hashCountErrors,
+      summary.chipCountErrors,
+      summary.chipsSErrors
+    ];
+    Get.defaultDialog(
+      title: 'ip_list'.tr,
+      content: MoreDialog(_tmp, ''),
+    );
   }
 }

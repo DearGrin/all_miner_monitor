@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:AllMinerMonitor/whatsminer/whatminer_sum_devs_model.dart';
+import 'package:AllMinerMonitor/whatsminer/whatsminer_devs_model.dart';
 import 'package:async/async.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
@@ -13,14 +15,14 @@ import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
 
 
-void startCompute(List<String?> f, List<String> commands,
+void startCompute(List<String?> f, List<String?> commands,
     StreamController eventStream, StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
   await for (final result in _sendAndReceive(f, commands, stopStream, addCommand: addCommand, company: company, credentials: credentials, tag: tag)) {
     eventStream.add(result);
   }
 }
 
-Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
+Stream<EventModel> _sendAndReceive(List<String?> ips, List<String?> commands,
     StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async* {
 
   final p = ReceivePort();
@@ -85,11 +87,14 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String> commands,
 sendAnswer(SendPort p, EventModel eventModel){
   p.send(eventModel);
 }
-socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
+socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
+  dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials,
+  String? tag, Map<String,dynamic>? prevJson}) async{
   dynamic data;
-  print(addCommands);
+  print(command);
   try {
     switch(command){
+      /*
       case 'pools':
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
@@ -100,6 +105,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
         });
         socket.add(utf8.encode(command));
         break;
+        */
       case 'setpool':
         print('case set pool and $company');
         EventModel? eventModel;
@@ -133,9 +139,10 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
             Socket socket = await Socket.connect(
                 ip, 4028, timeout: const Duration(seconds: 5));
             socket.listen((dynamic event) {
-              handler(p, utf8.decode(event), command,  ip, tag);
-              data = utf8.decode(event);
               socket.close();
+              handler(p, utf8.decode(event), command,  ip, tag);
+              //data = utf8.decode(event);
+
             });
             socket.add(utf8.encode(command));
           }
@@ -164,17 +171,66 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
        //  eventModel = EventModel('update', 'reboot', ip, 'reboot');
         sendAnswer(p, eventModel);
         break;
+        /*
+      case '{"cmd":"devdetails"}':
+        print('get model');
+        Socket socket = await Socket.connect(
+            ip, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          handler(p, utf8.decode(event), command,  ip, tag, company: company);
+          data = utf8.decode(event);
+          socket.close();
+        });
+        break
+          */
+        /*
+      case '{"cmd":"summary+devs"}':
+        print('get summary');
+        Socket socket = await Socket.connect(
+            ip, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          handler(p, utf8.decode(event), '{"cmd":"summary+devs"}',  ip, tag, company: company);
+          data = utf8.decode(event);
+          socket.close();
+        });
+        break;
+
+
+         */
+        /*
+      case '{"cmd":"pools"}':
+        print('POOLS');
+        Socket socket = await Socket.connect(
+            ip, 4028, timeout: const Duration(seconds: 5));
+        socket.listen((dynamic event) {
+          poolHandler(p, utf8.decode(event), device!, ip, tag);
+          data = utf8.decode(event);
+          socket.close();
+        });
+        break;
+        */
       default:
         Socket socket = await Socket.connect(
             ip, 4028, timeout: const Duration(seconds: 5));
         var sub = socket.listen((dynamic event) {
-          handler(p, utf8.decode(event), command,  ip, tag);
+          try {
+          //  print(event);
+            print(utf8.decode(event));
+            handler(p, utf8.decode(event), command, ip, tag, company: company,
+                device: device,
+                prevJson: prevJson);
+            socket.close();
+          }
+          catch(err){
+            EventModel eventModel = EventModel('error', '$err', ip, '$err', tag: tag);
+            sendAnswer(p, eventModel);
+          }
          // data = utf8.decode(event);
           socket.close();
         });
         socket.add(utf8.encode(command));
         await Future.delayed(const Duration(milliseconds: 300));
-        await sub.asFuture<void>().timeout(const Duration(seconds: 7), onTimeout: () async {print('timeout');throw 'timeout';});
+        await sub.asFuture<void>().timeout(const Duration(seconds: 12), onTimeout: () async {print('timeout'); socket.close();throw 'timeout';});
     }
   }
   catch(err){
@@ -184,15 +240,29 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device, d
     //p.send(eventModel);
   }
 }
-poolHandler(SendPort p, String data, DeviceModel device, String ip, String? tag) async {
+/*
+poolHandler(SendPort p, String data, DeviceModel device, String ip, String? tag) async{
+print('got pools $data');
   EventModel eventModel = EventModel('error', 'empty event in pool handler', 'fail', 'event was not initialised - pool handler',tag: tag);
   Pools? _pools;
-  try{
-     _pools = Pools.fromString(data);
+  if(device.manufacture!.contains('whatsminer')){
+    try{
+        _pools = Pools.fromJson(jsonDecode(data));
+    }
+    catch(e){
+      eventModel =
+          EventModel('error', e.toString(), ip, e.toString(), tag: tag);
+    }
   }
-  catch(e){
-    print(e);
-    eventModel = EventModel('error', e.toString(),ip, e.toString(), tag: tag);
+  else {
+    try {
+      _pools = Pools.fromString(data);
+    }
+    catch (e) {
+      print(e);
+      eventModel =
+          EventModel('error', e.toString(), ip, e.toString(), tag: tag);
+    }
   }
   if(_pools!=null){
     device.pools = _pools;
@@ -203,7 +273,9 @@ poolHandler(SendPort p, String data, DeviceModel device, String ip, String? tag)
   }
 sendAnswer(p, eventModel);
 }
-handler(SendPort p, String data, String command, String ip, String? tag) async {
+*/
+handler(SendPort p, String data, String command, String ip, String? tag, {String? company, DeviceModel? device, Map<String,dynamic>? prevJson}) async {
+  print('TAG is $tag');
   EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised', tag: tag);
  // dynamic device;
   DeviceModel? model;
@@ -217,6 +289,7 @@ handler(SendPort p, String data, String command, String ip, String? tag) async {
       //  eventModel = EventModel('device', device, ip, data);
       }
       catch(e){
+        print(e);
         eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
         sendAnswer(p, eventModel);
       }
@@ -246,14 +319,9 @@ handler(SendPort p, String data, String command, String ip, String? tag) async {
         sendAnswer(p, eventModel);
       }
     }
-    else if(data.toLowerCase().contains('invalid command')){
-      try{
-        //TODO send whats command
-      }
-      catch(e){
-        eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
-        sendAnswer(p, eventModel);
-      }
+    else if(data.toLowerCase().contains('whatsminer')){
+      print('its whatsminer!');
+      socketSendCommand(ip, '{"cmd":"devdetails"}', p, tag: tag);
     }
     else{
       data = data;
@@ -290,6 +358,65 @@ handler(SendPort p, String data, String command, String ip, String? tag) async {
 
  */
   }
+  else if (command.contains('devdetails')){
+    Map<String,dynamic> json = jsonDecode(data);
+    print( json['DEVDETAILS'][0]['Model']);
+    socketSendCommand(ip, '{"cmd":"summary"}', p, company: json['DEVDETAILS'][0]['Model'], tag: tag);
+  }
+  else if (command.contains('summary')){
+    print(data);
+    Map<String,dynamic> json = jsonDecode(data);
+    socketSendCommand(ip, '{"cmd":"devs"}', p, company: company, prevJson: json, tag: tag);
+  }
+  else if(command.contains('devs')){
+    print('DEVS!!!');
+    try{
+      Map<String,dynamic> _json = jsonDecode(data);
+      Map<String,dynamic> json = {'summary':[prevJson], 'devs':[_json]};
+      print(json);
+      dynamic _device = WhatsminerModel.fromJson(json, ip, company);
+      print(_device);
+      var device = DeviceModel.fromData(_device, ip);
+      //model = device;
+      socketSendCommand(ip, '{"cmd":"pools"}', p, device: device, tag: tag);
+    }
+    catch(e){
+      eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
+      sendAnswer(p, eventModel);
+    }
+  }
+  else if(command.contains('pools')){
+    Pools? _pools;
+    if(command.contains('cmd')) {
+      try {
+        print(data);
+        _pools = Pools.fromJson(jsonDecode(data));
+        device?.pools = _pools;
+        print(device);
+        print(tag);
+        eventModel = EventModel('device', device, ip, data, tag: tag);
+
+        sendAnswer(p, eventModel);
+      }
+      catch (e) {
+        eventModel =
+            EventModel('error', e.toString(), ip, e.toString(), tag: tag);
+      }
+    }
+    else{
+      try {
+        _pools = Pools.fromString(data);
+        device?.pools = _pools;
+        eventModel = EventModel('device', device, ip, data, tag: tag);
+        sendAnswer(p, eventModel);
+      }
+      catch (e) {
+        print(e);
+        eventModel =
+            EventModel('error', e.toString(), ip, e.toString(), tag: tag);
+      }
+    }
+    }
   else{
     if(data.contains('STATUS=')) {
       eventModel = EventModel('update', data, ip, data, tag: tag);

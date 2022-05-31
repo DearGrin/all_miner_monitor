@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "A new Flutter project." "\0"
+            VALUE "CompanyName", "SILabs" "\0"
+            VALUE "FileDescription", "All Miner Monitor" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "avalon_tool" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "avalon_tool.exe" "\0"
-            VALUE "ProductName", "avalon_tool" "\0"
+            VALUE "InternalName", "All Miner Monitor" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2020 com.silabs.allminermonitor. All rights reserved." "\0"
+            VALUE "OriginalFilename", "All Miner Monitor.exe" "\0"
+            VALUE "ProductName", "All Miner Monitor" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

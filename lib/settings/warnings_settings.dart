@@ -351,6 +351,87 @@ class WarningsSettings extends StatelessWidget {
                       )
                   ),
                 ),
+                const SizedBox(height: 10.0,),
+                InkWell(
+                  onTap: (){controller.showWhatsminerSettings();},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('speed_check_whatsminer'.tr, style: Get.textTheme.bodyText2,),
+                      Obx(()=>Icon(controller.isWhatsminerVisible.value?
+                      Icons.arrow_drop_up_outlined :
+                      Icons.arrow_drop_down_outlined)
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10.0,),
+                Obx(()=> Visibility(
+                    visible: controller.isWhatsminerVisible.value,
+                    replacement: Container(),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'M20',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashM20.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'M20');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'M31',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashM31.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'M31');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'M32',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Obx(()=> SizedBox(
+                              width: 60,
+                              child: TextField(
+                                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                                controller: TextEditingController(text: controller.minHashM32.value.toString()),
+                                onChanged: (value){controller.setMinHash(value, 'M32');},
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

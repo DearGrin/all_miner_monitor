@@ -2,12 +2,12 @@ import 'package:AllMinerMonitor/scan_list/scan_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ErrorsDebugger extends StatelessWidget {
+class ErrorsDebugger extends GetView<ScanListController> {
   const ErrorsDebugger({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ScanListController controller = Get.put(ScanListController());
+  //  final ScanListController controller = Get.put(ScanListController());
     return Container(
       width: 700,
       height: Get.height*0.8,

@@ -1,8 +1,9 @@
+import 'package:AllMinerMonitor/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class InfoSettings extends StatelessWidget {
+class InfoSettings extends GetView<SettingsController> {
   const InfoSettings({Key? key}) : super(key: key);
 
   @override
@@ -27,6 +28,43 @@ class InfoSettings extends StatelessWidget {
           Text(
               'info_content'.tr,
             style: Theme.of(context).textTheme.bodyText1,
+          ),
+          Row(
+            children: [
+              Text('tg_channel'.tr, style:  Get.textTheme.bodyText1,),
+              const SizedBox(width: 10.0,),
+              InkWell(
+                  onTap: (){},
+                  child: SelectableText('https://t.me/+ABaUPFp6VtNiZTky', style: Get.textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline),onTap: (){controller.openLink('https://t.me/+ABaUPFp6VtNiZTky');},))
+            ],
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Text('tg_chat_ru'.tr, style:  Get.textTheme.bodyText1,),
+                  const SizedBox(width: 10.0,),
+                  InkWell(
+                    onTap: (){controller.openLink('https://t.me/+Z8njJcc--cszNzli');},
+                    child: SelectableText('https://t.me/+Z8njJcc--cszNzli', style: Get.textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline),onTap: (){controller.openLink('https://t.me/+Z8njJcc--cszNzli');},),
+                  )
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Text('tg_chat'.tr, style:  Get.textTheme.bodyText1,),
+                  const SizedBox(width: 10.0,),
+                  InkWell(
+                    onTap: (){controller.openLink('https://t.me/+iQVlXi7R6f1iOWQy');},
+                    child: SelectableText('https://t.me/+iQVlXi7R6f1iOWQy', style: Get.textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline),onTap: (){controller.openLink('https://t.me/+iQVlXi7R6f1iOWQy');},),
+                  )
+                ],
+              ),
+            ],
           ),
           Text('donations'.tr, style: Get.textTheme.bodyText2, textAlign: TextAlign.center,),
           Text('USDT trc20', style: Get.textTheme.bodyText2),
