@@ -44,6 +44,7 @@ class LayoutScanner extends GetxController{
     finalProgress = ips.length;
     if(ips.isNotEmpty) {
       Box box = await Hive.openBox('settings');
+      int _timeout = box.get('timeout')??10;
       int _threads = box.get('max_threads') ?? 20;
      // int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
@@ -64,7 +65,8 @@ class LayoutScanner extends GetxController{
             addCommand: null,
             company: null,
             credentials: null,
-            tag: tag
+            tag: tag,
+            timeout: _timeout
         );
       }
     }

@@ -48,14 +48,34 @@ class BatchSettings extends GetView<SettingsController> {
             Obx(()=> SizedBox(
               width: 50,
               child: TextField(
-                  keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
-                  controller: TextEditingController(text: controller.threadsCount.value.toString())..selection=TextSelection.fromPosition
-    (TextPosition(offset: controller.threadsCount.value.toString().length,
-    affinity: TextAffinity.upstream)
-    ),
-                  onChanged: (value){controller.setThreadsCount(value);},
-                style: Theme.of(context).textTheme.bodyText1,
+                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                controller: TextEditingController(text: controller.threadsCount.value.toString())..selection=TextSelection.fromPosition
+                  (TextPosition(offset: controller.threadsCount.value.toString().length,
+                    affinity: TextAffinity.upstream)
                 ),
+                onChanged: (value){controller.setThreadsCount(value);},
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10.0,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('timeout'.tr, style: Theme.of(context).textTheme.bodyText1,),
+            Obx(()=> SizedBox(
+              width: 50,
+              child: TextField(
+                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                controller: TextEditingController(text: controller.timeout.value.toString())..selection=TextSelection.fromPosition
+                  (TextPosition(offset: controller.timeout.value.toString().length,
+                    affinity: TextAffinity.upstream)
+                ),
+                onChanged: (value){controller.setTimeout(value);},
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
             ),
             ),
           ],

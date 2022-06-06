@@ -213,6 +213,7 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       finalProgress = ips.length;
       jobsDone = 0;
       Box box = await Hive.openBox('settings');
+      int _timeout = box.get('timeout')??10;
       int _threads = box.get('max_threads') ?? 20;
       int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
@@ -266,7 +267,8 @@ Future<DeviceModel>analyse(DeviceModel device) async {
            addCommand: addCommands!=null?addCommandsByThread[i]:null,
             company: manufactures!=null?manufacturesByThread[i]:null,
             credentials:  credentials,
-          tag: tag
+          tag: tag,
+          timeout: _timeout
         );
       }
     }
