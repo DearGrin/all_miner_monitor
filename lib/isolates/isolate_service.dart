@@ -16,14 +16,14 @@ import 'package:AllMinerMonitor/scan_list/event_model.dart';
 
 
 void startCompute(List<String?> f, List<String?> commands,
-    StreamController eventStream, StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async{
-  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand: addCommand, company: company, credentials: credentials, tag: tag)) {
+    StreamController eventStream, StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag, required int timeout, required int delay}) async{
+  await for (final result in _sendAndReceive(f, commands, stopStream, addCommand: addCommand, company: company, credentials: credentials, tag: tag, timeout: timeout, delay: delay)) {
     eventStream.add(result);
   }
 }
 
 Stream<EventModel> _sendAndReceive(List<String?> ips, List<String?> commands,
-    StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag}) async* {
+    StreamController stopStream, {List<dynamic>? addCommand, List<String>? company, List<Map<dynamic,dynamic>>? credentials, String? tag, required int timeout, required int delay}) async* {
 
   final p = ReceivePort();
   await Isolate.spawn(sendCommand, p.sendPort);
@@ -57,7 +57,9 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String?> commands,
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
         'credentials': credentials,
-        'tag': tag??''
+        'tag': tag??'',
+        'timeout': timeout,
+        'delay': delay
       }
       );
     }
@@ -68,7 +70,9 @@ Stream<EventModel> _sendAndReceive(List<String?> ips, List<String?> commands,
         'addCommand': addCommand!=null? addCommand[i]:null,
         'company': '${company!=null? company[i]:null}',
         'credentials': credentials,
-        'tag' : tag??''
+        'tag' : tag??'',
+        'timeout': timeout,
+        'delay': delay
       }
       );
     }
@@ -89,7 +93,7 @@ sendAnswer(SendPort p, EventModel eventModel){
 }
 socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
   dynamic addCommands, String? company, List<Map<dynamic,dynamic>>? credentials,
-  String? tag, Map<String,dynamic>? prevJson}) async{
+  String? tag, Map<String,dynamic>? prevJson, required int timeout, required int delay}) async{
   dynamic data;
   print(command);
   try {
@@ -122,9 +126,9 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
           }
         else{
           Socket socket = await Socket.connect(
-              ip, 4028, timeout: const Duration(seconds: 5));
+              ip, 4028, timeout: Duration(seconds: timeout));
           socket.listen((dynamic event) {
-            handler(p, utf8.decode(event), command,  ip, tag);
+            handler(p, utf8.decode(event), command,  ip, tag, timeout: timeout, delay: delay);
             data = utf8.decode(event);
             socket.close();
           });
@@ -137,10 +141,10 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
         if(device!=null && device.manufacture?.toLowerCase()=='avalon' && device.model!.startsWith('1'))
           {
             Socket socket = await Socket.connect(
-                ip, 4028, timeout: const Duration(seconds: 5));
+                ip, 4028, timeout: Duration(seconds: timeout));
             socket.listen((dynamic event) {
               socket.close();
-              handler(p, utf8.decode(event), command,  ip, tag);
+              handler(p, utf8.decode(event), command,  ip, tag, timeout: timeout, delay: delay);
               //data = utf8.decode(event);
 
             });
@@ -163,7 +167,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
         else
         {
           Socket socket = await Socket.connect(
-              ip, 4028, timeout: const Duration(seconds: 5));
+              ip, 4028, timeout: Duration(seconds: timeout));
           socket.add(utf8.encode(command));
           socket.close();
           eventModel = EventModel('update', 'reboot', ip, 'reboot', tag: tag);
@@ -210,27 +214,29 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
         break;
         */
       default:
+        await Future.delayed(Duration(milliseconds: delay));
         Socket socket = await Socket.connect(
-            ip, 4028, timeout: const Duration(seconds: 5));
-        var sub = socket.listen((dynamic event) {
+            ip, 4028, timeout:  Duration(seconds: timeout));
+        var sub = socket.listen((dynamic event) async {
           try {
           //  print(event);
-            print(utf8.decode(event));
+            socket.close();
+            //await Future.delayed(const Duration(milliseconds: 300));
+           // print(utf8.decode(event));
             handler(p, utf8.decode(event), command, ip, tag, company: company,
                 device: device,
-                prevJson: prevJson);
-            socket.close();
+                prevJson: prevJson, timeout: timeout, delay: delay);
           }
           catch(err){
             EventModel eventModel = EventModel('error', '$err', ip, '$err', tag: tag);
             sendAnswer(p, eventModel);
           }
          // data = utf8.decode(event);
-          socket.close();
+         // socket.close();
         });
         socket.add(utf8.encode(command));
-        await Future.delayed(const Duration(milliseconds: 300));
-        await sub.asFuture<void>().timeout(const Duration(seconds: 12), onTimeout: () async {print('timeout'); socket.close();throw 'timeout';});
+     //   await Future.delayed(const Duration(milliseconds: 300));
+        await sub.asFuture<void>().timeout(Duration(seconds: timeout), onTimeout: () async {print('timeout'); socket.close();throw 'timeout';});
     }
   }
   catch(err){
@@ -274,7 +280,7 @@ print('got pools $data');
 sendAnswer(p, eventModel);
 }
 */
-handler(SendPort p, String data, String command, String ip, String? tag, {String? company, DeviceModel? device, Map<String,dynamic>? prevJson}) async {
+handler(SendPort p, String data, String command, String ip, String? tag, {String? company, DeviceModel? device, Map<String,dynamic>? prevJson, required int timeout, required int delay}) async {
   print('TAG is $tag');
   EventModel eventModel = EventModel('error', 'empty event', 'fail', 'event was not initialised', tag: tag);
  // dynamic device;
@@ -286,7 +292,8 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
         var _device = AvalonData.fromString(data, ip);
         var device = DeviceModel.fromData(_device, ip);
         model = device;
-      //  eventModel = EventModel('device', device, ip, data);
+     //   eventModel = EventModel('device', device, ip, data);
+       // sendAnswer(p, eventModel);
       }
       catch(e){
         print(e);
@@ -299,7 +306,8 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
         var _device = RaspberryAva.fromString(data, ip);
         var device = DeviceModel.fromData(_device, ip);
         model = device;
-      //  eventModel = EventModel('device', device, ip, data);
+     //   eventModel = EventModel('device', device, ip, data);
+       // sendAnswer(p, eventModel);
       }
       catch(e){
         eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
@@ -312,7 +320,8 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
         var _device = AntMinerModel.fromString(_data, ip);
         var device = DeviceModel.fromData(_device, ip);
         model = device;
-      //  eventModel = EventModel('device', device, ip, data);
+     //   eventModel = EventModel('device', device, ip, data);
+       // sendAnswer(p, eventModel);
       }
       catch(e){
         eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
@@ -321,7 +330,7 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
     }
     else if(data.toLowerCase().contains('whatsminer')){
       print('its whatsminer!');
-      socketSendCommand(ip, '{"cmd":"devdetails"}', p, tag: tag);
+      socketSendCommand(ip, '{"cmd":"devdetails"}', p, tag: tag, timeout: timeout, delay: delay);
     }
     else{
       data = data;
@@ -329,7 +338,7 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
       sendAnswer(p, eventModel);
     }
     if(model!=null){
-      socketSendCommand(ip, 'pools', p, device: model, tag: tag);
+      socketSendCommand(ip, 'pools', p, device: model, tag: tag, timeout: timeout, delay: delay);
     }
 /*
       try {
@@ -361,12 +370,12 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
   else if (command.contains('devdetails')){
     Map<String,dynamic> json = jsonDecode(data);
     print( json['DEVDETAILS'][0]['Model']);
-    socketSendCommand(ip, '{"cmd":"summary"}', p, company: json['DEVDETAILS'][0]['Model'], tag: tag);
+    socketSendCommand(ip, '{"cmd":"summary"}', p, company: json['DEVDETAILS'][0]['Model'], tag: tag, timeout: timeout, delay: delay);
   }
   else if (command.contains('summary')){
     print(data);
     Map<String,dynamic> json = jsonDecode(data);
-    socketSendCommand(ip, '{"cmd":"devs"}', p, company: company, prevJson: json, tag: tag);
+    socketSendCommand(ip, '{"cmd":"devs"}', p, company: company, prevJson: json, tag: tag, timeout: timeout, delay: delay);
   }
   else if(command.contains('devs')){
     print('DEVS!!!');
@@ -378,7 +387,7 @@ handler(SendPort p, String data, String command, String ip, String? tag, {String
       print(_device);
       var device = DeviceModel.fromData(_device, ip);
       //model = device;
-      socketSendCommand(ip, '{"cmd":"pools"}', p, device: device, tag: tag);
+      socketSendCommand(ip, '{"cmd":"pools"}', p, device: device, tag: tag, timeout: timeout, delay: delay);
     }
     catch(e){
       eventModel = EventModel('error', e.toString(),ip, data, tag: tag);
@@ -455,7 +464,7 @@ Future<void> sendCommand(SendPort p) async{
       // TODO do the logic here
       socketSendCommand(message['ip']??'', message['command']??'', p,
           addCommands: message['addCommand'], company: message['company'],
-        credentials: message['credentials'], tag: message['tag']
+        credentials: message['credentials'], tag: message['tag'], timeout: message['timeout'], delay: message['delay']
       );
       /*
       dynamic data;

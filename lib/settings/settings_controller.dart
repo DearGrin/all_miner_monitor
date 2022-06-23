@@ -41,6 +41,8 @@ class SettingsController extends GetxController{
   RxList<Map<dynamic, dynamic>> antPasswords = <Map<dynamic, dynamic>>[].obs;
   RxList<Map<String, String>> avalonPasswords = <Map<String, String>>[].obs;
   RxBool isObscured = true.obs;
+  RxInt timeout = 10.obs;
+  RxInt delay = 300.obs;
   late Box box;
   //final ScanListController scanListController = Get.put(ScanListController());
   final ResizeController resizeController = Get.put(ResizeController());
@@ -64,6 +66,22 @@ class SettingsController extends GetxController{
       }
     else{
       threadsCount.value=_threads;
+    }
+    int? _timeout =  box.get('timeout');
+    if(_timeout==null)
+    {
+      box.put('timeout', 10);
+    }
+    else{
+      timeout.value = _timeout;
+    }
+    int? _delay =  box.get('delay');
+    if(_delay==null)
+    {
+      box.put('delay', 300);
+    }
+    else{
+      delay.value=_delay;
     }
     int? _octetCount = box.get('octet_count');
     if(_octetCount==null){
@@ -293,6 +311,22 @@ class SettingsController extends GetxController{
 
       threadsCount.value = _;
       box.put('max_threads', _);
+    }
+  }
+  setTimeout(String value){
+    int? _ = int.tryParse(value);
+    if(_!=null){
+
+      timeout.value = _;
+      box.put('timeout', _);
+    }
+  }
+  setDelay(String value){
+    int? _ = int.tryParse(value);
+    if(_!=null){
+
+      delay.value = _;
+      box.put('delay', _);
     }
   }
   setVisibility(int index, bool value){

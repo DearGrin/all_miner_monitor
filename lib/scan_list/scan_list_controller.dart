@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:AllMinerMonitor/models/device_model.dart';
+import 'package:AllMinerMonitor/scan_list/scanner_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
 import 'package:AllMinerMonitor/avalon_10xx/api_commands.dart';
@@ -44,6 +46,9 @@ class ScanListController extends GetxController{
   RxInt isPopupVisible = (-1).obs;
   RxDouble mousePosition = 0.0.obs;
   int summaryViewMode = 0;
+
+  ScannerController scannerController = Get.put(ScannerController());
+
   @override
   Future<void> onInit() async {
     ipManagementController = Get.put(IpManagementController());
@@ -52,6 +57,10 @@ class ScanListController extends GetxController{
         handleEvent(event);
       });
    progress = scanner.progressStream;
+
+   scannerController.progress.listen((event) { });
+   scannerController.device.listen((event) {handleDevice(event);});
+
    // await Raspberry().printData('1');
 
     /*
@@ -68,6 +77,45 @@ class ScanListController extends GetxController{
     super.onInit();
   }
 
+  handleDevice(DeviceModel event){
+    if(isActive) {
+        devices.add(event);
+        if (event.isScrypt!) {
+          summary.countSCRYPT ++;
+          if (event.data.currentSpeed != null) {
+            summary.totalHashSCRYPT += event.data.currentSpeed!;
+          }
+          if (event.data.averageSpeed != null) {
+            summary.averageHashSCRYPT += event.data.averageSpeed!;
+          }
+        }
+        else {
+          summary.countSHA256 ++;
+          if (event.data.currentSpeed != null) {
+            summary.totalHashSHA256 += event.data.currentSpeed!;
+          }
+          if (event.data.averageSpeed != null) {
+            summary.averageHashSHA256 += event.data.averageSpeed!;
+          }
+          if (event.data.tMax != null && summary.maxTemp < event.data.tMax!) {
+            summary.maxTemp = event.data.tMax!;
+          }
+
+        }
+        if(event.data.status=='with problems'){
+          summary.withErrors++;
+        }
+        event.data.speedError==true?summary.speedErrors.add(event.ip!):null;
+        event.data.fanError==true?summary.fanErrors.add(event.ip!):null;
+        event.data.tempError==true?summary.tempErrors.add(event.ip!):null;
+        event.data.chipCountError==true?summary.chipCountErrors.add(event.ip!):null;
+        event.data.chipsSError==true?summary.chipsSErrors.add(event.ip!):null;
+        event.data.hashCountError==true?summary.hashCountErrors.add(event.ip!):null;
+        update(['list', 'summary']);
+      }
+
+  }
+
   handleEvent(EventModel event){
 
   //  RaspberryAva ava = event.data;
@@ -76,7 +124,7 @@ class ScanListController extends GetxController{
       errors.add('${event.ip} ${event.type}');
       errors.add(event.rawData.toString());
       if (event.runtimeType == EventModel && event.type == 'device') {
-        devices.add(event.data);
+       devices.add(event.data);
         if (event.data.isScrypt) {
           summary.countSCRYPT ++;
           if (event.data.currentSpeed != null) {
@@ -133,7 +181,8 @@ class ScanListController extends GetxController{
   startScan() async {
     Get.snackbar('Scan', ipManagementController.ips.length.toString());
     errors.value = [];
-    summary.totalProgress =  await scanner.newScan(scanList: ipManagementController.ips);
+    scannerController.scan(scanList: ipManagementController.ips);
+    //summary.totalProgress =  await scanner.newScan(scanList: ipManagementController.ips);
   }
   selectIp(String ip, bool value){
     if(value)
@@ -162,6 +211,7 @@ class ScanListController extends GetxController{
     List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
     Get.snackbar('Scan', '${ipsToScan.length}');
     errors.clear();
+    //scannerController.scan(scanList: ipsToScan);
     summary.totalProgress = await scanner.newScan(scanList: ipsToScan);
   }
   clearQuery(){
