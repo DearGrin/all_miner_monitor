@@ -17,6 +17,7 @@ import 'package:AllMinerMonitor/isolates/isolate_iprange_to_ip_list.dart';
 import 'package:AllMinerMonitor/isolates/isolate_scan.dart';
 import 'package:AllMinerMonitor/isolates/isolate_service.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
+import 'package:AllMinerMonitor/models/isolate_message_model.dart';
 import 'package:AllMinerMonitor/pools_editor/mock_pool.dart';
 import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
@@ -48,10 +49,12 @@ class Scanner extends GetxController{
 
   List<String?> ipToScan = [];
   List<String?> scannedIps = [];
-  Map<String, e.Worker> workers = {};
+ // Map<String, e.Worker> workers = {};
 
   List<e.Worker> eworkers = [];
   List<String?> ipsToScan = [];
+
+  List<IsolateMessageModel> commands = [];
   @override
   void onInit()async{
   /*
@@ -65,21 +68,112 @@ class Scanner extends GetxController{
   //    currentIndex++;
      await handleDevice(event);
     });
-    Box box = await Hive.openBox('settings');
-    int _threads = box.get('max_threads')??100;
-    for(int i = 0; i < _threads; i++){
-      final worker = e.Worker();
-      await worker.init(mainHandler, isolateHandler, queueMode: true);
-      eworkers.add(worker);
-    }
-    print('spawned ${eworkers.length} isolates!');
+    await initWorkers();
     super.onInit();
   }
-
+initWorkers()async{
+  Box box = await Hive.openBox('settings');
+  int _threads = box.get('max_threads')??100;
+  for(int i = 0; i < _threads; i++){
+    final worker = e.Worker();
+    await worker.init(mainHandler, isolateHandler, queueMode: true);
+    eworkers.add(worker);
+  }
+  print('spawned ${eworkers.length} isolates!');
+}
   void onDispose(){
     sub.cancel();
     super.dispose();
   }
+  createCommandList({required List<String?> ips, required List<String> commandList,
+    List<String>? addCommandList, List<String>? manufactureList, String? scanTag}) async {
+    Box box = await Hive.openBox('settings');
+    int _timeout = box.get('timeout')??10;
+    int _delay = box.get('delay')??300;
+    List<Map<dynamic,dynamic>> _credentials = [{'root':'root'}];
+    List<dynamic> _t = box.get('ant_passwords');
+    List<Map<dynamic, dynamic>>? _antPasswords;
+    _antPasswords = _t.cast<Map>();
+    if(_antPasswords.isNotEmpty){
+      _credentials = _antPasswords;
+    }
+    for(int i = 0; i < ips.length; i++) {
+      if(ips[i]!=null) {
+        IsolateMessageModel _ = IsolateMessageModel(
+            ip: ips[i]!,
+            command: commandList.length > 1 ? commandList[i] : commandList[0],
+            delay: _delay,
+            timeout: _timeout,
+            manufacture: manufactureList?[i],
+            addCommand: addCommandList?[i],
+            credentials: _credentials,
+            tag: scanTag,
+            isolateIndex: null
+        );
+        commands.add(_);
+      }
+    }
+  }
+  sendCommand(int workerIndex) async{
+    if(commands.isNotEmpty) {
+      IsolateMessageModel _model = commands[0];
+      _model.isolateIndex = workerIndex;
+      Map<String, dynamic> _ = _model.toMap();
+      commands.removeAt(0);
+      eworkers[workerIndex].sendMessage(_);
+    }
+  }
+  startCommands()async{
+    finalProgress = commands.length;
+    for(int i = 0; i < eworkers.length; i++){
+      await sendCommand(i);
+    }
+  }
+  checkProgress()async{
+    if(0<=progress && progress<1){
+      ///abort
+ //     debug(subject: 'new scan', message: 'tag: ${tg}', function: 'scanner > newScan > abort process');
+   //   scanResult.add(EventModel('abort', null, '', '', tag: tag));
+   //   stopStream.add(true);
+    }
+  }
+  addProgress(){
+    jobsDone++;
+    progress = jobsDone/finalProgress;
+    progressStream.add(progress);
+  }
+  Future<int>scanStart({List<IpRangeModel>? scanList,
+    List<String?>? ips,
+    String? scanTag,
+    required List<String> commandList,
+    List<String>? addCommandList,
+    List<String>? manufactureList,})async{
+    await checkProgress();
+    clearQuery();
+    List<String?> _ips = [];
+    List<List<String?>> _t = [];
+    if(scanList!=null) {
+      for (var s in scanList) {
+        List<String?> _tmp = [s.startIp, s.endIp];
+        _t.add(_tmp);
+      }
+      _ips =
+      await compute<List<List<String?>>, List<String>>(getIpsFromRange, _t);
+    }
+      else{
+        _ips = ips!;
+    }
+    await createCommandList(ips: _ips, commandList: commandList, scanTag: scanTag);
+    print(commands.length);
+    await startCommands();
+    return commands.length;
+  }
+  handleResult(EventModel event){
+    sendCommand(event.isolateIndex!);
+    addProgress();
+    handleDevice(event);
+  }
+
 
   bool validateIp(String ip){
     final RegExp regExp = RegExp(r'^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$');
@@ -127,9 +221,9 @@ handleDevice(EventModel event) async {
      else {
       scanResult.add(event);
      }
-  jobsDone++;
-  progress = jobsDone/finalProgress;
-  progressStream.add(progress);
+ // jobsDone++;
+ // progress = jobsDone/finalProgress;
+ // progressStream.add(progress);
 }
 Future<DeviceModel>analyse(DeviceModel device) async {
   bool _speedError = false;
@@ -227,6 +321,7 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       'hashCount: ${device.hashCountError}, total: ${device.status}', function: 'scanner > handleDevice > analyse');
   return device;
 }
+/*
 result(EventModel? event) async {
     print('got event! ${event?.type}');
   if(event!=null&&!scannedIps.contains(event.ip)) {
@@ -238,7 +333,10 @@ result(EventModel? event) async {
         'timeout':10,
         'delay':300,
         'command':'stats', //TODO ad var command
-        'isolateIndex': event.isolateIndex
+        'isolateIndex': event.isolateIndex,
+        'manufacture':'',
+        'addCommand':'',
+        'credentials':[{'root':'root'}],
       };
       ipsToScan.removeAt(0);
       eworkers[event.isolateIndex!].sendMessage(_);
@@ -249,6 +347,10 @@ result(EventModel? event) async {
   //  final e.Worker worker =  await spawn(ip: ipToScan[jobsDone]!, timeout: 10, delay: 300, command: 'stats');
    // workers[ipToScan[jobsDone]!]=worker;
   }
+
+
+ */
+  /*
   universalCreate(List<String?>? ips, List<String> commands, {List<dynamic>? addCommands, List<String>? manufactures, String? tag}) async {
     if(ips!=null) {
       finalProgress = ips.length;
@@ -258,10 +360,10 @@ result(EventModel? event) async {
       int _delay = box.get('delay')??300;
       int _threads = box.get('max_threads') ?? 20;
       int maxTasks = (ips.length / _threads).ceil();
-      List<List<String?>> tasksByThread = [];
-      List<List<String?>> commandsByThread = [];
-      List<List<dynamic>> addCommandsByThread = [];
-      List<List<String>> manufacturesByThread = [];
+      //List<List<String?>> tasksByThread = [];
+      //List<List<String?>> commandsByThread = [];
+      //List<List<dynamic>> addCommandsByThread = [];
+      //List<List<String>> manufacturesByThread = [];
       List<Map<dynamic,dynamic>> credentials = [{'root':'root'}];
       List<dynamic> _t = box.get('ant_passwords');
       List<Map<dynamic, dynamic>>? _antPasswords;
@@ -269,31 +371,31 @@ result(EventModel? event) async {
       if(_antPasswords.isNotEmpty){
         credentials = _antPasswords;
       }
-      tasksByThread = await compute(constructIpsByThread, [_threads, ips]);
+      //tasksByThread = await compute(constructIpsByThread, [_threads, ips]);
 
       for (int i = 0; i < _threads; i++) {
        // List<String?> _ = ips.skip(i * maxTasks).take(maxTasks).toList();
 
-        if (commands.length > 1) {
-          commandsByThread = await compute(constructIpsByThread, [_threads, commands]);
+     //   if (commands.length > 1) {
+     //     commandsByThread = await compute(constructIpsByThread, [_threads, commands]);
           /*
           List<String> _c = commands.skip(i * maxTasks).take(maxTasks).toList();
           commandsByThread.add(_c);
 
 
            */
-        }
-        else {
-          commandsByThread.add(commands);
-        }
-        if(addCommands!=null){
-          List<dynamic> _ac = addCommands.skip(i * maxTasks).take(maxTasks).toList();
-          addCommandsByThread.add(_ac);
-        }
-        if(manufactures!=null){
-          List<String> _m = manufactures.skip(i * maxTasks).take(maxTasks).toList();
-          manufacturesByThread.add(_m);
-        }
+      //  }
+  //      else {
+     //     commandsByThread.add(commands);
+       // }
+       // if(addCommands!=null){
+         // List<dynamic> _ac = addCommands.skip(i * maxTasks).take(maxTasks).toList();
+         // addCommandsByThread.add(_ac);
+       // }
+       // if(manufactures!=null){
+        //  List<String> _m = manufactures.skip(i * maxTasks).take(maxTasks).toList();
+        //  manufacturesByThread.add(_m);
+       // }
         /*
         if (_.isNotEmpty) {
           tasksByThread.add(_);
@@ -330,7 +432,7 @@ result(EventModel? event) async {
         workers[ipToScan[i]!]=worker;
       }
 */
-      for (int i = 0; i < tasksByThread.length; i++) {
+    //  for (int i = 0; i < tasksByThread.length; i++) {
 
 
         /*
@@ -354,9 +456,11 @@ result(EventModel? event) async {
 
 
          */
-      }
+     // }
     }
   }
+
+   */
 /*
 handleCallback(String callback, String ip){
   computeStatus.add('next');
@@ -385,8 +489,9 @@ handleCallback(String callback, String ip){
 
 
  */
+  /*
  Future<int>newScan({List<IpRangeModel>? scanList, List<String?>? ips, String? tg}) async {
-    stopStream.add(true);
+   // stopStream.add(true);
     debug(subject: 'new scan', message: 'tag: ${tg}, ips: ${ips}', function: 'scanner > newScan');
     if(0<=progress && progress<1){
       debug(subject: 'new scan', message: 'tag: ${tg}', function: 'scanner > newScan > abort process');
@@ -437,6 +542,8 @@ handleCallback(String callback, String ip){
     universalCreate(_ips, ['stats'], tag: tg);
     return _ips.length;
   }
+
+   */
 clearQuery(){
    // currentIndex = 0;
    // toScan.clear();
@@ -447,5 +554,6 @@ clearQuery(){
     finalProgress = 0;
     jobsDone = 0;
     progress = 0;
+    commands.clear();
 }
 }

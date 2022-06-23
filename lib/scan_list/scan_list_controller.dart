@@ -46,7 +46,7 @@ class ScanListController extends GetxController{
   RxInt isPopupVisible = (-1).obs;
   RxDouble mousePosition = 0.0.obs;
   int summaryViewMode = 0;
-
+  DateTime? lastScanTime;
   ScannerController scannerController = Get.put(ScannerController());
 
   @override
@@ -178,12 +178,15 @@ class ScanListController extends GetxController{
       }
     }
   }
+  /*
   startScan() async {
     Get.snackbar('Scan', ipManagementController.ips.length.toString());
     errors.value = [];
     scannerController.scan(scanList: ipManagementController.ips);
     //summary.totalProgress =  await scanner.newScan(scanList: ipManagementController.ips);
   }
+
+   */
   selectIp(String ip, bool value){
     if(value)
       {
@@ -207,12 +210,21 @@ class ScanListController extends GetxController{
     update(['list', 'header','ips']);
   }
   onScanClick()async{
-    clearQuery();
-    List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
-    Get.snackbar('Scan', '${ipsToScan.length}');
-    errors.clear();
-    //scannerController.scan(scanList: ipsToScan);
-    summary.totalProgress = await scanner.newScan(scanList: ipsToScan);
+    if(lastScanTime!=null&&(DateTime.now().difference(lastScanTime!)<const Duration(seconds: 3))){
+      Get.snackbar('Scan is already in process', 'Please wait');
+    }
+    else{
+      lastScanTime = DateTime.now();
+      clearQuery();
+      List<IpRangeModel> ipsToScan = ipManagementController.getIpToScan();
+      Get.snackbar('Scan', '${ipsToScan.length}');
+      errors.clear();
+      //scannerController.scan(scanList: ipsToScan);
+      //summary.totalProgress = await scanner.newScan(scanList: ipsToScan);
+      await scanner.scanStart(scanList: ipsToScan, commandList: ['stats']);
+      summary.totalProgress = scanner.commands.length;
+      update(['list', 'summary']);
+    }
   }
   clearQuery(){
     devices.clear();
@@ -344,7 +356,8 @@ class ScanListController extends GetxController{
     for(var _ip in devices){
       _ips.add(_ip.ip);
     }
-    scanner.universalCreate(_ips, ['setpool'], addCommands: _commands, manufactures: _manufac, tag: null);
+   // scanner.universalCreate(_ips, ['setpool'], addCommands: _commands, manufactures: _manufac, tag: null);
+   await scanner.scanStart(ips: _ips, commandList: ['setpool'],  scanTag: null, addCommandList: _commands, manufactureList: _manufac, );
     Get.snackbar('set_pool'.tr, '');
    // scanner.startToChangePools(ips, _pools);
    // create();
@@ -360,7 +373,7 @@ class ScanListController extends GetxController{
   submitPoolsSelected(List<Pool> pools, List<int> suffixMode) async {
     Box box = await Hive.openBox('settings');
     int? _octetCount = box.get('octet_count');
-    List<dynamic> _commands = [];
+    List<String> _commands = [];
     List<String> _manufac = [];
     for(int i =0; i < selectedIps.length; i++)
     {
@@ -406,7 +419,8 @@ class ScanListController extends GetxController{
     for(var _ip in selectedIps){
       _ips.add(_ip);
     }
-    scanner.universalCreate(_ips, ['setpool'],addCommands: _commands, manufactures: _manufac, tag: null);
+    //scanner.universalCreate(_ips, ['setpool'],addCommands: _commands, manufactures: _manufac, tag: null);
+    await scanner.scanStart(ips: _ips, commandList: ['setpool'],  scanTag: null, addCommandList: _commands, manufactureList: _manufac, );
     Get.snackbar('set_pool'.tr, '');
 
    // scanner.universalCreate(_ips, ['setpool'], commands);
@@ -453,7 +467,7 @@ class ScanListController extends GetxController{
       content: const RebootUI(),
     );
   }
-  rebootAll(){
+  rebootAll() async {
     List<String> _ips = [];
     for(var _ip in devices){
       _ips.add(_ip.ip);
@@ -468,7 +482,8 @@ class ScanListController extends GetxController{
     print(_ips);
     print(_commands);
     print(_manufac);
-    scanner.universalCreate(_ips, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
+   // scanner.universalCreate(_ips, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
+    await scanner.scanStart(ips: _ips, commandList: ['reboot'],  scanTag: null, addCommandList: _commands, manufactureList: _manufac, );
     Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
@@ -482,7 +497,7 @@ class ScanListController extends GetxController{
     //TODO execute function
     //Get.back();
   }
-  rebootSelected(){
+  rebootSelected() async {
     //scanner.universalCreate(selectedIps, [commandConstructor.reboot()]);
     print('reboot sel and $selectedIps');
     List<String> _commands = [];
@@ -493,8 +508,8 @@ class ScanListController extends GetxController{
       String manufacture = _device.manufacture;
       _manufac.add(manufacture);
     }
-
-    scanner.universalCreate(selectedIps, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
+    await scanner.scanStart(ips: selectedIps, commandList: ['reboot'],  scanTag: null, addCommandList: _commands, manufactureList: _manufac, );
+  //  scanner.universalCreate(selectedIps, ['reboot'],addCommands: _commands, manufactures: _manufac, tag: null);
     Get.snackbar('reboot'.tr, '');
     /*
     apiToDo.clear();
@@ -540,7 +555,7 @@ class ScanListController extends GetxController{
     isActive = value;
     print('is active $value');
   }
-  sendCommandToAll(String command){
+  sendCommandToAll(String command) async {
     /*
     apiToDo.clear();
     for(int i =0; i < devices.length; i++)
@@ -555,9 +570,10 @@ class ScanListController extends GetxController{
     for(var _ip in devices){
       _ips.add(_ip.ip);
     }
-    scanner.universalCreate(_ips, [command]);
+   // scanner.universalCreate(_ips, [command]);
+    await scanner.scanStart(ips: _ips, commandList: [command],  scanTag: null);
   }
-  sendCommandToSelected(String command){
+  sendCommandToSelected(String command) async {
    // apiToDo.clear();
     /*
     for(int i =0; i < selectedIps.length; i++)
@@ -566,8 +582,8 @@ class ScanListController extends GetxController{
     }
 
      */
-
-   scanner.universalCreate(selectedIps, [command]);
+    await scanner.scanStart(ips: selectedIps, commandList: [command],  scanTag: null);
+ //  scanner.universalCreate(selectedIps, [command]);
   }
   /*
   create(){

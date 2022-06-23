@@ -120,7 +120,7 @@ socketSendCommand(String ip, String command, SendPort p, {DeviceModel? device,
             print(ip);
             print(addCommands);
           //  _api.test(ip, addCommands!);
-          var callback = await RestApi().test(ip, addCommands!,credentials);
+          var callback = await RestApi().setPool(ip, addCommands!,credentials);
       //    var c = await  RestApi().setPool(ip, addCommands!);
             eventModel = EventModel('update', callback, ip, callback, tag: tag);
           }
