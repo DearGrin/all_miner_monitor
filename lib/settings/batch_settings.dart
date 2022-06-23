@@ -82,6 +82,26 @@ class BatchSettings extends GetView<SettingsController> {
         ),
         const SizedBox(height: 10.0,),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('delay milliseconds'.tr, style: Theme.of(context).textTheme.bodyText1,),
+            Obx(()=> SizedBox(
+              width: 50,
+              child: TextField(
+                keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
+                controller: TextEditingController(text: controller.delay.value.toString())..selection=TextSelection.fromPosition
+                  (TextPosition(offset: controller.delay.value.toString().length,
+                    affinity: TextAffinity.upstream)
+                ),
+                onChanged: (value){controller.setDelay(value);},
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10.0,),
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('passwords'.tr, style: Get.textTheme.bodyText2, textAlign: TextAlign.center,),

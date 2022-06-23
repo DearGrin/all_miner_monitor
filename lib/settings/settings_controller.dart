@@ -42,6 +42,7 @@ class SettingsController extends GetxController{
   RxList<Map<String, String>> avalonPasswords = <Map<String, String>>[].obs;
   RxBool isObscured = true.obs;
   RxInt timeout = 10.obs;
+  RxInt delay = 300.obs;
   late Box box;
   //final ScanListController scanListController = Get.put(ScanListController());
   final ResizeController resizeController = Get.put(ResizeController());
@@ -72,7 +73,15 @@ class SettingsController extends GetxController{
       box.put('timeout', 10);
     }
     else{
-      timeout.value=_timeout;
+      timeout.value = _timeout;
+    }
+    int? _delay =  box.get('delay');
+    if(_delay==null)
+    {
+      box.put('delay', 300);
+    }
+    else{
+      delay.value=_delay;
     }
     int? _octetCount = box.get('octet_count');
     if(_octetCount==null){
@@ -310,6 +319,14 @@ class SettingsController extends GetxController{
 
       timeout.value = _;
       box.put('timeout', _);
+    }
+  }
+  setDelay(String value){
+    int? _ = int.tryParse(value);
+    if(_!=null){
+
+      delay.value = _;
+      box.put('delay', _);
     }
   }
   setVisibility(int index, bool value){

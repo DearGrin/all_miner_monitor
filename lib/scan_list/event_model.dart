@@ -4,5 +4,6 @@ class EventModel{
   String ip;
   String rawData;
   String? tag;
-  EventModel(this.type, this.data, this.ip, this.rawData, {this.tag});
+  int? isolateIndex;
+  EventModel(this.type, this.data, this.ip, this.rawData, {this.tag, this.isolateIndex});
 }

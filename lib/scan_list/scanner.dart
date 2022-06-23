@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:AllMinerMonitor/analyzator/analyse_resolver.dart';
 import 'package:AllMinerMonitor/antminer/antminer_model.dart';
@@ -10,13 +11,16 @@ import 'package:AllMinerMonitor/avalon_10xx/mock_rasp.dart';
 import 'package:AllMinerMonitor/avalon_10xx/model_avalon.dart';
 import 'package:AllMinerMonitor/debugger/debug_print.dart';
 import 'package:AllMinerMonitor/ip_section/ip_range_model.dart';
+import 'package:AllMinerMonitor/isolates/easy.dart';
 import 'package:AllMinerMonitor/isolates/isolate_construct_ips_by_threads.dart';
 import 'package:AllMinerMonitor/isolates/isolate_iprange_to_ip_list.dart';
+import 'package:AllMinerMonitor/isolates/isolate_scan.dart';
 import 'package:AllMinerMonitor/isolates/isolate_service.dart';
 import 'package:AllMinerMonitor/models/device_model.dart';
 import 'package:AllMinerMonitor/pools_editor/mock_pool.dart';
 import 'package:AllMinerMonitor/pools_editor/pool_model.dart';
 import 'package:AllMinerMonitor/scan_list/event_model.dart';
+import 'package:easy_isolate/easy_isolate.dart' as e;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -24,7 +28,7 @@ import 'package:hive/hive.dart';
 import '../pools_editor/device_pool.dart';
 
 class Scanner extends GetxController{
-  final CommandConstructor command = CommandConstructor();
+  //final CommandConstructor command = CommandConstructor();
   final  AnalyseResolver analyseResolver = Get.find();
   final int threadMax = 10; //TODO should change via settings?
   StreamController scanResult = StreamController<dynamic>.broadcast();
@@ -32,17 +36,24 @@ class Scanner extends GetxController{
   StreamController progressStream = StreamController<double>();
   StreamController isolateStream = StreamController<EventModel>();
   StreamController stopStream = StreamController<bool>.broadcast();
-  int currentIndex = 0;
-  List<int> start = [];
-  List<int> end = [];
+ // int currentIndex = 0;
+ // List<int> start = [];
+ // List<int> end = [];
   List<Pool> pools = [];
   late StreamSubscription sub;
   int finalProgress = 0;
   int jobsDone = 0;
   String? tag;
   double progress = 0.0;
+
+  List<String?> ipToScan = [];
+  List<String?> scannedIps = [];
+  Map<String, e.Worker> workers = {};
+
+  List<e.Worker> eworkers = [];
+  List<String?> ipsToScan = [];
   @override
-  void onInit(){
+  void onInit()async{
   /*
     sub = computeStatus.stream.listen((event) {
 
@@ -51,9 +62,17 @@ class Scanner extends GetxController{
 
    */
     isolateStream.stream.listen((event) async{
-      currentIndex++;
+  //    currentIndex++;
      await handleDevice(event);
     });
+    Box box = await Hive.openBox('settings');
+    int _threads = box.get('max_threads')??100;
+    for(int i = 0; i < _threads; i++){
+      final worker = e.Worker();
+      await worker.init(mainHandler, isolateHandler, queueMode: true);
+      eworkers.add(worker);
+    }
+    print('spawned ${eworkers.length} isolates!');
     super.onInit();
   }
 
@@ -208,12 +227,35 @@ Future<DeviceModel>analyse(DeviceModel device) async {
       'hashCount: ${device.hashCountError}, total: ${device.status}', function: 'scanner > handleDevice > analyse');
   return device;
 }
+result(EventModel? event) async {
+    print('got event! ${event?.type}');
+  if(event!=null&&!scannedIps.contains(event.ip)) {
+    scannedIps.add(event.ip);
+    handleDevice(event);
+    if(ipsToScan.isNotEmpty){
+      Map<String, dynamic> _ = {
+        'ip':ipsToScan[0],
+        'timeout':10,
+        'delay':300,
+        'command':'stats', //TODO ad var command
+        'isolateIndex': event.isolateIndex
+      };
+      ipsToScan.removeAt(0);
+      eworkers[event.isolateIndex!].sendMessage(_);
+    }
+  }
+//  final e.Worker _ = workers[event!.ip]!;
+ // _.dispose();
+  //  final e.Worker worker =  await spawn(ip: ipToScan[jobsDone]!, timeout: 10, delay: 300, command: 'stats');
+   // workers[ipToScan[jobsDone]!]=worker;
+  }
   universalCreate(List<String?>? ips, List<String> commands, {List<dynamic>? addCommands, List<String>? manufactures, String? tag}) async {
     if(ips!=null) {
       finalProgress = ips.length;
       jobsDone = 0;
       Box box = await Hive.openBox('settings');
       int _timeout = box.get('timeout')??10;
+      int _delay = box.get('delay')??300;
       int _threads = box.get('max_threads') ?? 20;
       int maxTasks = (ips.length / _threads).ceil();
       List<List<String?>> tasksByThread = [];
@@ -261,15 +303,57 @@ Future<DeviceModel>analyse(DeviceModel device) async {
 
       }
       stopStream.add(true);
+      ipToScan = ips;
+      scannedIps = [];
+      ipsToScan = ips;
+      for(int i = 0; i < eworkers.length; i++){
+        if(ipsToScan.isNotEmpty){
+          Map<String, dynamic> _ = {
+            'ip':ipsToScan[0],
+            'timeout':_timeout,
+            'delay':_delay,
+            'command':'stats', //TODO ad var command
+            'isolateIndex': i
+          };
+          print(_);
+          ipsToScan.removeAt(0);
+          eworkers[i].sendMessage(_);
+        }
+      }
+      //for(var ip in ips){
+     //final e.Worker worker =  await spawn(ip: ip!, timeout: _timeout, delay: _delay, command: 'stats');
+     //workers[ip]
+   // }
+      /*
+      for(int i = 0; i < _threads; i++){
+        final e.Worker worker = await spawn(ip: ipToScan[i]!, timeout: _timeout, delay: _delay, command: 'stats');
+        workers[ipToScan[i]!]=worker;
+      }
+*/
       for (int i = 0; i < tasksByThread.length; i++) {
+
+
+        /*
+        startScan( tasksByThread[i], commandsByThread[i], isolateStream, stopStream,
+            addCommand: addCommands!=null?addCommandsByThread[i]:null,
+            company: manufactures!=null?manufacturesByThread[i]:null,
+            credentials:  credentials,
+            tag: tag,
+            timeout: _timeout);
+       */
+        /*
         startCompute(
             tasksByThread[i], commandsByThread[i], isolateStream, stopStream,
            addCommand: addCommands!=null?addCommandsByThread[i]:null,
             company: manufactures!=null?manufacturesByThread[i]:null,
             credentials:  credentials,
           tag: tag,
-          timeout: _timeout
+          timeout: _timeout,
+          delay: _delay
         );
+
+
+         */
       }
     }
   }
@@ -354,7 +438,7 @@ handleCallback(String callback, String ip){
     return _ips.length;
   }
 clearQuery(){
-    currentIndex = 0;
+   // currentIndex = 0;
    // toScan.clear();
     //toChangePool.clear();
     pools.clear();
